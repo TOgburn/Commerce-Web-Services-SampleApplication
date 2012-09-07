@@ -1,0 +1,136 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{37B0E6C5-6E0D-4D1E-A1E6-51466EBF59B6}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SampleCode</RootNamespace>
+    <AssemblyName>SampleCode</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="FaultHandler.cs" />
+    <Compile Include="HelperMethods.cs">
+    </Compile>
+    <Compile Include="Magensa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Magensa.Designer.cs">
+      <DependentUpon>Magensa.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageApplicationData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageApplicationData.Designer.cs">
+      <DependentUpon>ManageApplicationData.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageMerchantProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageMerchantProfile.Designer.cs">
+      <DependentUpon>ManageMerchantProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SampleCode_DeskTop.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SampleCode_DeskTop.Designer.cs">
+      <DependentUpon>SampleCode_DeskTop.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Magensa.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>Magensa.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageApplicationData.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ManageApplicationData.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageMerchantProfile.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ManageMerchantProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SampleCode_DeskTop.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>SampleCode_DeskTop.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TransactionManagementServices.resx">
+      <DependentUpon>TransactionManagementServices.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TransactionManagementServices.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TransactionManagementServices.Designer.cs">
+      <DependentUpon>TransactionManagementServices.cs</DependentUpon>
+    </Compile>
+    <Compile Include="WebServiceProxy\CWSServiceInformation.cs" />
+    <Compile Include="WebServiceProxy\CWSTransactionManagement.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="WebServiceProxy\CwsTransactionProcessing.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\workflow_overview_SIS.png" />
+    <Content Include="Images\workflow_overview_TPS.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
