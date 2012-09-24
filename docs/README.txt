@@ -46,5 +46,5 @@ Step 1: Edit the app.config file and enter the IdentityToken given to you by you
 Step 2: The Endpoint Management section of the app.config file define the endpoints the application will use.
 		Be sure these are set to the version of CWS you are connecting to. 
 		
-Step 3: The .NET solution is for Visual Studio 2005. If you are using a more recent version, you'll need to run the 
+Step 3: The .NET solution is for Visual Studio 2010. If you are using a more recent version, you'll need to run the 
 		wizard to upgrade the solution. 
