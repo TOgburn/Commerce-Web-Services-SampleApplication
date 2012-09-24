@@ -173,6 +173,8 @@ namespace SampleCode
                                 + " should always go directly to 'Transaction Processing'."
                                 ;
 
+
+
     #endregion Setup The Application
         }
 
@@ -202,7 +204,18 @@ namespace SampleCode
 
             try
             {
-                Helper.SessionToken = Helper.Cwssic.SignOnWithToken(txtIdentityToken.Text);
+                //Helper.SessionToken = Helper.Cwssic.SignOnWithToken(txtIdentityToken.Text);
+
+                Helper.ServiceKey = txtDelegatedServiceKey.Text;
+
+                if (ckBoxDelegatedSignOn.Checked)
+                {
+                    Helper.DelegatedSessionToken = Helper.Cwssic.DelegatedSignOn(txtIdentityToken.Text, Helper.ServiceKey, null);
+                    Helper.SessionToken = Helper.DelegatedSessionToken;
+                }
+                else
+                    Helper.SessionToken = Helper.Cwssic.SignOnWithToken(txtIdentityToken.Text);
+                
                 Helper.DtSessionToken = DateTime.UtcNow;
                 cmdSaveApplicationConfiguration.Enabled = true;
                 cmdRetrieveServiceInformation.Enabled = true;
@@ -210,6 +223,7 @@ namespace SampleCode
             }
             catch (EndpointNotFoundException)
             {
+                #region EndpointNotFoundException
                 //In this case the SvcEndpoint was not available. Try the same logic again with the alternate Endpoint
                 try
                 {
@@ -227,6 +241,7 @@ namespace SampleCode
                 {
                     MessageBox.Show("Unable to SigOn\r\nError Message : " + ex.Message, "SignOn Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
+                #endregion
             }
             catch (Exception ex)
             {
@@ -1785,7 +1800,7 @@ namespace SampleCode
 
             #endregion Ways to Convert to a decimal with two decimals
             TxnData.CurrencyCode = TypeISOCurrencyCodeA3.USD;
-            try { TxnData.EntryMode = (EntryMode)Enum.Parse(typeof(EntryMode), ConfigurationSettings.AppSettings["TxnData_EntryMode"]); }catch { }            
+            try { TxnData.EntryMode = (EntryMode)Enum.Parse(typeof(EntryMode), ConfigurationSettings.AppSettings["TxnData_EntryMode"]); }catch { }
             try { TxnData.CustomerPresent = (CustomerPresent)Enum.Parse(typeof(CustomerPresent), ConfigurationSettings.AppSettings["TxnData_CustomerPresent"]); }catch { }
             try { TxnData.SignatureCaptured = Convert.ToBoolean(ConfigurationSettings.AppSettings["TxnData_SignatureCaptured"]); }catch { }
             
@@ -1794,6 +1809,9 @@ namespace SampleCode
 			
             //In the case of Retail or Restaurant
             //TxnData.TipAmount = 3.00M;
+
+            // Used for QuasiCash transactions
+            TxnData.IsQuasiCash = false;
 
 			TxnData.LaneId = "1";//Used for Vantiv Tandem
 			
@@ -2255,7 +2273,7 @@ namespace SampleCode
             }
             else
             {
-                SVATransaction.TenderData.CardData.Track1Data = "5858836401000004^ / ^4912101000005320000000532000000";                
+                SVATransaction.TenderData.CardData.Track2Data = "5858836401000004^ / ^4912101000005320000000532000000";
                 SVATransaction.TenderData.CardData.AccountNumber = "5858836401000004";
                 SVATransaction.TransactionData.EntryMode = EntryMode.TrackDataFromMSR;
             }
@@ -2372,10 +2390,27 @@ namespace SampleCode
 
             cmdForcePost.Enabled = false;
 
+            if (ConfigurationSettings.AppSettings["DelegatedSignOnSupported"] == "true")
+            {
+                txtDelegatedServiceKey.Visible = true;
+                lblDelegatedSK.Visible = true;
+                lblUseDelegatedSignOn.Visible = true;
+                lnkLblDelegatedSignOn.Visible = true;
+                ckBoxDelegatedSignOn.Visible = true;
+            }
+            if (ConfigurationSettings.AppSettings["DelegatedSignOnSupported"] == "false")
+            {
+                txtDelegatedServiceKey.Visible = false;
+                lblDelegatedSK.Visible = false;
+                lblUseDelegatedSignOn.Visible = false;
+                lnkLblDelegatedSignOn.Visible = false;
+                ckBoxDelegatedSignOn.Visible = false;
+            }
             //Reset Check boxes
             chkStep1.Checked = false;
             chkStep2.Checked = false;
             chkStep3.Checked = false;
+            ckBoxDelegatedSignOn.Checked = false;
 
             txtAboutTheService.Text = "";
 
@@ -3251,83 +3286,87 @@ namespace SampleCode
 
         private void linkPreparingAppToTransact_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/PreparingTheAppToTransact/index.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/index.aspx");
         }
         private void lnkTxnProcessing_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/BetaDocs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/index.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/index.aspx");
         } 
         private void lnkSignOnWithToken_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/PreparingTheAppToTransact/SignOnAuthentication/SignOnWithToken.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/SignOnAuthentication/SignOnWithToken.aspx");
+        }
+        private void lnkLblDelegatedSignOn_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/SignOnAuthentication/DelegatedSignOn.aspx");
         }
         private void lnkManageApplicationData_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/PreparingTheAppToTransact/ManagingAppConfigData/index.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/ManagingAppConfigData/index.aspx");
         }
         private void lnkRetrieveServiceInformation_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/PreparingTheAppToTransact/RetrievingServiceInformation.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/RetrievingServiceInformation/index.aspx");
         }
         private void lnkManageMerchantProfiles_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/PreparingTheAppToTransact/ManagingMerchantProfiles/index.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/ManagingMerchantProfiles/index.aspx");
         }
         private void lnkAuthorizeAndCapture_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/AuthorizingTransactions/AuthorizeAndCapture.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/AuthorizingTransactions/AuthorizeAndCapture.aspx");
         }
         private void lnkAuthorize_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/AuthorizingTransactions/Authorize.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/AuthorizingTransactions/Authorize.aspx");
         }
         private void lnkAdjust_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/AdjustingVoidingTransactions/Adjust.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/AdjustingVoidingTransactions/Adjust.aspx");
         }
         private void lnkUndo_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/AdjustingVoidingTransactions/Undo.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/AdjustingVoidingTransactions/Undo.aspx");
         }
         private void lnkCapture_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/CapturingTransactions/Capture.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/CapturingTransactions/Capture.aspx");
         }
         private void lnkCaptureAll_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/CapturingTransactions/CaptureAll.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/CapturingTransactions/CaptureAll.aspx");
         }
         private void lnkCaptureSelective_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/CapturingTransactions/CaptureSelective.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/CapturingTransactions/CaptureSelective.aspx");
         }
         private void lnkReturnById_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/RefundingTransactions/ReturnById.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/RefundingTransactions/ReturnById.aspx");
         }
         private void lnkReturnUnlinked_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/RefundingTransactions/ReturnUnlinked.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/RefundingTransactions/ReturnUnlinked.aspx");
         }
         private void lnkQueryAccount_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/OptionalOperations/QueryAccount.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/OptionalOperations/QueryAccount.aspx");
         }
         private void lnkVerify_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/OptionalOperations/Verify.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/OptionalOperations/Verify.aspx");
         }
         private void lnkServiceKey_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Overview/AccessingEndpoints.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Overview/AccessingEndpoints.aspx");
         }
         private void lnkAccessingWebServiceEndpoints_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Overview/WebServiceEndpoints.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Overview/WebServiceEndpoints.aspx");
         }
         private void lnkIdentityToken_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Implementation_Guidelines/2.0.17/ServiceInformationGuidelines/AuthenticationProcess/IdentityTokens.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/IntegrationGuidance/ServiceInformationGuidelines/SignOnAuthentication/IdentityTokens.aspx");
         }
         private void lnkOnlineDocumentation_Click(object sender, EventArgs e)
         {
@@ -3335,19 +3374,20 @@ namespace SampleCode
         }
         private void lnkAcknowledge_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/OptionalOperations/Acknowledge.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/OptionalOperations/Acknowledge.aspx");
         }
         private void LnkRequestTransaction_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/OptionalOperations/RequestTransaction.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/OptionalOperations/RequestTransaction.aspx");
         }
-        private void lnkManageAccount_LinkClicked(object sender, EventArgs e)
+        private void lnkManageAccount_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/OptionalOperations/ManageAccount.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/OptionalOperations/ManageAccount.aspx");
         }
-        private void lnkManageAccountById_LinkClicked(object sender, EventArgs e)
+
+        private void lnkManageAccountById_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/SOAP_Developer_Guide/2.0.17/Implementation/TransactionProcessing/OptionalOperations/ManageAccountById.aspx");
+            System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/TransactionProcessing/OptionalOperations/ManageAccountById.aspx");
         }
     #endregion Setup Help Links
 
@@ -3372,10 +3412,25 @@ namespace SampleCode
             MessageBox.Show(Helper.ProcessResponse(ref rdoActivate));//Pass as reference so we can extract more values from the response
         }
 
-        private void lnkManageAccount_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void ckBoxDelegatedSignOn_CheckedChanged(object sender, EventArgs e)
         {
+            if (ckBoxDelegatedSignOn.Checked)
+            {
+                txtDelegatedServiceKey.Visible = true;
+                lblDelegatedSK.Visible = true;
+            }
+            else
+            {
+                txtDelegatedServiceKey.Visible = false;
+                lblDelegatedSK.Visible = false;
+                txtDelegatedServiceKey.Clear();
+            }
 
         }
-           
+
+        private void txtDelegatedServiceKey_TextChanged(object sender, EventArgs e)
+        {
+            Helper.ServiceKey = txtDelegatedServiceKey.Text;
+        }
     }
 }

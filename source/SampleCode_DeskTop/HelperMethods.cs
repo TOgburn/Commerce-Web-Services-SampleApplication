@@ -60,6 +60,7 @@ using StoredValueTransaction = schemas.ipcommerce.com.Ipc.General.WCF.Contracts.
 using StoredValueTransactionResponse = schemas.ipcommerce.com.Ipc.General.WCF.Contracts.Common.External.Txn.StoredValueTransactionResponse;
 using AlternativeMerchantData = schemas.ipcommerce.com.Ipc.General.WCF.Contracts.Common.External.Txn.AlternativeMerchantData;
 using AddressInfo = schemas.ipcommerce.com.Ipc.General.WCF.Contracts.Common.External.Txn.AddressInfo;
+using PrepaidCard = schemas.ipcommerce.com.Ipc.General.WCF.Contracts.Common.External.Txn.PrepaidCard;
 using TypeISOCountryCodeA3 = schemas.ipcommerce.com.Ipc.General.WCF.Contracts.Common.External.Txn.TypeISOCountryCodeA3;
 
 namespace SampleCode
@@ -77,8 +78,10 @@ namespace SampleCode
         private string _workflowId = ""; //Unique to each bundle of module and service 
         private string _merchantProfileId = ""; //Your application will have one to many merchantProfileId's depending on how many merchant accounts you have.
         private string _sessionToken = ""; //The sessionToken lives for only 30 minutes. The CheckTokenExpire() method below rotates this value after 25 minutes as elapsed. 
+        private string _delegatedSessionToken = ""; //The sessionToken lives for only 30 minutes. The CheckTokenExpire() method below rotates this value after 25 minutes as elapsed. 
         private string _identityToken = ""; //The identity token is the primary token used to gain access to CWS. This value expires every 3 year or if a security breach is detected. You application need to have a way to update this value at any time. 
         private string _serviceKey = "";//One identity token can have one to many serviceKey. ServiceKey's are tied to service available.
+        private string _delegatedServiceKey = ""; // ServiceKey that has been delegated to the Initiator IdentityToken.
         private FaultHandler.FaultHandler _FaultHandler = new FaultHandler.FaultHandler();
         public bool BlnDedicated;//Used to determine if this is a dynamic or dedicated solution.
         public DateTime DtSessionToken; //Used by CheckTokenExpire() to determine when the session token needs to be updated
@@ -110,6 +113,10 @@ namespace SampleCode
         //Send an acknowledge response for each transaction
         public bool BlnAcknowledge;
 
+        private CWSServiceInformationClient _client = null;
+        private string _dynamicBinding = "ServiceInfoProcessing_ICWSServiceInformation";
+        private bool _usingPrimaryUrl = true;
+
         #endregion Variable Declarations
 
         public void CheckTokenExpire()
@@ -118,8 +125,16 @@ namespace SampleCode
             {
                 try
                 {
-                    _sessionToken = Cwssic.SignOnWithToken(_identityToken);
-                    DtSessionToken = DateTime.UtcNow;
+                    if (_delegatedServiceKey != "")
+                    {
+                        _delegatedSessionToken = Cwssic.DelegatedSignOn(_identityToken, _delegatedServiceKey, null);
+                        _sessionToken = _delegatedSessionToken;
+                    }
+                    else
+                    {
+                        _sessionToken = Cwssic.SignOnWithToken(_identityToken);
+                        DtSessionToken = DateTime.UtcNow;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -1507,6 +1522,7 @@ namespace SampleCode
                     //Note Optional but recommended if CV data is supported
                 + "\r\nCVResult : " + _BCResponse.CVResult //Response code returned by the card issuer indicating the result of Card Verification (CVV2/CVC2/CID).
                     //Note Optional
+                + "\r\nPrepaidCard : " + _BCResponse.PrepaidCard // Enumeration of NotSet, Yes, No.  Indicates if this is a pre-paid card
                 + "\r\nBatchId : " + _BCResponse.BatchId //A unique ID used to identify a specific batch settlement                
                 + "\r\nDowngradeCode : " + _BCResponse.DowngradeCode //Indicates downgrade reason.
                 + "\r\nFeeAmount : " + _BCResponse.FeeAmount //Fee amount charged for the transaction. 
@@ -1582,6 +1598,7 @@ namespace SampleCode
                 if (_BCResponse.StatusMessage != null) strResponseMessage = strResponseMessage + "\r\nStatus Message : " + _BCResponse.StatusMessage;
                 //Note Optional data about the batch
                 if (_BCResponse.BatchId != null) strResponseMessage = strResponseMessage + "\r\nBatch Id : " + _BCResponse.BatchId;
+                if (_BCResponse.PrepaidCard != PrepaidCard.NotSet) strResponseMessage = strResponseMessage + "\r\nPrepaidCard : " + _BCResponse.PrepaidCard; // Enumeration of NotSet, Yes, No.  Indicates if this is a pre-paid card
                 if (_BCResponse.TransactionSummaryData != null)
                 {
                     if (_BCResponse.TransactionSummaryData.CashBackTotals != null) strResponseMessage = strResponseMessage + "\r\nCash Back Totals \r\n  Count : " + _BCResponse.TransactionSummaryData.CashBackTotals.Count + "\r\n  Net Amount : " + _BCResponse.TransactionSummaryData.CashBackTotals.NetAmount;
@@ -1878,6 +1895,16 @@ namespace SampleCode
         {
             get { return _sessionToken; }
             set { _sessionToken = value; }
+        }
+        public string DelegatedSessionToken
+        {
+            get { return _delegatedSessionToken; }
+            set { _delegatedSessionToken = value; }
+        }
+        public string DelegatedServiceKey
+        {
+            get { return _delegatedServiceKey; }
+            set { _delegatedServiceKey = value; }
         }
         public string IdentityToken
         {

@@ -33,6 +33,11 @@ namespace SampleCode
             this.cmdRetrieveServiceInformation = new System.Windows.Forms.Button();
             this.cmdSaveApplicationConfiguration = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ckBoxDelegatedSignOn = new System.Windows.Forms.CheckBox();
+            this.txtDelegatedServiceKey = new System.Windows.Forms.TextBox();
+            this.lblDelegatedSK = new System.Windows.Forms.Label();
+            this.lblUseDelegatedSignOn = new System.Windows.Forms.Label();
+            this.lnkLblDelegatedSignOn = new System.Windows.Forms.LinkLabel();
             this.linkPreparingAppToTransact = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.CboWorkFlowIdsByServiceId = new System.Windows.Forms.ComboBox();
@@ -226,6 +231,11 @@ namespace SampleCode
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.ckBoxDelegatedSignOn);
+            this.groupBox1.Controls.Add(this.txtDelegatedServiceKey);
+            this.groupBox1.Controls.Add(this.lblDelegatedSK);
+            this.groupBox1.Controls.Add(this.lblUseDelegatedSignOn);
+            this.groupBox1.Controls.Add(this.lnkLblDelegatedSignOn);
             this.groupBox1.Controls.Add(this.linkPreparingAppToTransact);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.CboWorkFlowIdsByServiceId);
@@ -258,10 +268,61 @@ namespace SampleCode
             this.groupBox1.Controls.Add(this.cmdSaveApplicationConfiguration);
             this.groupBox1.Location = new System.Drawing.Point(20, 15);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(790, 660);
+            this.groupBox1.Size = new System.Drawing.Size(807, 660);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Preparing the Application to Transact";
+            // 
+            // ckBoxDelegatedSignOn
+            // 
+            this.ckBoxDelegatedSignOn.AutoSize = true;
+            this.ckBoxDelegatedSignOn.Location = new System.Drawing.Point(439, 100);
+            this.ckBoxDelegatedSignOn.Name = "ckBoxDelegatedSignOn";
+            this.ckBoxDelegatedSignOn.Size = new System.Drawing.Size(15, 14);
+            this.ckBoxDelegatedSignOn.TabIndex = 136;
+            this.ckBoxDelegatedSignOn.UseVisualStyleBackColor = true;
+            this.ckBoxDelegatedSignOn.CheckedChanged += new System.EventHandler(this.ckBoxDelegatedSignOn_CheckedChanged);
+            // 
+            // txtDelegatedServiceKey
+            // 
+            this.txtDelegatedServiceKey.Location = new System.Drawing.Point(321, 130);
+            this.txtDelegatedServiceKey.Name = "txtDelegatedServiceKey";
+            this.txtDelegatedServiceKey.Size = new System.Drawing.Size(145, 20);
+            this.txtDelegatedServiceKey.TabIndex = 135;
+            this.txtDelegatedServiceKey.TextChanged += new System.EventHandler(this.txtDelegatedServiceKey_TextChanged);
+            // 
+            // lblDelegatedSK
+            // 
+            this.lblDelegatedSK.AutoSize = true;
+            this.lblDelegatedSK.Location = new System.Drawing.Point(318, 116);
+            this.lblDelegatedSK.Name = "lblDelegatedSK";
+            this.lblDelegatedSK.Size = new System.Drawing.Size(113, 13);
+            this.lblDelegatedSK.TabIndex = 134;
+            this.lblDelegatedSK.Text = "Delegated ServiceKey";
+            // 
+            // lblUseDelegatedSignOn
+            // 
+            this.lblUseDelegatedSignOn.AutoSize = true;
+            this.lblUseDelegatedSignOn.Location = new System.Drawing.Point(318, 101);
+            this.lblUseDelegatedSignOn.Name = "lblUseDelegatedSignOn";
+            this.lblUseDelegatedSignOn.Size = new System.Drawing.Size(116, 13);
+            this.lblUseDelegatedSignOn.TabIndex = 132;
+            this.lblUseDelegatedSignOn.Text = "Use Delegated SignOn";
+            // 
+            // lnkLblDelegatedSignOn
+            // 
+            this.lnkLblDelegatedSignOn.AutoSize = true;
+            this.lnkLblDelegatedSignOn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lnkLblDelegatedSignOn.Image = ((System.Drawing.Image)(resources.GetObject("lnkLblDelegatedSignOn.Image")));
+            this.lnkLblDelegatedSignOn.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.lnkLblDelegatedSignOn.Location = new System.Drawing.Point(458, 96);
+            this.lnkLblDelegatedSignOn.Margin = new System.Windows.Forms.Padding(0);
+            this.lnkLblDelegatedSignOn.MinimumSize = new System.Drawing.Size(20, 20);
+            this.lnkLblDelegatedSignOn.Name = "lnkLblDelegatedSignOn";
+            this.lnkLblDelegatedSignOn.Size = new System.Drawing.Size(20, 20);
+            this.lnkLblDelegatedSignOn.TabIndex = 131;
+            this.lnkLblDelegatedSignOn.Tag = "Learn more about \"Delegated Sign On\"";
+            this.lnkLblDelegatedSignOn.Click += new System.EventHandler(this.lnkLblDelegatedSignOn_Click);
             // 
             // linkPreparingAppToTransact
             // 
@@ -389,7 +450,7 @@ namespace SampleCode
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(465, 97);
+            this.label22.Location = new System.Drawing.Point(481, 97);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(189, 13);
             this.label22.TabIndex = 120;
@@ -398,7 +459,7 @@ namespace SampleCode
             // txtAboutTheService
             // 
             this.txtAboutTheService.BackColor = System.Drawing.SystemColors.Menu;
-            this.txtAboutTheService.Location = new System.Drawing.Point(468, 113);
+            this.txtAboutTheService.Location = new System.Drawing.Point(484, 113);
             this.txtAboutTheService.Multiline = true;
             this.txtAboutTheService.Name = "txtAboutTheService";
             this.txtAboutTheService.ScrollBars = System.Windows.Forms.ScrollBars.Both;
@@ -1229,7 +1290,7 @@ namespace SampleCode
             this.lnkManageAccountById.Size = new System.Drawing.Size(20, 20);
             this.lnkManageAccountById.TabIndex = 132;
             this.lnkManageAccountById.Tag = "Learn more about \"Sign On\"";
-            this.lnkManageAccountById.Click += new System.EventHandler(this.lnkManageAccountById_LinkClicked);
+            this.lnkManageAccountById.Click += new System.EventHandler(this.lnkManageAccountById_Click);
             // 
             // cmdManageAccountById
             // 
@@ -1266,7 +1327,7 @@ namespace SampleCode
             this.lnkManageAccount.Size = new System.Drawing.Size(20, 20);
             this.lnkManageAccount.TabIndex = 126;
             this.lnkManageAccount.Tag = "Learn more about \"Sign On\"";
-            this.lnkManageAccount.Click += new System.EventHandler(this.lnkManageAccount_LinkClicked);
+            this.lnkManageAccount.Click += new System.EventHandler(this.lnkManageAccount_Click);
             // 
             // txtCredPassword
             // 
@@ -1995,7 +2056,7 @@ namespace SampleCode
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox txtIdentityToken;
+        internal System.Windows.Forms.TextBox txtIdentityToken;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
@@ -2139,6 +2200,13 @@ namespace SampleCode
         private System.Windows.Forms.CheckBox ChkOnClickDisplayTxnMessage;
         private System.Windows.Forms.LinkLabel linkPreparingAppToTransact;
         private System.Windows.Forms.LinkLabel lnkTxnProcessing;
+        private System.Windows.Forms.Label lblUseDelegatedSignOn;
+        private System.Windows.Forms.LinkLabel lnkLblDelegatedSignOn;
+        //internal static System.Windows.Forms.CheckBox ckBoxDelegatedSignOn;
+        private System.Windows.Forms.Label lblDelegatedSK;
+        private System.Windows.Forms.CheckBox ckBoxDelegatedSignOn;
+        private System.Windows.Forms.TextBox txtDelegatedServiceKey;
+        //internal static System.Windows.Forms.TextBox txtDelegatedServiceKey;
     }
 }
 
