@@ -287,7 +287,6 @@ namespace SampleCode
             // 
             // txtDelegatedServiceKey
             // 
-            this.txtDelegatedServiceKey.Enabled = false;
             this.txtDelegatedServiceKey.Location = new System.Drawing.Point(566, 98);
             this.txtDelegatedServiceKey.Name = "txtDelegatedServiceKey";
             this.txtDelegatedServiceKey.Size = new System.Drawing.Size(198, 20);
@@ -1009,7 +1008,7 @@ namespace SampleCode
             this.tbPreparingApplicationToTransact.Location = new System.Drawing.Point(4, 22);
             this.tbPreparingApplicationToTransact.Name = "tbPreparingApplicationToTransact";
             this.tbPreparingApplicationToTransact.Padding = new System.Windows.Forms.Padding(3);
-            this.tbPreparingApplicationToTransact.Size = new System.Drawing.Size(845, 712);
+            this.tbPreparingApplicationToTransact.Size = new System.Drawing.Size(845, 762);
             this.tbPreparingApplicationToTransact.TabIndex = 1;
             this.tbPreparingApplicationToTransact.Text = "Preparing the Application to Transact";
             this.tbPreparingApplicationToTransact.UseVisualStyleBackColor = true;

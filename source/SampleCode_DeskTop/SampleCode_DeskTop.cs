@@ -2417,13 +2417,13 @@ namespace SampleCode
 
             if (ConfigurationSettings.AppSettings["DelegatedSignOnSupported"] == "true")
             {
-                txtDelegatedServiceKey.Enabled = true;
+                txtDelegatedServiceKey.Visible = true;
                 lnkLblDelegatedSignOn.Visible = true;
                 ckBoxDelegatedSignOn.Visible = true;
             }
             if (ConfigurationSettings.AppSettings["DelegatedSignOnSupported"] == "false")
             {
-                txtDelegatedServiceKey.Enabled = false;
+                txtDelegatedServiceKey.Visible = false;
                 lnkLblDelegatedSignOn.Visible = false;
                 ckBoxDelegatedSignOn.Visible = false;
             }
