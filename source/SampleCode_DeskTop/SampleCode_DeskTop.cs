@@ -505,7 +505,10 @@ namespace SampleCode
                         if (ChkMultiplePartialCapture.Checked)
                         {
                             //Let's demonstrate capturing two multipartialCaptures. Note that multipartialCapture requries the BankcarCapturePro() object
-                            BCDifferenceData.Amount = 5.00M;
+                            BCDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
+                            if (TxtTip.Text.Length > 0)
+                                if (Convert.ToDecimal(TxtTip.Text) > 0)
+                                    BCDifferenceData.TipAmount = Convert.ToDecimal(TxtTip.Text);
                             BCDifferenceData.MultiplePartialCapture = true;
 
                             processResponse(Helper.ProcessBCPTransaction(TransactionType.Capture, null, BCDifferenceData, null, null, null, null, null, null, ChkAcknowledge.Checked, false));
@@ -514,8 +517,10 @@ namespace SampleCode
                         else
                         {
                             //For demonstrations let's show adding a two dollar tip
-                            BCDifferenceData.Amount = 12.00M;
-                            BCDifferenceData.TipAmount = 2.00M;
+                            BCDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
+                            if (TxtTip.Text.Length > 0)
+                                if (Convert.ToDecimal(TxtTip.Text) > 0)
+                                    BCDifferenceData.TipAmount = Convert.ToDecimal(TxtTip.Text);
 
                             BCDifferenceData.MultiplePartialCapture = false;
                             processResponse(Helper.ProcessBCPTransaction(TransactionType.Capture, null, BCDifferenceData, null, null, null, null, null, null, ChkAcknowledge.Checked, false));
@@ -540,7 +545,7 @@ namespace SampleCode
                         SVDifferenceData.TransactionId = strAuthTxn;
 
 
-                        SVDifferenceData.Amount = 12.00M;
+                        SVDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
                         //SVDifferenceData.TipAmount = 2.00M;
 
                         processResponse(Helper.ProcessSVATransaction(TransactionType.Capture, null, null, SVDifferenceData, null, null, ChkAcknowledge.Checked));
@@ -706,7 +711,7 @@ namespace SampleCode
                         foreach (ResponseDetails _RD in txnsToProcess)
                         {
                             BCRDifferenceData.TransactionId = _RD.Response.TransactionId;
-                            BCRDifferenceData.Amount = 8.00M;
+                            BCRDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
                             processResponse(Helper.ProcessBCPTransaction(TransactionType.ReturnById, null, null, null, BCRDifferenceData, null, null, null, null, ChkAcknowledge.Checked, false));
                         }
                     }
@@ -731,7 +736,7 @@ namespace SampleCode
                         {
                             //Let's return the transaction
                             BCRDifferenceData.TransactionId = _RD.Response.TransactionId;
-                            BCRDifferenceData.Amount = 8.00M;
+                            BCRDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
                             processResponse(Helper.ProcessBCPTransaction(TransactionType.ReturnById, null, null, null, BCRDifferenceData, null, null, null, null, ChkAcknowledge.Checked, false));
                         }
                     }
@@ -751,7 +756,7 @@ namespace SampleCode
                     List<ResponseDetails> response = new List<ResponseDetails>();
                     StoredValueReturn SVRDifferenceData = new StoredValueReturn();
                     string strTransactionId = "";
-                    SVtransaction.TransactionData.Amount = 84.00M;
+                    SVtransaction.TransactionData.Amount = Convert.ToDecimal(TxtAmount.Text);
 
                     if (_svas.Tenders.CreditAuthorizeSupport == CreditAuthorizeSupportType.AuthorizeAndCaptureOnly)
                     {
@@ -767,7 +772,7 @@ namespace SampleCode
 
                         //Now Let's return the transaction
                         SVRDifferenceData.TransactionId = strTransactionId;
-                        SVRDifferenceData.Amount = 36.00M;
+                        SVRDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
                         response = Helper.ProcessSVATransaction(TransactionType.ReturnById, null, null, null, SVRDifferenceData, null, ChkAcknowledge.Checked);
                         if (response.Count < 1) { return; }
                         ChkLstTransactionsProcessed.Items.Add(response[0]);
@@ -834,33 +839,37 @@ namespace SampleCode
 
             Cursor = Cursors.WaitCursor;
 
+            //First verify if all transactions selected are "Authorize" transactions
+            List<ResponseDetails> txnsToProcess = new List<ResponseDetails>();
+            foreach (object itemChecked in ChkLstTransactionsProcessed.CheckedItems)
+            {
+                if (((ResponseDetails)(itemChecked)).TransactionType != TransactionType.Authorize.ToString() & ((ResponseDetails)(itemChecked)).TransactionType != TransactionType.AuthorizeAndCapture.ToString())
+                {
+                    MessageBox.Show("All selected messages must be of type Authorize or AuthorizeAndCapture");
+                    Cursor = Cursors.Default;
+                    return;
+                }
+                txnsToProcess.Add(((ResponseDetails)(itemChecked)));
+            }
+
             List<ResponseDetails> response = new List<ResponseDetails>();
             if (_bcs != null) //Process a BankCard Transaction
             {
                 try
                 {
-                    BankcardTransaction BCtransaction = SetBankCardTxnData();
-                    Adjust aTransaction = new Adjust();
+                    //Now process each message selected
+                    foreach (ResponseDetails _RD in txnsToProcess)
+                    {
+                        Adjust aTransaction = new Adjust();
+                        //Let's Undo or Void the transaction
+                        aTransaction.TransactionId = _RD.Response.TransactionId;
+                        aTransaction.Amount = Convert.ToDecimal(TxtAmount.Text);
+                        if (TxtTip.Text.Length > 0)
+                            if (Convert.ToDecimal(TxtTip.Text) > 0)
+                                aTransaction.TipAmount = Convert.ToDecimal(TxtTip.Text);
 
-                    if (_bcs.Tenders.CreditAuthorizeSupport == CreditAuthorizeSupportType.AuthorizeOnly)
-                    {//For Terminal Capture use Authorize
-                        response = Helper.ProcessBCPTransaction(TransactionType.Authorize, BCtransaction, null, null, null, null, null, null, null, ChkAcknowledge.Checked, ChkUserWorkflowId.Checked);
+                        processResponse(Helper.ProcessBCPTransaction(TransactionType.Adjust, null, null, null, null, aTransaction, null, null, null, ChkAcknowledge.Checked, false));
                     }
-                    else
-                    {//For Host Capture use AuthorizeAndCapture
-                        response = Helper.ProcessBCPTransaction(TransactionType.AuthorizeAndCapture, BCtransaction, null, null, null, null, null, null, null, ChkAcknowledge.Checked, ChkUserWorkflowId.Checked);
-                    }
-                    if (response.Count < 1) { return; }
-                    ChkLstTransactionsProcessed.Items.Add(response[0]);
-                    BankcardTransactionResponse BCR = (BankcardTransactionResponse)response[0].Response; 
-                    string strTransactionId = BCR.TransactionId;
-
-                    //Now Let's Adjust the transaction
-                    aTransaction.TransactionId = strTransactionId;
-                    aTransaction.Amount = 12.00M;
-                    response = Helper.ProcessBCPTransaction(TransactionType.Adjust, null, null, null, null, aTransaction, null, null, null, ChkAcknowledge.Checked, false);
-                    if (response.Count < 1) { return; }
-                    ChkLstTransactionsProcessed.Items.Add(response[0]);
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message); }
                 finally { Cursor = Cursors.Default; }
@@ -907,8 +916,13 @@ namespace SampleCode
                         BankcardUndo uTransaction = new BankcardUndo();
                         //Let's Undo or Void the transaction
                         uTransaction.TransactionId = _RD.Response.TransactionId;
+                        
                         if (chkProcessAsPINDebitTxn.Checked)
                             uTransaction.PINDebitReason = PINDebitUndoReason.ResponseTimeout;
+
+                        if (ChkForceVoid.Checked)
+                            uTransaction.ForceVoid = true;
+
                         processResponse(Helper.ProcessBCPTransaction(TransactionType.Undo, null, null, null, null, null, uTransaction, null, null, ChkAcknowledge.Checked, false));
                     }
                 }
@@ -1181,7 +1195,7 @@ namespace SampleCode
 
                     StoredValueManage SVManage = new StoredValueManage();
                     SVManage.TransactionId = strTransactionId;
-                    SVManage.Amount = 10.00M;
+                    SVManage.Amount = Convert.ToDecimal(TxtAmount.Text);
 
                     if (rdoActivate.Checked)
                         SVManage.OperationType = OperationType.Activate;
@@ -1500,6 +1514,8 @@ namespace SampleCode
             chkProcessAsPINDebitTxn.Enabled = false;
             ChkProcessAsPINLessDebit.Enabled = false;
             ChkMagensaAuthorizeAndCapture.Enabled = false;
+            ChkAllowPartialApprovals.Enabled = false;
+            ChkForceVoid.Enabled = false;
 
             rdoActivate.Enabled = false;
             rdoDeactivate.Enabled = false;
@@ -1799,6 +1815,11 @@ namespace SampleCode
             //((int)(100 * amount)) * 0.01m;
 
             #endregion Ways to Convert to a decimal with two decimals
+
+            if (TxtTip.Text.Length > 0)
+                if (Convert.ToDecimal(TxtTip.Text) > 0)
+                    TxnData.TipAmount = Convert.ToDecimal(TxtTip.Text);
+
             TxnData.CurrencyCode = TypeISOCurrencyCodeA3.USD;
             try { TxnData.EntryMode = (EntryMode)Enum.Parse(typeof(EntryMode), ConfigurationSettings.AppSettings["TxnData_EntryMode"]); }catch { }
             try { TxnData.CustomerPresent = (CustomerPresent)Enum.Parse(typeof(CustomerPresent), ConfigurationSettings.AppSettings["TxnData_CustomerPresent"]); }catch { }
@@ -1821,6 +1842,10 @@ namespace SampleCode
             //Used for Ecommerce/MOTO
             TxnData.OrderNumber = "123543"; //This values must be unique for each transaction. OrderNum should never be zero
             //TxnData.GoodsType = GoodsType.PhysicalGoods;
+
+            //Check to see if partial approval should be allowed. To test a value of *.59 can be used
+            if (ChkAllowPartialApprovals.Checked)
+                TxnData.PartialApprovalCapable = PartialApprovalSupportType.Capable;
 
             TxnData.TransactionDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffzzz");
 
@@ -2220,7 +2245,7 @@ namespace SampleCode
             ECKTransaction.CustomerData.BillingData.Name.Last = "Smith";
 
             //Transaction Data
-            ECKTransaction.TransactionData.Amount = 14.00M;
+            ECKTransaction.TransactionData.Amount = Convert.ToDecimal(TxtAmount.Text);
             //ECKTransaction.TransactionData.CurrencyCode = schemas.ipcommerce.com.Ipc.General.WCF.Contracts.Common.External.Txn.TypeISOCurrencyCodeA3.USD;
             ECKTransaction.TransactionData.EffectiveDate = DateTime.UtcNow; //Specifies the effective date of the transaction. Required.
             ECKTransaction.TransactionData.IsRecurring = false; //Indicates whether the transaction is recurring. Conditional, required if SECCode = 'WEB'.
@@ -2249,7 +2274,7 @@ namespace SampleCode
             SVATransaction.TransactionData = new StoredValueTransactionData();
 
             //Transaction Data
-            SVATransaction.TransactionData.Amount = 14.00M;
+            SVATransaction.TransactionData.Amount = Convert.ToDecimal(TxtAmount.Text);
             SVATransaction.TransactionData.CurrencyCode = TypeISOCurrencyCodeA3.USD;
             SVATransaction.TransactionData.EmployeeId = "122";
             
@@ -2392,17 +2417,13 @@ namespace SampleCode
 
             if (ConfigurationSettings.AppSettings["DelegatedSignOnSupported"] == "true")
             {
-                txtDelegatedServiceKey.Visible = true;
-                lblDelegatedSK.Visible = true;
-                lblUseDelegatedSignOn.Visible = true;
+                txtDelegatedServiceKey.Enabled = true;
                 lnkLblDelegatedSignOn.Visible = true;
                 ckBoxDelegatedSignOn.Visible = true;
             }
             if (ConfigurationSettings.AppSettings["DelegatedSignOnSupported"] == "false")
             {
-                txtDelegatedServiceKey.Visible = false;
-                lblDelegatedSK.Visible = false;
-                lblUseDelegatedSignOn.Visible = false;
+                txtDelegatedServiceKey.Enabled = false;
                 lnkLblDelegatedSignOn.Visible = false;
                 ckBoxDelegatedSignOn.Visible = false;
             }
@@ -2718,7 +2739,11 @@ namespace SampleCode
 
                         //Check to see if PINLess Debit supported
                         ChkProcessAsPINLessDebit.Enabled = (BCS.Tenders.PINlessDebit ? true : false);
-                        
+
+                        //Some service providers support partial approvals as well as forced void. Mainly Vantiv
+                        ChkAllowPartialApprovals.Enabled = true;
+                        ChkForceVoid.Enabled = true;
+
                         //Some service providers require Username and Password.
                         if (Helper.CredentialRequired())
                         {
@@ -3228,6 +3253,24 @@ namespace SampleCode
             }
         }
 
+        private void ckBoxDelegatedSignOn_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ckBoxDelegatedSignOn.Checked)
+            {
+                txtDelegatedServiceKey.Visible = true;
+            }
+            else
+            {
+                txtDelegatedServiceKey.Visible = false;
+                txtDelegatedServiceKey.Clear();
+            }
+        }
+
+        private void txtDelegatedServiceKey_TextChanged(object sender, EventArgs e)
+        {
+            Helper.ServiceKey = txtDelegatedServiceKey.Text;
+        }
+
         #endregion END FORM EVENTS
 
         #region Local Classes
@@ -3412,25 +3455,5 @@ namespace SampleCode
             MessageBox.Show(Helper.ProcessResponse(ref rdoActivate));//Pass as reference so we can extract more values from the response
         }
 
-        private void ckBoxDelegatedSignOn_CheckedChanged(object sender, EventArgs e)
-        {
-            if (ckBoxDelegatedSignOn.Checked)
-            {
-                txtDelegatedServiceKey.Visible = true;
-                lblDelegatedSK.Visible = true;
-            }
-            else
-            {
-                txtDelegatedServiceKey.Visible = false;
-                lblDelegatedSK.Visible = false;
-                txtDelegatedServiceKey.Clear();
-            }
-
-        }
-
-        private void txtDelegatedServiceKey_TextChanged(object sender, EventArgs e)
-        {
-            Helper.ServiceKey = txtDelegatedServiceKey.Text;
-        }
     }
 }

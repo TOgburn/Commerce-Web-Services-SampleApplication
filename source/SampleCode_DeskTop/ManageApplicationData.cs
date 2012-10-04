@@ -149,6 +149,19 @@ namespace SampleCode
             txtVendorId.Text = AD.VendorId;
         }
 
+        private void CmdGetApplicationData_Click(object sender, EventArgs e)
+        {
+            if(txtApplicationProfileId.Text.Length > 0)
+            {
+                _Helper.ApplicationProfileId = txtApplicationProfileId.Text;
+                GetApplicationData();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid Application Profile id");
+            }
+        }
+
         private void cmdSave_Click(object sender, EventArgs e)
         {
             if (txtApplicationProfileId.Text.Length > 0)
@@ -319,6 +332,12 @@ namespace SampleCode
             txtSoftwareVersion.Text = "1.0";
             txtSoftwareVersionDate.Text = "2010/05/10";
         }
+
+        private void lnkServiceKey_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start("https://mylab.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/ManagingAppConfigData/index.aspx");
+        }
+
 
 
     }

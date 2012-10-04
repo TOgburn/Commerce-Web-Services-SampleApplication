@@ -28,11 +28,11 @@ namespace SampleCode
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageApplicationData));
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdClose = new System.Windows.Forms.Button();
             this.txtPTLSSocketId = new System.Windows.Forms.TextBox();
-            this.applicationProfileId = new System.Windows.Forms.Label();
             this.txtApplicationProfileId = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -59,36 +59,41 @@ namespace SampleCode
             this.cboReadCapability = new System.Windows.Forms.ComboBox();
             this.cmdPopulateTestValues = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.CboEncryptionType = new System.Windows.Forms.ComboBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.TxtDeviceSerialNumber = new System.Windows.Forms.TextBox();
-            this.label14 = new System.Windows.Forms.Label();
-            this.CboEncryptionType = new System.Windows.Forms.ComboBox();
+            this.GrpGetApplicationData = new System.Windows.Forms.GroupBox();
+            this.lnkServiceKey = new System.Windows.Forms.LinkLabel();
+            this.label15 = new System.Windows.Forms.Label();
+            this.CmdGetApplicationData = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
+            this.GrpGetApplicationData.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdDelete
             // 
-            this.cmdDelete.Location = new System.Drawing.Point(184, 36);
+            this.cmdDelete.Location = new System.Drawing.Point(278, 73);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(162, 23);
             this.cmdDelete.TabIndex = 1;
-            this.cmdDelete.Text = "Delete this ApplicaitonProfileId";
+            this.cmdDelete.Text = "Delete ApplicaitonProfileId";
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // cmdSave
             // 
-            this.cmdSave.Location = new System.Drawing.Point(302, 526);
+            this.cmdSave.Location = new System.Drawing.Point(278, 44);
             this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(75, 23);
+            this.cmdSave.Size = new System.Drawing.Size(162, 23);
             this.cmdSave.TabIndex = 2;
-            this.cmdSave.Text = "Save";
+            this.cmdSave.Text = "Save Application Data";
             this.cmdSave.UseVisualStyleBackColor = true;
             this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
             // 
             // cmdClose
             // 
-            this.cmdClose.Location = new System.Drawing.Point(383, 526);
+            this.cmdClose.Location = new System.Drawing.Point(377, 560);
             this.cmdClose.Name = "cmdClose";
             this.cmdClose.Size = new System.Drawing.Size(75, 23);
             this.cmdClose.TabIndex = 3;
@@ -105,21 +110,12 @@ namespace SampleCode
             this.txtPTLSSocketId.Size = new System.Drawing.Size(259, 51);
             this.txtPTLSSocketId.TabIndex = 39;
             // 
-            // applicationProfileId
-            // 
-            this.applicationProfileId.AutoSize = true;
-            this.applicationProfileId.Location = new System.Drawing.Point(27, 22);
-            this.applicationProfileId.Name = "applicationProfileId";
-            this.applicationProfileId.Size = new System.Drawing.Size(97, 13);
-            this.applicationProfileId.TabIndex = 6;
-            this.applicationProfileId.Text = "ApplicationProfileId";
-            // 
             // txtApplicationProfileId
             // 
-            this.txtApplicationProfileId.Location = new System.Drawing.Point(27, 38);
+            this.txtApplicationProfileId.BackColor = System.Drawing.SystemColors.Window;
+            this.txtApplicationProfileId.Location = new System.Drawing.Point(124, 17);
             this.txtApplicationProfileId.Name = "txtApplicationProfileId";
-            this.txtApplicationProfileId.ReadOnly = true;
-            this.txtApplicationProfileId.Size = new System.Drawing.Size(149, 20);
+            this.txtApplicationProfileId.Size = new System.Drawing.Size(88, 20);
             this.txtApplicationProfileId.TabIndex = 7;
             // 
             // label2
@@ -318,7 +314,7 @@ namespace SampleCode
             // 
             // cmdPopulateTestValues
             // 
-            this.cmdPopulateTestValues.Location = new System.Drawing.Point(299, 10);
+            this.cmdPopulateTestValues.Location = new System.Drawing.Point(293, 10);
             this.cmdPopulateTestValues.Name = "cmdPopulateTestValues";
             this.cmdPopulateTestValues.Size = new System.Drawing.Size(147, 23);
             this.cmdPopulateTestValues.TabIndex = 45;
@@ -357,12 +353,30 @@ namespace SampleCode
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label13);
             this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Location = new System.Drawing.Point(12, 80);
+            this.groupBox1.Location = new System.Drawing.Point(12, 122);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(446, 440);
+            this.groupBox1.Size = new System.Drawing.Size(446, 432);
             this.groupBox1.TabIndex = 46;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Application Data";
+            // 
+            // CboEncryptionType
+            // 
+            this.CboEncryptionType.FormattingEnabled = true;
+            this.CboEncryptionType.Location = new System.Drawing.Point(184, 167);
+            this.CboEncryptionType.Name = "CboEncryptionType";
+            this.CboEncryptionType.Size = new System.Drawing.Size(256, 21);
+            this.CboEncryptionType.TabIndex = 49;
+            this.CboEncryptionType.SelectedIndexChanged += new System.EventHandler(this.CboEncryptionType_SelectedIndexChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(15, 170);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(142, 13);
+            this.label14.TabIndex = 48;
+            this.label14.Text = "EncryptionType (Conditional)";
             // 
             // label1
             // 
@@ -381,42 +395,71 @@ namespace SampleCode
             this.TxtDeviceSerialNumber.Size = new System.Drawing.Size(256, 20);
             this.TxtDeviceSerialNumber.TabIndex = 47;
             // 
-            // label14
+            // GrpGetApplicationData
             // 
-            this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(15, 170);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(142, 13);
-            this.label14.TabIndex = 48;
-            this.label14.Text = "EncryptionType (Conditional)";
+            this.GrpGetApplicationData.Controls.Add(this.lnkServiceKey);
+            this.GrpGetApplicationData.Controls.Add(this.label15);
+            this.GrpGetApplicationData.Controls.Add(this.CmdGetApplicationData);
+            this.GrpGetApplicationData.Controls.Add(this.txtApplicationProfileId);
+            this.GrpGetApplicationData.Controls.Add(this.cmdDelete);
+            this.GrpGetApplicationData.Controls.Add(this.cmdSave);
+            this.GrpGetApplicationData.Location = new System.Drawing.Point(12, 12);
+            this.GrpGetApplicationData.Name = "GrpGetApplicationData";
+            this.GrpGetApplicationData.Size = new System.Drawing.Size(446, 104);
+            this.GrpGetApplicationData.TabIndex = 47;
+            this.GrpGetApplicationData.TabStop = false;
+            this.GrpGetApplicationData.Text = "Managing Application Configuration Data";
             // 
-            // CboEncryptionType
+            // lnkServiceKey
             // 
-            this.CboEncryptionType.FormattingEnabled = true;
-            this.CboEncryptionType.Location = new System.Drawing.Point(184, 167);
-            this.CboEncryptionType.Name = "CboEncryptionType";
-            this.CboEncryptionType.Size = new System.Drawing.Size(256, 21);
-            this.CboEncryptionType.TabIndex = 49;
-            this.CboEncryptionType.SelectedIndexChanged += new System.EventHandler(this.CboEncryptionType_SelectedIndexChanged);
+            this.lnkServiceKey.AutoSize = true;
+            this.lnkServiceKey.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lnkServiceKey.Image = ((System.Drawing.Image)(resources.GetObject("lnkServiceKey.Image")));
+            this.lnkServiceKey.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.lnkServiceKey.Location = new System.Drawing.Point(215, 17);
+            this.lnkServiceKey.Margin = new System.Windows.Forms.Padding(0);
+            this.lnkServiceKey.MinimumSize = new System.Drawing.Size(20, 20);
+            this.lnkServiceKey.Name = "lnkServiceKey";
+            this.lnkServiceKey.Size = new System.Drawing.Size(20, 20);
+            this.lnkServiceKey.TabIndex = 124;
+            this.lnkServiceKey.Tag = "Learn more about \"Sign On\"";
+            this.lnkServiceKey.Click += new System.EventHandler(this.lnkServiceKey_Click);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(15, 20);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(103, 13);
+            this.label15.TabIndex = 8;
+            this.label15.Text = "Application Profile Id";
+            // 
+            // CmdGetApplicationData
+            // 
+            this.CmdGetApplicationData.Location = new System.Drawing.Point(278, 15);
+            this.CmdGetApplicationData.Name = "CmdGetApplicationData";
+            this.CmdGetApplicationData.Size = new System.Drawing.Size(162, 23);
+            this.CmdGetApplicationData.TabIndex = 0;
+            this.CmdGetApplicationData.Text = "Get Application Data";
+            this.CmdGetApplicationData.UseVisualStyleBackColor = true;
+            this.CmdGetApplicationData.Click += new System.EventHandler(this.CmdGetApplicationData_Click);
             // 
             // ManageApplicationData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 564);
+            this.ClientSize = new System.Drawing.Size(470, 595);
+            this.Controls.Add(this.GrpGetApplicationData);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.txtApplicationProfileId);
-            this.Controls.Add(this.cmdSave);
-            this.Controls.Add(this.applicationProfileId);
             this.Controls.Add(this.cmdClose);
-            this.Controls.Add(this.cmdDelete);
             this.Name = "ManageApplicationData";
             this.Text = "Manage Application Configuration Data - CWS 1.17.17";
             this.Load += new System.EventHandler(this.ManageApplicationData_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.GrpGetApplicationData.ResumeLayout(false);
+            this.GrpGetApplicationData.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -426,7 +469,6 @@ namespace SampleCode
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdClose;
         private System.Windows.Forms.TextBox txtPTLSSocketId;
-        private System.Windows.Forms.Label applicationProfileId;
         private System.Windows.Forms.TextBox txtApplicationProfileId;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
@@ -457,5 +499,9 @@ namespace SampleCode
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox TxtDeviceSerialNumber;
         private System.Windows.Forms.ComboBox CboEncryptionType;
+        private System.Windows.Forms.GroupBox GrpGetApplicationData;
+        private System.Windows.Forms.Button CmdGetApplicationData;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.LinkLabel lnkServiceKey;
     }
 }

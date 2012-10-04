@@ -35,15 +35,12 @@ namespace SampleCode
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ckBoxDelegatedSignOn = new System.Windows.Forms.CheckBox();
             this.txtDelegatedServiceKey = new System.Windows.Forms.TextBox();
-            this.lblDelegatedSK = new System.Windows.Forms.Label();
-            this.lblUseDelegatedSignOn = new System.Windows.Forms.Label();
             this.lnkLblDelegatedSignOn = new System.Windows.Forms.LinkLabel();
             this.linkPreparingAppToTransact = new System.Windows.Forms.LinkLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.CboWorkFlowIdsByServiceId = new System.Windows.Forms.ComboBox();
             this.cmdSignOnWithToken = new System.Windows.Forms.Button();
             this.picArrow = new System.Windows.Forms.PictureBox();
-            this.lnkManageMerchantProfiles = new System.Windows.Forms.LinkLabel();
             this.lnkRetrieveServiceInformation = new System.Windows.Forms.LinkLabel();
             this.lnkManageApplicationData = new System.Windows.Forms.LinkLabel();
             this.lnkSignOnWithToken = new System.Windows.Forms.LinkLabel();
@@ -61,6 +58,7 @@ namespace SampleCode
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.cmdAddNewProfile = new System.Windows.Forms.Button();
             this.cmdUpdateProfile = new System.Windows.Forms.Button();
+            this.lnkManageMerchantProfiles = new System.Windows.Forms.LinkLabel();
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
@@ -184,6 +182,10 @@ namespace SampleCode
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.lnkOnlineDocumentation = new System.Windows.Forms.LinkLabel();
             this.tmrServiceArrow = new System.Windows.Forms.Timer(this.components);
+            this.TxtTip = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.ChkForceVoid = new System.Windows.Forms.CheckBox();
+            this.ChkAllowPartialApprovals = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picArrow)).BeginInit();
             this.groupBox10.SuspendLayout();
@@ -233,15 +235,12 @@ namespace SampleCode
             // 
             this.groupBox1.Controls.Add(this.ckBoxDelegatedSignOn);
             this.groupBox1.Controls.Add(this.txtDelegatedServiceKey);
-            this.groupBox1.Controls.Add(this.lblDelegatedSK);
-            this.groupBox1.Controls.Add(this.lblUseDelegatedSignOn);
             this.groupBox1.Controls.Add(this.lnkLblDelegatedSignOn);
             this.groupBox1.Controls.Add(this.linkPreparingAppToTransact);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.CboWorkFlowIdsByServiceId);
             this.groupBox1.Controls.Add(this.cmdSignOnWithToken);
             this.groupBox1.Controls.Add(this.picArrow);
-            this.groupBox1.Controls.Add(this.lnkManageMerchantProfiles);
             this.groupBox1.Controls.Add(this.lnkRetrieveServiceInformation);
             this.groupBox1.Controls.Add(this.lnkManageApplicationData);
             this.groupBox1.Controls.Add(this.lnkSignOnWithToken);
@@ -276,38 +275,24 @@ namespace SampleCode
             // ckBoxDelegatedSignOn
             // 
             this.ckBoxDelegatedSignOn.AutoSize = true;
-            this.ckBoxDelegatedSignOn.Location = new System.Drawing.Point(439, 100);
+            this.ckBoxDelegatedSignOn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ckBoxDelegatedSignOn.ForeColor = System.Drawing.Color.SteelBlue;
+            this.ckBoxDelegatedSignOn.Location = new System.Drawing.Point(317, 101);
             this.ckBoxDelegatedSignOn.Name = "ckBoxDelegatedSignOn";
-            this.ckBoxDelegatedSignOn.Size = new System.Drawing.Size(15, 14);
-            this.ckBoxDelegatedSignOn.TabIndex = 136;
+            this.ckBoxDelegatedSignOn.Size = new System.Drawing.Size(250, 17);
+            this.ckBoxDelegatedSignOn.TabIndex = 138;
+            this.ckBoxDelegatedSignOn.Text = "Use Delegated SignOn : Service Key ->";
             this.ckBoxDelegatedSignOn.UseVisualStyleBackColor = true;
             this.ckBoxDelegatedSignOn.CheckedChanged += new System.EventHandler(this.ckBoxDelegatedSignOn_CheckedChanged);
             // 
             // txtDelegatedServiceKey
             // 
-            this.txtDelegatedServiceKey.Location = new System.Drawing.Point(321, 130);
+            this.txtDelegatedServiceKey.Enabled = false;
+            this.txtDelegatedServiceKey.Location = new System.Drawing.Point(566, 98);
             this.txtDelegatedServiceKey.Name = "txtDelegatedServiceKey";
-            this.txtDelegatedServiceKey.Size = new System.Drawing.Size(145, 20);
-            this.txtDelegatedServiceKey.TabIndex = 135;
+            this.txtDelegatedServiceKey.Size = new System.Drawing.Size(198, 20);
+            this.txtDelegatedServiceKey.TabIndex = 137;
             this.txtDelegatedServiceKey.TextChanged += new System.EventHandler(this.txtDelegatedServiceKey_TextChanged);
-            // 
-            // lblDelegatedSK
-            // 
-            this.lblDelegatedSK.AutoSize = true;
-            this.lblDelegatedSK.Location = new System.Drawing.Point(318, 116);
-            this.lblDelegatedSK.Name = "lblDelegatedSK";
-            this.lblDelegatedSK.Size = new System.Drawing.Size(113, 13);
-            this.lblDelegatedSK.TabIndex = 134;
-            this.lblDelegatedSK.Text = "Delegated ServiceKey";
-            // 
-            // lblUseDelegatedSignOn
-            // 
-            this.lblUseDelegatedSignOn.AutoSize = true;
-            this.lblUseDelegatedSignOn.Location = new System.Drawing.Point(318, 101);
-            this.lblUseDelegatedSignOn.Name = "lblUseDelegatedSignOn";
-            this.lblUseDelegatedSignOn.Size = new System.Drawing.Size(116, 13);
-            this.lblUseDelegatedSignOn.TabIndex = 132;
-            this.lblUseDelegatedSignOn.Text = "Use Delegated SignOn";
             // 
             // lnkLblDelegatedSignOn
             // 
@@ -315,7 +300,7 @@ namespace SampleCode
             this.lnkLblDelegatedSignOn.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkLblDelegatedSignOn.Image = ((System.Drawing.Image)(resources.GetObject("lnkLblDelegatedSignOn.Image")));
             this.lnkLblDelegatedSignOn.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkLblDelegatedSignOn.Location = new System.Drawing.Point(458, 96);
+            this.lnkLblDelegatedSignOn.Location = new System.Drawing.Point(767, 98);
             this.lnkLblDelegatedSignOn.Margin = new System.Windows.Forms.Padding(0);
             this.lnkLblDelegatedSignOn.MinimumSize = new System.Drawing.Size(20, 20);
             this.lnkLblDelegatedSignOn.Name = "lnkLblDelegatedSignOn";
@@ -353,7 +338,7 @@ namespace SampleCode
             this.CboWorkFlowIdsByServiceId.FormattingEnabled = true;
             this.CboWorkFlowIdsByServiceId.Location = new System.Drawing.Point(69, 236);
             this.CboWorkFlowIdsByServiceId.Name = "CboWorkFlowIdsByServiceId";
-            this.CboWorkFlowIdsByServiceId.Size = new System.Drawing.Size(268, 21);
+            this.CboWorkFlowIdsByServiceId.Size = new System.Drawing.Size(256, 21);
             this.CboWorkFlowIdsByServiceId.TabIndex = 127;
             this.CboWorkFlowIdsByServiceId.SelectedIndexChanged += new System.EventHandler(this.CboWorkFlowIdsByServiceId_SelectedIndexChanged);
             // 
@@ -370,27 +355,12 @@ namespace SampleCode
             // picArrow
             // 
             this.picArrow.InitialImage = null;
-            this.picArrow.Location = new System.Drawing.Point(317, 192);
+            this.picArrow.Location = new System.Drawing.Point(329, 192);
             this.picArrow.Name = "picArrow";
             this.picArrow.Size = new System.Drawing.Size(149, 24);
             this.picArrow.TabIndex = 126;
             this.picArrow.TabStop = false;
             this.picArrow.Visible = false;
-            // 
-            // lnkManageMerchantProfiles
-            // 
-            this.lnkManageMerchantProfiles.AutoSize = true;
-            this.lnkManageMerchantProfiles.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lnkManageMerchantProfiles.Image = ((System.Drawing.Image)(resources.GetObject("lnkManageMerchantProfiles.Image")));
-            this.lnkManageMerchantProfiles.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkManageMerchantProfiles.Location = new System.Drawing.Point(323, 322);
-            this.lnkManageMerchantProfiles.Margin = new System.Windows.Forms.Padding(0);
-            this.lnkManageMerchantProfiles.MinimumSize = new System.Drawing.Size(20, 20);
-            this.lnkManageMerchantProfiles.Name = "lnkManageMerchantProfiles";
-            this.lnkManageMerchantProfiles.Size = new System.Drawing.Size(20, 20);
-            this.lnkManageMerchantProfiles.TabIndex = 125;
-            this.lnkManageMerchantProfiles.Tag = "Learn more about \"Sign On\"";
-            this.lnkManageMerchantProfiles.Click += new System.EventHandler(this.lnkManageMerchantProfiles_Click);
             // 
             // lnkRetrieveServiceInformation
             // 
@@ -398,7 +368,7 @@ namespace SampleCode
             this.lnkRetrieveServiceInformation.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkRetrieveServiceInformation.Image = ((System.Drawing.Image)(resources.GetObject("lnkRetrieveServiceInformation.Image")));
             this.lnkRetrieveServiceInformation.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkRetrieveServiceInformation.Location = new System.Drawing.Point(291, 156);
+            this.lnkRetrieveServiceInformation.Location = new System.Drawing.Point(289, 156);
             this.lnkRetrieveServiceInformation.Margin = new System.Windows.Forms.Padding(0);
             this.lnkRetrieveServiceInformation.MinimumSize = new System.Drawing.Size(20, 20);
             this.lnkRetrieveServiceInformation.Name = "lnkRetrieveServiceInformation";
@@ -413,7 +383,7 @@ namespace SampleCode
             this.lnkManageApplicationData.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkManageApplicationData.Image = ((System.Drawing.Image)(resources.GetObject("lnkManageApplicationData.Image")));
             this.lnkManageApplicationData.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkManageApplicationData.Location = new System.Drawing.Point(291, 127);
+            this.lnkManageApplicationData.Location = new System.Drawing.Point(289, 127);
             this.lnkManageApplicationData.Margin = new System.Windows.Forms.Padding(0);
             this.lnkManageApplicationData.MinimumSize = new System.Drawing.Size(20, 20);
             this.lnkManageApplicationData.Name = "lnkManageApplicationData";
@@ -428,7 +398,7 @@ namespace SampleCode
             this.lnkSignOnWithToken.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkSignOnWithToken.Image = ((System.Drawing.Image)(resources.GetObject("lnkSignOnWithToken.Image")));
             this.lnkSignOnWithToken.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkSignOnWithToken.Location = new System.Drawing.Point(291, 97);
+            this.lnkSignOnWithToken.Location = new System.Drawing.Point(289, 97);
             this.lnkSignOnWithToken.Margin = new System.Windows.Forms.Padding(0);
             this.lnkSignOnWithToken.MinimumSize = new System.Drawing.Size(20, 20);
             this.lnkSignOnWithToken.Name = "lnkSignOnWithToken";
@@ -450,7 +420,7 @@ namespace SampleCode
             // label22
             // 
             this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(481, 97);
+            this.label22.Location = new System.Drawing.Point(481, 140);
             this.label22.Name = "label22";
             this.label22.Size = new System.Drawing.Size(189, 13);
             this.label22.TabIndex = 120;
@@ -459,11 +429,11 @@ namespace SampleCode
             // txtAboutTheService
             // 
             this.txtAboutTheService.BackColor = System.Drawing.SystemColors.Menu;
-            this.txtAboutTheService.Location = new System.Drawing.Point(484, 113);
+            this.txtAboutTheService.Location = new System.Drawing.Point(484, 156);
             this.txtAboutTheService.Multiline = true;
             this.txtAboutTheService.Name = "txtAboutTheService";
             this.txtAboutTheService.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtAboutTheService.Size = new System.Drawing.Size(303, 527);
+            this.txtAboutTheService.Size = new System.Drawing.Size(303, 484);
             this.txtAboutTheService.TabIndex = 0;
             // 
             // groupBox10
@@ -558,9 +528,10 @@ namespace SampleCode
             // 
             this.groupBox4.Controls.Add(this.cmdAddNewProfile);
             this.groupBox4.Controls.Add(this.cmdUpdateProfile);
+            this.groupBox4.Controls.Add(this.lnkManageMerchantProfiles);
             this.groupBox4.Location = new System.Drawing.Point(43, 303);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(269, 52);
+            this.groupBox4.Size = new System.Drawing.Size(282, 52);
             this.groupBox4.TabIndex = 20;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Step 4: Manage Merchant Profiles";
@@ -586,6 +557,21 @@ namespace SampleCode
             this.cmdUpdateProfile.Text = "Update Profile";
             this.cmdUpdateProfile.UseVisualStyleBackColor = true;
             this.cmdUpdateProfile.Click += new System.EventHandler(this.cmdUpdateProfile_Click);
+            // 
+            // lnkManageMerchantProfiles
+            // 
+            this.lnkManageMerchantProfiles.AutoSize = true;
+            this.lnkManageMerchantProfiles.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lnkManageMerchantProfiles.Image = ((System.Drawing.Image)(resources.GetObject("lnkManageMerchantProfiles.Image")));
+            this.lnkManageMerchantProfiles.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.lnkManageMerchantProfiles.Location = new System.Drawing.Point(246, 19);
+            this.lnkManageMerchantProfiles.Margin = new System.Windows.Forms.Padding(0);
+            this.lnkManageMerchantProfiles.MinimumSize = new System.Drawing.Size(20, 20);
+            this.lnkManageMerchantProfiles.Name = "lnkManageMerchantProfiles";
+            this.lnkManageMerchantProfiles.Size = new System.Drawing.Size(20, 20);
+            this.lnkManageMerchantProfiles.TabIndex = 125;
+            this.lnkManageMerchantProfiles.Tag = "Learn more about \"Sign On\"";
+            this.lnkManageMerchantProfiles.Click += new System.EventHandler(this.lnkManageMerchantProfiles_Click);
             // 
             // label15
             // 
@@ -645,7 +631,7 @@ namespace SampleCode
             this.cboAvailableProfiles.FormattingEnabled = true;
             this.cboAvailableProfiles.Location = new System.Drawing.Point(43, 276);
             this.cboAvailableProfiles.Name = "cboAvailableProfiles";
-            this.cboAvailableProfiles.Size = new System.Drawing.Size(212, 21);
+            this.cboAvailableProfiles.Size = new System.Drawing.Size(282, 21);
             this.cboAvailableProfiles.TabIndex = 12;
             this.cboAvailableProfiles.SelectedIndexChanged += new System.EventHandler(this.cboAvailableProfiles_SelectedIndexChanged);
             // 
@@ -663,14 +649,14 @@ namespace SampleCode
             this.cboAvailableServices.FormattingEnabled = true;
             this.cboAvailableServices.Location = new System.Drawing.Point(43, 195);
             this.cboAvailableServices.Name = "cboAvailableServices";
-            this.cboAvailableServices.Size = new System.Drawing.Size(268, 21);
+            this.cboAvailableServices.Size = new System.Drawing.Size(282, 21);
             this.cboAvailableServices.TabIndex = 10;
             this.cboAvailableServices.SelectedIndexChanged += new System.EventHandler(this.cboAvailableServices_SelectedIndexChanged);
             // 
             // chkStep2
             // 
             this.chkStep2.AutoSize = true;
-            this.chkStep2.Location = new System.Drawing.Point(273, 132);
+            this.chkStep2.Location = new System.Drawing.Point(271, 132);
             this.chkStep2.Name = "chkStep2";
             this.chkStep2.Size = new System.Drawing.Size(15, 14);
             this.chkStep2.TabIndex = 8;
@@ -679,7 +665,7 @@ namespace SampleCode
             // chkStep3
             // 
             this.chkStep3.AutoSize = true;
-            this.chkStep3.Location = new System.Drawing.Point(273, 161);
+            this.chkStep3.Location = new System.Drawing.Point(271, 161);
             this.chkStep3.Name = "chkStep3";
             this.chkStep3.Size = new System.Drawing.Size(15, 14);
             this.chkStep3.TabIndex = 7;
@@ -688,7 +674,7 @@ namespace SampleCode
             // chkStep1
             // 
             this.chkStep1.AutoSize = true;
-            this.chkStep1.Location = new System.Drawing.Point(273, 102);
+            this.chkStep1.Location = new System.Drawing.Point(271, 102);
             this.chkStep1.Name = "chkStep1";
             this.chkStep1.Size = new System.Drawing.Size(15, 14);
             this.chkStep1.TabIndex = 6;
@@ -862,7 +848,7 @@ namespace SampleCode
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(853, 738);
+            this.tabControl1.Size = new System.Drawing.Size(853, 788);
             this.tabControl1.TabIndex = 9;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
@@ -1036,7 +1022,7 @@ namespace SampleCode
             this.tbTransactionProcessing.Controls.Add(this.groupBox2);
             this.tbTransactionProcessing.Location = new System.Drawing.Point(4, 22);
             this.tbTransactionProcessing.Name = "tbTransactionProcessing";
-            this.tbTransactionProcessing.Size = new System.Drawing.Size(845, 712);
+            this.tbTransactionProcessing.Size = new System.Drawing.Size(845, 762);
             this.tbTransactionProcessing.TabIndex = 2;
             this.tbTransactionProcessing.Text = "Transaction Processing";
             this.tbTransactionProcessing.UseVisualStyleBackColor = true;
@@ -1126,6 +1112,8 @@ namespace SampleCode
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.TxtTip);
+            this.groupBox2.Controls.Add(this.label20);
             this.groupBox2.Controls.Add(this.lnkTxnProcessing);
             this.groupBox2.Controls.Add(this.ChkOnClickDisplayTxnMessage);
             this.groupBox2.Controls.Add(this.CmdClearTransactions);
@@ -1147,7 +1135,7 @@ namespace SampleCode
             this.groupBox2.Controls.Add(this.pictureBox2);
             this.groupBox2.Location = new System.Drawing.Point(17, 79);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(825, 621);
+            this.groupBox2.Size = new System.Drawing.Size(825, 680);
             this.groupBox2.TabIndex = 8;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Transaction Processing";
@@ -1171,7 +1159,7 @@ namespace SampleCode
             // ChkOnClickDisplayTxnMessage
             // 
             this.ChkOnClickDisplayTxnMessage.AutoSize = true;
-            this.ChkOnClickDisplayTxnMessage.Location = new System.Drawing.Point(275, 482);
+            this.ChkOnClickDisplayTxnMessage.Location = new System.Drawing.Point(275, 529);
             this.ChkOnClickDisplayTxnMessage.Name = "ChkOnClickDisplayTxnMessage";
             this.ChkOnClickDisplayTxnMessage.Size = new System.Drawing.Size(189, 17);
             this.ChkOnClickDisplayTxnMessage.TabIndex = 35;
@@ -1181,7 +1169,7 @@ namespace SampleCode
             // CmdClearTransactions
             // 
             this.CmdClearTransactions.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.CmdClearTransactions.Location = new System.Drawing.Point(202, 479);
+            this.CmdClearTransactions.Location = new System.Drawing.Point(202, 526);
             this.CmdClearTransactions.Name = "CmdClearTransactions";
             this.CmdClearTransactions.Size = new System.Drawing.Size(69, 21);
             this.CmdClearTransactions.TabIndex = 34;
@@ -1191,7 +1179,7 @@ namespace SampleCode
             // 
             // TxtAmount
             // 
-            this.TxtAmount.Location = new System.Drawing.Point(65, 458);
+            this.TxtAmount.Location = new System.Drawing.Point(65, 500);
             this.TxtAmount.Name = "TxtAmount";
             this.TxtAmount.Size = new System.Drawing.Size(52, 20);
             this.TxtAmount.TabIndex = 33;
@@ -1200,7 +1188,7 @@ namespace SampleCode
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(6, 463);
+            this.label19.Location = new System.Drawing.Point(6, 505);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(46, 13);
             this.label19.TabIndex = 32;
@@ -1211,17 +1199,17 @@ namespace SampleCode
             this.ChkLstTransactionsProcessed.FormattingEnabled = true;
             this.ChkLstTransactionsProcessed.HorizontalScrollbar = true;
             this.ChkLstTransactionsProcessed.IntegralHeight = false;
-            this.ChkLstTransactionsProcessed.Location = new System.Drawing.Point(6, 501);
+            this.ChkLstTransactionsProcessed.Location = new System.Drawing.Point(9, 548);
             this.ChkLstTransactionsProcessed.Name = "ChkLstTransactionsProcessed";
             this.ChkLstTransactionsProcessed.ScrollAlwaysVisible = true;
-            this.ChkLstTransactionsProcessed.Size = new System.Drawing.Size(813, 109);
+            this.ChkLstTransactionsProcessed.Size = new System.Drawing.Size(813, 126);
             this.ChkLstTransactionsProcessed.TabIndex = 31;
             this.ChkLstTransactionsProcessed.SelectedIndexChanged += new System.EventHandler(this.ChkLstTransactionsProcessed_SelectedIndexChanged);
             // 
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(6, 485);
+            this.label18.Location = new System.Drawing.Point(6, 532);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(193, 13);
             this.label18.TabIndex = 30;
@@ -1332,7 +1320,7 @@ namespace SampleCode
             // txtCredPassword
             // 
             this.txtCredPassword.Enabled = false;
-            this.txtCredPassword.Location = new System.Drawing.Point(65, 432);
+            this.txtCredPassword.Location = new System.Drawing.Point(65, 474);
             this.txtCredPassword.Name = "txtCredPassword";
             this.txtCredPassword.PasswordChar = '*';
             this.txtCredPassword.Size = new System.Drawing.Size(130, 20);
@@ -1342,7 +1330,7 @@ namespace SampleCode
             // txtCredUserName
             // 
             this.txtCredUserName.Enabled = false;
-            this.txtCredUserName.Location = new System.Drawing.Point(65, 406);
+            this.txtCredUserName.Location = new System.Drawing.Point(65, 448);
             this.txtCredUserName.Name = "txtCredUserName";
             this.txtCredUserName.Size = new System.Drawing.Size(130, 20);
             this.txtCredUserName.TabIndex = 27;
@@ -1351,7 +1339,7 @@ namespace SampleCode
             // label46
             // 
             this.label46.AutoSize = true;
-            this.label46.Location = new System.Drawing.Point(6, 435);
+            this.label46.Location = new System.Drawing.Point(6, 477);
             this.label46.Name = "label46";
             this.label46.Size = new System.Drawing.Size(53, 13);
             this.label46.TabIndex = 26;
@@ -1360,7 +1348,7 @@ namespace SampleCode
             // label45
             // 
             this.label45.AutoSize = true;
-            this.label45.Location = new System.Drawing.Point(6, 409);
+            this.label45.Location = new System.Drawing.Point(6, 451);
             this.label45.Name = "label45";
             this.label45.Size = new System.Drawing.Size(57, 13);
             this.label45.TabIndex = 25;
@@ -1806,13 +1794,14 @@ namespace SampleCode
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.ChkForceVoid);
             this.groupBox6.Controls.Add(this.lnkUndo);
             this.groupBox6.Controls.Add(this.lnkAdjust);
             this.groupBox6.Controls.Add(this.cmdAdjust);
             this.groupBox6.Controls.Add(this.cmdUndo);
-            this.groupBox6.Location = new System.Drawing.Point(6, 321);
+            this.groupBox6.Location = new System.Drawing.Point(6, 344);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(190, 79);
+            this.groupBox6.Size = new System.Drawing.Size(190, 98);
             this.groupBox6.TabIndex = 12;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Adjusting and Voiding Step 6";
@@ -1871,6 +1860,7 @@ namespace SampleCode
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.ChkAllowPartialApprovals);
             this.groupBox5.Controls.Add(this.ChkUserWorkflowId);
             this.groupBox5.Controls.Add(this.ChkProcessAsPINLessDebit);
             this.groupBox5.Controls.Add(this.chkProcessAsPINDebitTxn);
@@ -1880,7 +1870,7 @@ namespace SampleCode
             this.groupBox5.Controls.Add(this.cmdAuthorizeAndCapture);
             this.groupBox5.Location = new System.Drawing.Point(6, 175);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(190, 142);
+            this.groupBox5.Size = new System.Drawing.Size(190, 161);
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Authorizing Step 5";
@@ -1890,7 +1880,7 @@ namespace SampleCode
             this.ChkUserWorkflowId.AutoSize = true;
             this.ChkUserWorkflowId.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ChkUserWorkflowId.ForeColor = System.Drawing.Color.IndianRed;
-            this.ChkUserWorkflowId.Location = new System.Drawing.Point(6, 123);
+            this.ChkUserWorkflowId.Location = new System.Drawing.Point(6, 139);
             this.ChkUserWorkflowId.Name = "ChkUserWorkflowId";
             this.ChkUserWorkflowId.Size = new System.Drawing.Size(105, 17);
             this.ChkUserWorkflowId.TabIndex = 29;
@@ -1998,11 +1988,52 @@ namespace SampleCode
             // 
             this.tmrServiceArrow.Interval = 5000;
             // 
+            // TxtTip
+            // 
+            this.TxtTip.Location = new System.Drawing.Point(143, 500);
+            this.TxtTip.Name = "TxtTip";
+            this.TxtTip.Size = new System.Drawing.Size(52, 20);
+            this.TxtTip.TabIndex = 133;
+            this.TxtTip.Text = "0.00";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(123, 505);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(22, 13);
+            this.label20.TabIndex = 132;
+            this.label20.Text = "Tip";
+            // 
+            // ChkForceVoid
+            // 
+            this.ChkForceVoid.AutoSize = true;
+            this.ChkForceVoid.Checked = true;
+            this.ChkForceVoid.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ChkForceVoid.Enabled = false;
+            this.ChkForceVoid.Location = new System.Drawing.Point(6, 77);
+            this.ChkForceVoid.Name = "ChkForceVoid";
+            this.ChkForceVoid.Size = new System.Drawing.Size(93, 17);
+            this.ChkForceVoid.TabIndex = 133;
+            this.ChkForceVoid.Text = "ChkForceVoid";
+            this.ChkForceVoid.UseVisualStyleBackColor = true;
+            // 
+            // ChkAllowPartialApprovals
+            // 
+            this.ChkAllowPartialApprovals.AutoSize = true;
+            this.ChkAllowPartialApprovals.Enabled = false;
+            this.ChkAllowPartialApprovals.Location = new System.Drawing.Point(6, 119);
+            this.ChkAllowPartialApprovals.Name = "ChkAllowPartialApprovals";
+            this.ChkAllowPartialApprovals.Size = new System.Drawing.Size(133, 17);
+            this.ChkAllowPartialApprovals.TabIndex = 133;
+            this.ChkAllowPartialApprovals.Text = "Allow Partial Approvals";
+            this.ChkAllowPartialApprovals.UseVisualStyleBackColor = true;
+            // 
             // SampleCode_DeskTop
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(877, 762);
+            this.ClientSize = new System.Drawing.Size(884, 812);
             this.Controls.Add(this.lnkOnlineDocumentation);
             this.Controls.Add(this.tabControl1);
             this.MainMenuStrip = this.menuStrip1;
@@ -2015,6 +2046,7 @@ namespace SampleCode
             this.groupBox10.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -2200,12 +2232,14 @@ namespace SampleCode
         private System.Windows.Forms.CheckBox ChkOnClickDisplayTxnMessage;
         private System.Windows.Forms.LinkLabel linkPreparingAppToTransact;
         private System.Windows.Forms.LinkLabel lnkTxnProcessing;
-        private System.Windows.Forms.Label lblUseDelegatedSignOn;
         private System.Windows.Forms.LinkLabel lnkLblDelegatedSignOn;
-        //internal static System.Windows.Forms.CheckBox ckBoxDelegatedSignOn;
-        private System.Windows.Forms.Label lblDelegatedSK;
         private System.Windows.Forms.CheckBox ckBoxDelegatedSignOn;
         private System.Windows.Forms.TextBox txtDelegatedServiceKey;
+        private System.Windows.Forms.TextBox TxtTip;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.CheckBox ChkForceVoid;
+        private System.Windows.Forms.CheckBox ChkAllowPartialApprovals;
+        //internal static System.Windows.Forms.CheckBox ckBoxDelegatedSignOn;
         //internal static System.Windows.Forms.TextBox txtDelegatedServiceKey;
     }
 }
