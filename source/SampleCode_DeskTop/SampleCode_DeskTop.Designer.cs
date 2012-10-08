@@ -2103,10 +2103,10 @@ namespace SampleCode
         private System.Windows.Forms.CheckBox chkStep2;
         private System.Windows.Forms.CheckBox chkStep3;
         private System.Windows.Forms.CheckBox chkStep1;
-        private System.Windows.Forms.ComboBox cboAvailableServices;
+        public System.Windows.Forms.ComboBox cboAvailableServices;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.ComboBox cboAvailableProfiles;
+        public System.Windows.Forms.ComboBox cboAvailableProfiles;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Button cmdAddNewProfile;

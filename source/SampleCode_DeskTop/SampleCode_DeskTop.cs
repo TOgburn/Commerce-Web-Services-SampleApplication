@@ -109,7 +109,7 @@ namespace SampleCode
         private bool _checkChangedDirty;//Used as a logical flag when switching between dynamic and dedicated intgrations
         // Unique identifier used to obtain a applicationProfileId and is specific to the certified application
         // A new PTLS SocketId will be provided once your solution is approved for production.
-        public string PtlsSocketId = "";//Used when saving Applicationdata. This field should be compiled into your code. You will receive one PTLSSocketId per application you certify.
+        public string PtlsSocketId = "MIIEwjCCA6qgAwIBAgIBEjANBgkqhkiG9w0BAQUFADCBsTE0MDIGA1UEAxMrSVAgUGF5bWVudHMgRnJhbWV3b3JrIENlcnRpZmljYXRlIEF1dGhvcml0eTELMAkGA1UEBhMCVVMxETAPBgNVBAgTCENvbG9yYWRvMQ8wDQYDVQQHEwZEZW52ZXIxGjAYBgNVBAoTEUlQIENvbW1lcmNlLCBJbmMuMSwwKgYJKoZIhvcNAQkBFh1hZG1pbkBpcHBheW1lbnRzZnJhbWV3b3JrLmNvbTAeFw0wNjEyMTUxNzQyNDVaFw0xNjEyMTIxNzQyNDVaMIHAMQswCQYDVQQGEwJVUzERMA8GA1UECBMIQ29sb3JhZG8xDzANBgNVBAcTBkRlbnZlcjEeMBwGA1UEChMVSVAgUGF5bWVudHMgRnJhbWV3b3JrMT0wOwYDVQQDEzRFcWJwR0crZi8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vL0E9MS4wLAYJKoZIhvcNAQkBFh9zdXBwb3J0QGlwcGF5bWVudHNmcmFtZXdvcmsuY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQD7BTLqXah9t6g4W2pJUfFKxJj/R+c1Dt5MCMYGKeJCMvimAJOoFQx6Cg/OO12gSSipAy1eumAqClxxpR6QRqO3iv9HUoREq+xIvORxm5FMVLcOv/oV53JctN2fwU2xMLqnconD0+7LJYZ+JT4z3hY0mn+4SFQ3tB753nqc5ZRuqQIDAQABo4IBVjCCAVIwCQYDVR0TBAIwADAdBgNVHQ4EFgQUk7zYAajw24mLvtPv7KnMOzdsJuEwgeYGA1UdIwSB3jCB24AU3+ASnJQimuunAZqQDgNcnO2HuHShgbekgbQwgbExNDAyBgNVBAMTK0lQIFBheW1lbnRzIEZyYW1ld29yayBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkxCzAJBgNVBAYTAlVTMREwDwYDVQQIEwhDb2xvcmFkbzEPMA0GA1UEBxMGRGVudmVyMRowGAYDVQQKExFJUCBDb21tZXJjZSwgSW5jLjEsMCoGCSqGSIb3DQEJARYdYWRtaW5AaXBwYXltZW50c2ZyYW1ld29yay5jb22CCQD/yDY5hYVsVzA9BglghkgBhvhCAQQEMBYuaHR0cHM6Ly93d3cuaXBwYXltZW50c2ZyYW1ld29yay5jb20vY2EtY3JsLnBlbTANBgkqhkiG9w0BAQUFAAOCAQEAFk/WbEleeGurR+FE4p2TiSYHMau+e2Tgi+L/oNgIDyvAatgosk0TdSndvtf9YKjCZEaDdvWmWyEMfirb5mtlNnbZz6hNpYoha4Y4ThrEcCsVhfHLLhGZZ1YaBD+ZzCQA7vtb0v5aQb25jX262yPVshO+62DPxnMiJevSGFUTjnNisVniX23NVouUwR3n12GO8wvzXF8IYb5yogaUcVzsTIxEFQXEo1PhQF7JavEnDksVnLoRf897HwBqcdSs0o2Fpc/GN1dgANkfIBfm8E9xpy7k1O4MuaDRqq5XR/4EomD8BWQepfJY0fg8zkCfkuPeGjKkDCitVd3bhjfLSgTvDg==";//Used when saving Applicationdata. This field should be compiled into your code. You will receive one PTLSSocketId per application you certify.
         
         //Service Information variables
         public Operations SupportedTxnTypes = new Operations();
@@ -685,12 +685,11 @@ namespace SampleCode
                 try
                 {
                     BankcardReturn BCRDifferenceData = new BankcardReturn();
-
                     List<ResponseDetails> txnsToProcess = new List<ResponseDetails>();
+
                     if (_bcs.Tenders.CreditAuthorizeSupport == CreditAuthorizeSupportType.AuthorizeOnly)
                     {//NOTE : Please note that in the case of some Service Providers AuthorizeAndCapture is not supported for ReturnById. Use Authorize Instead
                         //In this case it's a terminal capture service that supports PINDebit
-
                         //First verify if all transactions selected are "Authorize" transactions
                         foreach (object itemChecked in ChkLstTransactionsProcessed.CheckedItems)
                         {
@@ -702,11 +701,6 @@ namespace SampleCode
                             }
                             txnsToProcess.Add(((ResponseDetails)(itemChecked)));
                         }
-                       
-                        //Now in ordert to process a ReturnById we must first Capture the transaction. This can be done with CaptureAll or CaptureSelective.
-                        MessageBox.Show("All transctions must be processed via a CaptureAll or CaptureSelective first. Running CaptureAll");
-                        processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureAll, null, null, null, null, null, null, null, null, ChkAcknowledge.Checked, false));
-
                         //Now process each message selected
                         foreach (ResponseDetails _RD in txnsToProcess)
                         {
@@ -717,8 +711,7 @@ namespace SampleCode
                     }
                     else
                     {
-                        //In this case it's a host capture solution. So only AuthorizeAndCapture and Capture transactions are permitted. 
-
+                        //In this case it's a host capture solution. So only AuthorizeAndCapture and Capture transactions are permitted.
                         //First verify if all transactions selected are "AuthorizeAndCapture" or "Capture" transactions
                         foreach (object itemChecked in ChkLstTransactionsProcessed.CheckedItems)
                         {

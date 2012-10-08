@@ -52,6 +52,27 @@ namespace SampleCode
             dtpEndTimeTMS.Value = DateTime.Now;
         }
 
+        private void TransactionManagementServices_Load(object sender, EventArgs e)
+        {
+            //Load Service and Merchant values from ServiceInformation
+            if (((SampleCode_DeskTop)(Owner)).cboAvailableServices.Items.Count > 0)
+            {
+                foreach (var item in ((SampleCode_DeskTop)(Owner)).cboAvailableServices.Items)
+                {
+                    CboQTP_ServiceIds.Items.Add(((SampleCode.SampleCode_DeskTop.Item)(item)).Value1);
+                }
+                
+            }
+            if (((SampleCode_DeskTop)(Owner)).cboAvailableProfiles.Items.Count > 0)
+            {
+                foreach (var item in ((SampleCode_DeskTop)(Owner)).cboAvailableProfiles.Items)
+                {
+                    CboQTP_MerchantProfileIds.Items.Add(item);
+                    CboQBP_MercProfileIds.Items.Add(item);
+                }
+            }
+        }
+
         private void cmdQueryTransactionsSummary_Click(object sender, EventArgs e)
         {
             ResetPreviousNext();
@@ -61,7 +82,7 @@ namespace SampleCode
 
         private void cmdQueryTransactionFamilies_Click(object sender, EventArgs e)
         {
-            if (txtQTP_TransactionIds.Text.Length < 1) { MessageBox.Show("At Lease one TransactionId is necessary in Query Transaction Parameters"); Cursor = Cursors.Default; return; }
+            if (txtQTP_TransactionIds.Text.Length < 1 && !chkUseTransactionIdSelected.Checked) { MessageBox.Show("At Lease one TransactionId is necessary in Query Transaction Parameters"); Cursor = Cursors.Default; return; }
             ResetPreviousNext();
             if (_lastSearch != LastSearchType.QueryTransactionFamilies) { ResetPreviousNext(); _lastSearch = LastSearchType.QueryTransactionFamilies; }
             QueryTransactionFamilies();
@@ -69,7 +90,7 @@ namespace SampleCode
 
         private void cmdQueryTransactionsDetail_Click(object sender, EventArgs e)
         {
-            if (txtQTP_TransactionIds.Text.Length < 1) { MessageBox.Show("At Lease one TransactionId is necessary in Query Transaction Parameters"); Cursor = Cursors.Default; return; }
+            if (txtQTP_TransactionIds.Text.Length < 1 && !chkUseTransactionIdSelected.Checked) { MessageBox.Show("At Lease one TransactionId is necessary in Query Transaction Parameters"); Cursor = Cursors.Default; return; }
             ResetPreviousNext();
             if (_lastSearch != LastSearchType.QueryTransactionsDetail) { ResetPreviousNext(); _lastSearch = LastSearchType.QueryTransactionsDetail; }
             QueryTransactionsDetail();
@@ -330,12 +351,39 @@ namespace SampleCode
 
             if (txtQBP_BatchIds.Text.Length > 0)
                 QBP.BatchIds = new List<string>(txtQBP_BatchIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
-            if (txtQBP_MercProfileIds.Text.Length > 0)
-                QBP.MerchantProfileIds = new List<string>(txtQBP_MercProfileIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            if (CboQBP_MercProfileIds.Text.Length > 0)
+                QBP.MerchantProfileIds = new List<string>(CboQBP_MercProfileIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
             if (txtQBP_ServiceKeys.Text.Length > 0)
                 QBP.ServiceKeys = new List<string>(txtQBP_ServiceKeys.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+
+            List<string> txnIds = new List<string>();
             if (txtQBP_TransactionIds.Text.Length > 0)
-                QBP.TransactionIds = new List<string>(txtQBP_TransactionIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            {
+                //First Process any transactionId's in the text box
+                txnIds = new List<string>(txtQBP_TransactionIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            }
+            //Now check to see if any are listed in the Check List.
+            if (chkUseTransactionIdSelected.Checked && chklstTMSResults.CheckedItems.Count > 0)
+            {
+                //Iterate through the checked list box and add transactionId(s)
+                foreach (object itemChecked in chklstTMSResults.CheckedItems)
+                {
+                    if (itemChecked.GetType().ToString() == "SampleCode.SummaryDetailVal")
+                    {
+                        txtQBP_TransactionIds.Text = txtQBP_TransactionIds.Text + ((SummaryDetailVal)(itemChecked)).SD.TransactionInformation.TransactionId + ", ";
+                        txnIds.Add(((SummaryDetailVal)(itemChecked)).SD.TransactionInformation.TransactionId);
+                    }
+
+                    if (itemChecked.GetType().ToString() == "SampleCode.TransactionDetailVal")
+                    {
+                        txtQBP_TransactionIds.Text = txtQBP_TransactionIds.Text + ((TransactionDetailVal)(itemChecked)).TD.TransactionInformation.TransactionId + ", ";
+                        txnIds.Add(((TransactionDetailVal)(itemChecked)).TD.TransactionInformation.TransactionId);
+                    }                 
+                }
+            }
+            //Note : Only set transactionId's if one or more actually exist. Otherwise the result set will be empty
+            if(txnIds.Count >0)
+                QBP.TransactionIds = txnIds;
 
             return QBP;
         }
@@ -396,14 +444,14 @@ namespace SampleCode
                     QTP.IsAcknowledged = BooleanParameter.False;
             }
 
-            if (txtQTP_MerchantProfileIds.Text.Length > 0)
-                QTP.MerchantProfileIds = new List<string>(txtQTP_MerchantProfileIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            if (CboQTP_MerchantProfileIds.Text.Length > 0)
+                QTP.MerchantProfileIds = new List<string>(CboQTP_MerchantProfileIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
 
             if (cboQTP_QueryType.Text.Length > 0)
                 QTP.QueryType = (QueryType)cboQTP_QueryType.SelectedItem;
 
-            if (txtQTP_ServiceIds.Text.Length > 0)
-                QTP.ServiceIds = new List<string>(txtQTP_ServiceIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            if (CboQTP_ServiceIds.Text.Length > 0)
+                QTP.ServiceIds = new List<string>(CboQTP_ServiceIds.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
 
             if (txtQTP_ServiceKeys.Text.Length > 0)
                 QTP.ServiceKeys = new List<string>(txtQTP_ServiceKeys.Text.Split(splitter, StringSplitOptions.RemoveEmptyEntries));
@@ -420,11 +468,43 @@ namespace SampleCode
             QTP.TransactionDateRange = new DateRange();
             QTP.TransactionDateRange.StartDateTime = dtpStartTimeTMS.Value.ToUniversalTime();
             QTP.TransactionDateRange.EndDateTime = dtpEndTimeTMS.Value.ToUniversalTime();
-          
 
+
+            List<string> txnIds = new List<string>();
             if (txtQTP_TransactionIds.Text.Length > 0)
-                QTP.TransactionIds = new List<string>(txtQTP_TransactionIds.Text.Replace(" ", "").Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            {
+                //First Process any transactionId's in the text box
+                txnIds = new List<string>(txtQTP_TransactionIds.Text.Replace(" ", "").Split(splitter, StringSplitOptions.RemoveEmptyEntries));
+            }
+            //Now check to see if any are listed in the Check List.
+            if(chkUseTransactionIdSelected.Checked && chklstTMSResults.CheckedItems.Count > 0)
+            {
+                //Iterate through the checked list box and add transactionId(s)
+                foreach (object itemChecked in chklstTMSResults.CheckedItems)
+                {
+                    if (itemChecked.GetType().ToString() == "SampleCode.SummaryDetailVal")
+                    {
+                        txtQTP_TransactionIds.Text = txtQTP_TransactionIds.Text + ((SummaryDetailVal)(itemChecked)).SD.TransactionInformation.TransactionId + ", ";
+                        txnIds.Add(((SummaryDetailVal)(itemChecked)).SD.TransactionInformation.TransactionId);
+                    }
+                    
+                    if (itemChecked.GetType().ToString() == "SampleCode.TransactionDetailVal")
+                    {
+                        txtQTP_TransactionIds.Text = txtQTP_TransactionIds.Text + ((TransactionDetailVal)(itemChecked)).TD.TransactionInformation.TransactionId + ", ";
+                        txnIds.Add(((TransactionDetailVal)(itemChecked)).TD.TransactionInformation.TransactionId);
+                    }
 
+                    //if (itemChecked.GetType().ToString() == "SampleCode.FamilyDetailVal")
+                    //    txnIds.Add(((FamilyDetailVal)(itemChecked)).FD.TransactionIds);
+                    
+                    //if (itemChecked.GetType().ToString() == "SampleCode.BatchDetailDataVal")
+                    //    txnIds.Add(((BatchDetailDataVal)(itemChecked)).BDD.TransactionIds);                   
+                }
+            }
+            //Note : Only set transactionId's if one or more actually exist. Otherwise the result set will be empty
+            if (txnIds.Count > 0)
+                QTP.TransactionIds = txnIds;
+            
             if (cboQTP_TransactionStates.Text.Length > 0)
             {
                 List<TransactionState> TS = new List<TransactionState>();
@@ -619,15 +699,15 @@ namespace SampleCode
 
         private string BatchDetailDataString(BatchDetailData b)
         {
-            int intPreviousIndex = -1;
-            foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            {
-                intPreviousIndex = itemChecked;
-                chklstTMSResults.SetItemChecked(itemChecked, false);
-            }
+            //int intPreviousIndex = -1;
+            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
+            //{
+            //    intPreviousIndex = itemChecked;
+            //    chklstTMSResults.SetItemChecked(itemChecked, false);
+            //}
 
-            if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-                chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
+            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
+            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
 
             string strSummary = "";
 
@@ -659,15 +739,15 @@ namespace SampleCode
 
         private string FamilyDetailString(FamilyDetail f)
         {
-            int intPreviousIndex = -1;
-            foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            {
-                intPreviousIndex = itemChecked;
-                chklstTMSResults.SetItemChecked(itemChecked, false);
-            }
+            //int intPreviousIndex = -1;
+            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
+            //{
+            //    intPreviousIndex = itemChecked;
+            //    chklstTMSResults.SetItemChecked(itemChecked, false);
+            //}
 
-            if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-                chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
+            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
+            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
 
             string strSummary = "";
 
@@ -694,18 +774,15 @@ namespace SampleCode
             s.TransactionInformation.BankcardData = new BankcardData();
             s.TransactionInformation.BankcardData.AVSResult = new AVSResult();
 
-            if (chkUseTransactionIdSelected.Checked)
-                txtQTP_TransactionIds.Text = s.TransactionInformation.TransactionId;
+            //int intPreviousIndex = -1;
+            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
+            //{
+            //    intPreviousIndex = itemChecked;
+            //    chklstTMSResults.SetItemChecked(itemChecked, false);
+            //}
 
-            int intPreviousIndex = -1;
-            foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            {
-                intPreviousIndex = itemChecked;
-                chklstTMSResults.SetItemChecked(itemChecked, false);
-            }
-
-            if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-                chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
+            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
+            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
 
             string strSummary = "";
             //Family Information
@@ -748,15 +825,15 @@ namespace SampleCode
 
         private string TransactionDetailString(TransactionDetail t)
         {
-            int intPreviousIndex = -1;
-            foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            {
-                intPreviousIndex = itemChecked;
-                chklstTMSResults.SetItemChecked(itemChecked, false);
-            }
+            //int intPreviousIndex = -1;
+            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
+            //{
+            //    intPreviousIndex = itemChecked;
+            //    chklstTMSResults.SetItemChecked(itemChecked, false);
+            //}
 
-            if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-                chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
+            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
+            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
 
             string strSummary = "";
 
@@ -837,6 +914,16 @@ namespace SampleCode
             System.Diagnostics.Process.Start("https://my.ipcommerce.com/Docs/DataServices/TMS_Developer_Guide/2.0.17/Implementation/SOAP/QueryTransactionsDetail.aspx");
         }
         #endregion END Setup Help Links
+
+        private void TxtClearTransactionIds_Click(object sender, EventArgs e)
+        {
+            txtQTP_TransactionIds.Text = "";
+        }
+
+        private void TxtClearBatchTransactionIds_Click(object sender, EventArgs e)
+        {
+            txtQBP_TransactionIds.Text = "";
+        }
 
     }
 

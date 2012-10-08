@@ -33,13 +33,16 @@ namespace SampleCode
             System.Windows.Forms.LinkLabel lnkQueryTransactions;
             this.label44 = new System.Windows.Forms.Label();
             this.grpQueryTransactionsParameters = new System.Windows.Forms.GroupBox();
+            this.CboQTP_ServiceIds = new System.Windows.Forms.ComboBox();
+            this.CboQTP_MerchantProfileIds = new System.Windows.Forms.ComboBox();
+            this.TxtClearTransactionIds = new System.Windows.Forms.Button();
+            this.txtQTP_OrderNumber = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             this.chkIncludeRelated = new System.Windows.Forms.CheckBox();
-            this.chkUseTransactionIdSelected = new System.Windows.Forms.CheckBox();
             this.lnkQueryTransactionFamilies = new System.Windows.Forms.LinkLabel();
             this.cboQTP_CardTypes = new System.Windows.Forms.ComboBox();
             this.cboQTP_CaptureStates = new System.Windows.Forms.ComboBox();
             this.cboQTP_TransactionStates = new System.Windows.Forms.ComboBox();
-            this.txtQTP_ServiceIds = new System.Windows.Forms.TextBox();
             this.cboQTP_QueryType = new System.Windows.Forms.ComboBox();
             this.cboQTP_IsAcknowledged = new System.Windows.Forms.ComboBox();
             this.txtQTP_ApprovalCodes = new System.Windows.Forms.TextBox();
@@ -61,19 +64,19 @@ namespace SampleCode
             this.txtQTP_Amounts = new System.Windows.Forms.TextBox();
             this.label35 = new System.Windows.Forms.Label();
             this.label32 = new System.Windows.Forms.Label();
-            this.txtQTP_MerchantProfileIds = new System.Windows.Forms.TextBox();
             this.label33 = new System.Windows.Forms.Label();
             this.txtQTP_BatchIds = new System.Windows.Forms.TextBox();
             this.label34 = new System.Windows.Forms.Label();
             this.label30 = new System.Windows.Forms.Label();
+            this.chkUseTransactionIdSelected = new System.Windows.Forms.CheckBox();
             this.grpQueryBatchParameters = new System.Windows.Forms.GroupBox();
+            this.TxtClearBatchTransactionIds = new System.Windows.Forms.Button();
             this.lnkQueryBatch = new System.Windows.Forms.LinkLabel();
             this.txtQBP_TransactionIds = new System.Windows.Forms.TextBox();
             this.txtQBP_BatchIds = new System.Windows.Forms.TextBox();
             this.label29 = new System.Windows.Forms.Label();
             this.txtQBP_ServiceKeys = new System.Windows.Forms.TextBox();
             this.label28 = new System.Windows.Forms.Label();
-            this.txtQBP_MercProfileIds = new System.Windows.Forms.TextBox();
             this.label27 = new System.Windows.Forms.Label();
             this.label26 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
@@ -90,8 +93,7 @@ namespace SampleCode
             this.LnkPrevious = new System.Windows.Forms.LinkLabel();
             this.lblPageNumber = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.txtQTP_OrderNumber = new System.Windows.Forms.TextBox();
+            this.CboQBP_MercProfileIds = new System.Windows.Forms.ComboBox();
             lnkQueryTransactionDetails = new System.Windows.Forms.LinkLabel();
             lnkQueryTransactions = new System.Windows.Forms.LinkLabel();
             this.grpQueryTransactionsParameters.SuspendLayout();
@@ -143,17 +145,18 @@ namespace SampleCode
             // 
             // grpQueryTransactionsParameters
             // 
+            this.grpQueryTransactionsParameters.Controls.Add(this.CboQTP_ServiceIds);
+            this.grpQueryTransactionsParameters.Controls.Add(this.CboQTP_MerchantProfileIds);
+            this.grpQueryTransactionsParameters.Controls.Add(this.TxtClearTransactionIds);
             this.grpQueryTransactionsParameters.Controls.Add(this.txtQTP_OrderNumber);
             this.grpQueryTransactionsParameters.Controls.Add(this.label4);
             this.grpQueryTransactionsParameters.Controls.Add(this.chkIncludeRelated);
-            this.grpQueryTransactionsParameters.Controls.Add(this.chkUseTransactionIdSelected);
             this.grpQueryTransactionsParameters.Controls.Add(lnkQueryTransactionDetails);
             this.grpQueryTransactionsParameters.Controls.Add(this.lnkQueryTransactionFamilies);
             this.grpQueryTransactionsParameters.Controls.Add(lnkQueryTransactions);
             this.grpQueryTransactionsParameters.Controls.Add(this.cboQTP_CardTypes);
             this.grpQueryTransactionsParameters.Controls.Add(this.cboQTP_CaptureStates);
             this.grpQueryTransactionsParameters.Controls.Add(this.cboQTP_TransactionStates);
-            this.grpQueryTransactionsParameters.Controls.Add(this.txtQTP_ServiceIds);
             this.grpQueryTransactionsParameters.Controls.Add(this.cboQTP_QueryType);
             this.grpQueryTransactionsParameters.Controls.Add(this.cboQTP_IsAcknowledged);
             this.grpQueryTransactionsParameters.Controls.Add(this.txtQTP_ApprovalCodes);
@@ -175,7 +178,6 @@ namespace SampleCode
             this.grpQueryTransactionsParameters.Controls.Add(this.txtQTP_Amounts);
             this.grpQueryTransactionsParameters.Controls.Add(this.label35);
             this.grpQueryTransactionsParameters.Controls.Add(this.label32);
-            this.grpQueryTransactionsParameters.Controls.Add(this.txtQTP_MerchantProfileIds);
             this.grpQueryTransactionsParameters.Controls.Add(this.label33);
             this.grpQueryTransactionsParameters.Controls.Add(this.txtQTP_BatchIds);
             this.grpQueryTransactionsParameters.Controls.Add(this.label34);
@@ -187,6 +189,48 @@ namespace SampleCode
             this.grpQueryTransactionsParameters.TabStop = false;
             this.grpQueryTransactionsParameters.Text = "Query Transactions Parameters";
             // 
+            // CboQTP_ServiceIds
+            // 
+            this.CboQTP_ServiceIds.FormattingEnabled = true;
+            this.CboQTP_ServiceIds.Location = new System.Drawing.Point(129, 293);
+            this.CboQTP_ServiceIds.Name = "CboQTP_ServiceIds";
+            this.CboQTP_ServiceIds.Size = new System.Drawing.Size(299, 21);
+            this.CboQTP_ServiceIds.TabIndex = 136;
+            // 
+            // CboQTP_MerchantProfileIds
+            // 
+            this.CboQTP_MerchantProfileIds.FormattingEnabled = true;
+            this.CboQTP_MerchantProfileIds.Location = new System.Drawing.Point(129, 241);
+            this.CboQTP_MerchantProfileIds.Name = "CboQTP_MerchantProfileIds";
+            this.CboQTP_MerchantProfileIds.Size = new System.Drawing.Size(299, 21);
+            this.CboQTP_MerchantProfileIds.TabIndex = 135;
+            // 
+            // TxtClearTransactionIds
+            // 
+            this.TxtClearTransactionIds.Location = new System.Drawing.Point(387, 369);
+            this.TxtClearTransactionIds.Name = "TxtClearTransactionIds";
+            this.TxtClearTransactionIds.Size = new System.Drawing.Size(41, 23);
+            this.TxtClearTransactionIds.TabIndex = 134;
+            this.TxtClearTransactionIds.Text = "Clear";
+            this.TxtClearTransactionIds.UseVisualStyleBackColor = true;
+            this.TxtClearTransactionIds.Click += new System.EventHandler(this.TxtClearTransactionIds_Click);
+            // 
+            // txtQTP_OrderNumber
+            // 
+            this.txtQTP_OrderNumber.Location = new System.Drawing.Point(129, 139);
+            this.txtQTP_OrderNumber.Name = "txtQTP_OrderNumber";
+            this.txtQTP_OrderNumber.Size = new System.Drawing.Size(299, 20);
+            this.txtQTP_OrderNumber.TabIndex = 133;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(23, 142);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(73, 13);
+            this.label4.TabIndex = 132;
+            this.label4.Text = "Order Number";
+            // 
             // chkIncludeRelated
             // 
             this.chkIncludeRelated.AutoSize = true;
@@ -196,16 +240,6 @@ namespace SampleCode
             this.chkIncludeRelated.TabIndex = 131;
             this.chkIncludeRelated.Text = "Include Related";
             this.chkIncludeRelated.UseVisualStyleBackColor = true;
-            // 
-            // chkUseTransactionIdSelected
-            // 
-            this.chkUseTransactionIdSelected.AutoSize = true;
-            this.chkUseTransactionIdSelected.Location = new System.Drawing.Point(277, 372);
-            this.chkUseTransactionIdSelected.Name = "chkUseTransactionIdSelected";
-            this.chkUseTransactionIdSelected.Size = new System.Drawing.Size(158, 17);
-            this.chkUseTransactionIdSelected.TabIndex = 36;
-            this.chkUseTransactionIdSelected.Text = "Use TransactionId Selected";
-            this.chkUseTransactionIdSelected.UseVisualStyleBackColor = true;
             // 
             // lnkQueryTransactionFamilies
             // 
@@ -226,7 +260,7 @@ namespace SampleCode
             // cboQTP_CardTypes
             // 
             this.cboQTP_CardTypes.FormattingEnabled = true;
-            this.cboQTP_CardTypes.Location = new System.Drawing.Point(129, 184);
+            this.cboQTP_CardTypes.Location = new System.Drawing.Point(129, 189);
             this.cboQTP_CardTypes.Name = "cboQTP_CardTypes";
             this.cboQTP_CardTypes.Size = new System.Drawing.Size(299, 21);
             this.cboQTP_CardTypes.TabIndex = 11;
@@ -234,7 +268,7 @@ namespace SampleCode
             // cboQTP_CaptureStates
             // 
             this.cboQTP_CaptureStates.FormattingEnabled = true;
-            this.cboQTP_CaptureStates.Location = new System.Drawing.Point(129, 162);
+            this.cboQTP_CaptureStates.Location = new System.Drawing.Point(129, 163);
             this.cboQTP_CaptureStates.Name = "cboQTP_CaptureStates";
             this.cboQTP_CaptureStates.Size = new System.Drawing.Size(299, 21);
             this.cboQTP_CaptureStates.TabIndex = 10;
@@ -247,17 +281,10 @@ namespace SampleCode
             this.cboQTP_TransactionStates.Size = new System.Drawing.Size(299, 21);
             this.cboQTP_TransactionStates.TabIndex = 19;
             // 
-            // txtQTP_ServiceIds
-            // 
-            this.txtQTP_ServiceIds.Location = new System.Drawing.Point(129, 292);
-            this.txtQTP_ServiceIds.Name = "txtQTP_ServiceIds";
-            this.txtQTP_ServiceIds.Size = new System.Drawing.Size(299, 20);
-            this.txtQTP_ServiceIds.TabIndex = 15;
-            // 
             // cboQTP_QueryType
             // 
             this.cboQTP_QueryType.FormattingEnabled = true;
-            this.cboQTP_QueryType.Location = new System.Drawing.Point(129, 265);
+            this.cboQTP_QueryType.Location = new System.Drawing.Point(129, 267);
             this.cboQTP_QueryType.Name = "cboQTP_QueryType";
             this.cboQTP_QueryType.Size = new System.Drawing.Size(299, 21);
             this.cboQTP_QueryType.TabIndex = 14;
@@ -265,14 +292,14 @@ namespace SampleCode
             // cboQTP_IsAcknowledged
             // 
             this.cboQTP_IsAcknowledged.FormattingEnabled = true;
-            this.cboQTP_IsAcknowledged.Location = new System.Drawing.Point(129, 210);
+            this.cboQTP_IsAcknowledged.Location = new System.Drawing.Point(129, 215);
             this.cboQTP_IsAcknowledged.Name = "cboQTP_IsAcknowledged";
             this.cboQTP_IsAcknowledged.Size = new System.Drawing.Size(299, 21);
             this.cboQTP_IsAcknowledged.TabIndex = 12;
             // 
             // txtQTP_ApprovalCodes
             // 
-            this.txtQTP_ApprovalCodes.Location = new System.Drawing.Point(129, 87);
+            this.txtQTP_ApprovalCodes.Location = new System.Drawing.Point(129, 88);
             this.txtQTP_ApprovalCodes.Name = "txtQTP_ApprovalCodes";
             this.txtQTP_ApprovalCodes.Size = new System.Drawing.Size(136, 20);
             this.txtQTP_ApprovalCodes.TabIndex = 8;
@@ -281,7 +308,7 @@ namespace SampleCode
             // 
             this.txtQTP_TransactionIds.Location = new System.Drawing.Point(129, 370);
             this.txtQTP_TransactionIds.Name = "txtQTP_TransactionIds";
-            this.txtQTP_TransactionIds.Size = new System.Drawing.Size(142, 20);
+            this.txtQTP_TransactionIds.Size = new System.Drawing.Size(252, 20);
             this.txtQTP_TransactionIds.TabIndex = 18;
             // 
             // cmdQueryTransactionsDetail
@@ -413,7 +440,7 @@ namespace SampleCode
             // 
             // txtQTP_Amounts
             // 
-            this.txtQTP_Amounts.Location = new System.Drawing.Point(129, 61);
+            this.txtQTP_Amounts.Location = new System.Drawing.Point(129, 62);
             this.txtQTP_Amounts.Name = "txtQTP_Amounts";
             this.txtQTP_Amounts.Size = new System.Drawing.Size(136, 20);
             this.txtQTP_Amounts.TabIndex = 7;
@@ -436,13 +463,6 @@ namespace SampleCode
             this.label32.TabIndex = 13;
             this.label32.Text = "ServiceKey(s)";
             // 
-            // txtQTP_MerchantProfileIds
-            // 
-            this.txtQTP_MerchantProfileIds.Location = new System.Drawing.Point(129, 240);
-            this.txtQTP_MerchantProfileIds.Name = "txtQTP_MerchantProfileIds";
-            this.txtQTP_MerchantProfileIds.Size = new System.Drawing.Size(299, 20);
-            this.txtQTP_MerchantProfileIds.TabIndex = 13;
-            // 
             // label33
             // 
             this.label33.AutoSize = true;
@@ -454,7 +474,7 @@ namespace SampleCode
             // 
             // txtQTP_BatchIds
             // 
-            this.txtQTP_BatchIds.Location = new System.Drawing.Point(129, 113);
+            this.txtQTP_BatchIds.Location = new System.Drawing.Point(129, 114);
             this.txtQTP_BatchIds.Name = "txtQTP_BatchIds";
             this.txtQTP_BatchIds.Size = new System.Drawing.Size(136, 20);
             this.txtQTP_BatchIds.TabIndex = 9;
@@ -479,15 +499,26 @@ namespace SampleCode
             this.label30.TabIndex = 3;
             this.label30.Text = "Please use a comma to seperate more than one entry";
             // 
+            // chkUseTransactionIdSelected
+            // 
+            this.chkUseTransactionIdSelected.AutoSize = true;
+            this.chkUseTransactionIdSelected.Location = new System.Drawing.Point(616, 57);
+            this.chkUseTransactionIdSelected.Name = "chkUseTransactionIdSelected";
+            this.chkUseTransactionIdSelected.Size = new System.Drawing.Size(154, 17);
+            this.chkUseTransactionIdSelected.TabIndex = 36;
+            this.chkUseTransactionIdSelected.Text = "Use Selected Transactions";
+            this.chkUseTransactionIdSelected.UseVisualStyleBackColor = true;
+            // 
             // grpQueryBatchParameters
             // 
+            this.grpQueryBatchParameters.Controls.Add(this.CboQBP_MercProfileIds);
+            this.grpQueryBatchParameters.Controls.Add(this.TxtClearBatchTransactionIds);
             this.grpQueryBatchParameters.Controls.Add(this.lnkQueryBatch);
             this.grpQueryBatchParameters.Controls.Add(this.txtQBP_TransactionIds);
             this.grpQueryBatchParameters.Controls.Add(this.txtQBP_BatchIds);
             this.grpQueryBatchParameters.Controls.Add(this.label29);
             this.grpQueryBatchParameters.Controls.Add(this.txtQBP_ServiceKeys);
             this.grpQueryBatchParameters.Controls.Add(this.label28);
-            this.grpQueryBatchParameters.Controls.Add(this.txtQBP_MercProfileIds);
             this.grpQueryBatchParameters.Controls.Add(this.label27);
             this.grpQueryBatchParameters.Controls.Add(this.label26);
             this.grpQueryBatchParameters.Controls.Add(this.label20);
@@ -498,6 +529,16 @@ namespace SampleCode
             this.grpQueryBatchParameters.TabIndex = 27;
             this.grpQueryBatchParameters.TabStop = false;
             this.grpQueryBatchParameters.Text = "Query Batch Parameters";
+            // 
+            // TxtClearBatchTransactionIds
+            // 
+            this.TxtClearBatchTransactionIds.Location = new System.Drawing.Point(387, 107);
+            this.TxtClearBatchTransactionIds.Name = "TxtClearBatchTransactionIds";
+            this.TxtClearBatchTransactionIds.Size = new System.Drawing.Size(41, 23);
+            this.TxtClearBatchTransactionIds.TabIndex = 135;
+            this.TxtClearBatchTransactionIds.Text = "Clear";
+            this.TxtClearBatchTransactionIds.UseVisualStyleBackColor = true;
+            this.TxtClearBatchTransactionIds.Click += new System.EventHandler(this.TxtClearBatchTransactionIds_Click);
             // 
             // lnkQueryBatch
             // 
@@ -519,7 +560,7 @@ namespace SampleCode
             // 
             this.txtQBP_TransactionIds.Location = new System.Drawing.Point(129, 109);
             this.txtQBP_TransactionIds.Name = "txtQBP_TransactionIds";
-            this.txtQBP_TransactionIds.Size = new System.Drawing.Size(138, 20);
+            this.txtQBP_TransactionIds.Size = new System.Drawing.Size(252, 20);
             this.txtQBP_TransactionIds.TabIndex = 6;
             // 
             // txtQBP_BatchIds
@@ -553,13 +594,6 @@ namespace SampleCode
             this.label28.Size = new System.Drawing.Size(72, 13);
             this.label28.TabIndex = 5;
             this.label28.Text = "ServiceKey(s)";
-            // 
-            // txtQBP_MercProfileIds
-            // 
-            this.txtQBP_MercProfileIds.Location = new System.Drawing.Point(129, 60);
-            this.txtQBP_MercProfileIds.Name = "txtQBP_MercProfileIds";
-            this.txtQBP_MercProfileIds.Size = new System.Drawing.Size(139, 20);
-            this.txtQBP_MercProfileIds.TabIndex = 4;
             // 
             // label27
             // 
@@ -714,25 +748,17 @@ namespace SampleCode
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(474, 315);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(105, 13);
+            this.label2.Size = new System.Drawing.Size(39, 13);
             this.label2.TabIndex = 39;
-            this.label2.Text = "Summary Information";
+            this.label2.Text = "Details";
             // 
-            // label4
+            // CboQBP_MercProfileIds
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(23, 142);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(73, 13);
-            this.label4.TabIndex = 132;
-            this.label4.Text = "Order Number";
-            // 
-            // txtQTP_OrderNumber
-            // 
-            this.txtQTP_OrderNumber.Location = new System.Drawing.Point(129, 139);
-            this.txtQTP_OrderNumber.Name = "txtQTP_OrderNumber";
-            this.txtQTP_OrderNumber.Size = new System.Drawing.Size(299, 20);
-            this.txtQTP_OrderNumber.TabIndex = 133;
+            this.CboQBP_MercProfileIds.FormattingEnabled = true;
+            this.CboQBP_MercProfileIds.Location = new System.Drawing.Point(130, 61);
+            this.CboQBP_MercProfileIds.Name = "CboQBP_MercProfileIds";
+            this.CboQBP_MercProfileIds.Size = new System.Drawing.Size(135, 21);
+            this.CboQBP_MercProfileIds.TabIndex = 136;
             // 
             // TransactionManagementServices
             // 
@@ -742,6 +768,7 @@ namespace SampleCode
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblPageNumber);
             this.Controls.Add(this.LnkPrevious);
+            this.Controls.Add(this.chkUseTransactionIdSelected);
             this.Controls.Add(this.LnkNext);
             this.Controls.Add(this.chklstTMSResults);
             this.Controls.Add(this.label1);
@@ -756,6 +783,7 @@ namespace SampleCode
             this.Controls.Add(this.dtpStartTimeTMS);
             this.Name = "TransactionManagementServices";
             this.Text = "TransactionManagementServices - CWS 1.17.17";
+            this.Load += new System.EventHandler(this.TransactionManagementServices_Load);
             this.grpQueryTransactionsParameters.ResumeLayout(false);
             this.grpQueryTransactionsParameters.PerformLayout();
             this.grpQueryBatchParameters.ResumeLayout(false);
@@ -773,7 +801,6 @@ namespace SampleCode
         private System.Windows.Forms.ComboBox cboQTP_CardTypes;
         private System.Windows.Forms.ComboBox cboQTP_CaptureStates;
         private System.Windows.Forms.ComboBox cboQTP_TransactionStates;
-        private System.Windows.Forms.TextBox txtQTP_ServiceIds;
         private System.Windows.Forms.ComboBox cboQTP_QueryType;
         private System.Windows.Forms.ComboBox cboQTP_IsAcknowledged;
         private System.Windows.Forms.TextBox txtQTP_ApprovalCodes;
@@ -795,7 +822,6 @@ namespace SampleCode
         private System.Windows.Forms.TextBox txtQTP_Amounts;
         private System.Windows.Forms.Label label35;
         private System.Windows.Forms.Label label32;
-        private System.Windows.Forms.TextBox txtQTP_MerchantProfileIds;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.TextBox txtQTP_BatchIds;
         private System.Windows.Forms.Label label34;
@@ -807,7 +833,6 @@ namespace SampleCode
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox txtQBP_ServiceKeys;
         private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.TextBox txtQBP_MercProfileIds;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label20;
@@ -828,5 +853,10 @@ namespace SampleCode
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txtQTP_OrderNumber;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button TxtClearTransactionIds;
+        private System.Windows.Forms.Button TxtClearBatchTransactionIds;
+        private System.Windows.Forms.ComboBox CboQTP_ServiceIds;
+        private System.Windows.Forms.ComboBox CboQTP_MerchantProfileIds;
+        private System.Windows.Forms.ComboBox CboQBP_MercProfileIds;
     }
 }
