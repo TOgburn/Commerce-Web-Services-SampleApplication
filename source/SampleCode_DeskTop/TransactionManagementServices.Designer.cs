@@ -70,6 +70,7 @@ namespace SampleCode
             this.label30 = new System.Windows.Forms.Label();
             this.chkUseTransactionIdSelected = new System.Windows.Forms.CheckBox();
             this.grpQueryBatchParameters = new System.Windows.Forms.GroupBox();
+            this.CboQBP_MercProfileIds = new System.Windows.Forms.ComboBox();
             this.TxtClearBatchTransactionIds = new System.Windows.Forms.Button();
             this.lnkQueryBatch = new System.Windows.Forms.LinkLabel();
             this.txtQBP_TransactionIds = new System.Windows.Forms.TextBox();
@@ -93,7 +94,6 @@ namespace SampleCode
             this.LnkPrevious = new System.Windows.Forms.LinkLabel();
             this.lblPageNumber = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.CboQBP_MercProfileIds = new System.Windows.Forms.ComboBox();
             lnkQueryTransactionDetails = new System.Windows.Forms.LinkLabel();
             lnkQueryTransactions = new System.Windows.Forms.LinkLabel();
             this.grpQueryTransactionsParameters.SuspendLayout();
@@ -313,9 +313,9 @@ namespace SampleCode
             // 
             // cmdQueryTransactionsDetail
             // 
-            this.cmdQueryTransactionsDetail.Location = new System.Drawing.Point(281, 113);
+            this.cmdQueryTransactionsDetail.Location = new System.Drawing.Point(271, 113);
             this.cmdQueryTransactionsDetail.Name = "cmdQueryTransactionsDetail";
-            this.cmdQueryTransactionsDetail.Size = new System.Drawing.Size(147, 23);
+            this.cmdQueryTransactionsDetail.Size = new System.Drawing.Size(157, 23);
             this.cmdQueryTransactionsDetail.TabIndex = 12;
             this.cmdQueryTransactionsDetail.Text = "Query Transactions Detail";
             this.cmdQueryTransactionsDetail.UseVisualStyleBackColor = true;
@@ -339,9 +339,9 @@ namespace SampleCode
             // 
             // cmdQueryTransactionsSummary
             // 
-            this.cmdQueryTransactionsSummary.Location = new System.Drawing.Point(281, 61);
+            this.cmdQueryTransactionsSummary.Location = new System.Drawing.Point(271, 61);
             this.cmdQueryTransactionsSummary.Name = "cmdQueryTransactionsSummary";
-            this.cmdQueryTransactionsSummary.Size = new System.Drawing.Size(147, 23);
+            this.cmdQueryTransactionsSummary.Size = new System.Drawing.Size(157, 23);
             this.cmdQueryTransactionsSummary.TabIndex = 11;
             this.cmdQueryTransactionsSummary.Text = "Query Transactions Summary";
             this.cmdQueryTransactionsSummary.UseVisualStyleBackColor = true;
@@ -376,9 +376,9 @@ namespace SampleCode
             // 
             // cmdQueryTransactionFamilies
             // 
-            this.cmdQueryTransactionFamilies.Location = new System.Drawing.Point(281, 87);
+            this.cmdQueryTransactionFamilies.Location = new System.Drawing.Point(271, 87);
             this.cmdQueryTransactionFamilies.Name = "cmdQueryTransactionFamilies";
-            this.cmdQueryTransactionFamilies.Size = new System.Drawing.Size(147, 23);
+            this.cmdQueryTransactionFamilies.Size = new System.Drawing.Size(157, 23);
             this.cmdQueryTransactionFamilies.TabIndex = 10;
             this.cmdQueryTransactionFamilies.Text = "Query Transaction Families";
             this.cmdQueryTransactionFamilies.UseVisualStyleBackColor = true;
@@ -530,6 +530,14 @@ namespace SampleCode
             this.grpQueryBatchParameters.TabStop = false;
             this.grpQueryBatchParameters.Text = "Query Batch Parameters";
             // 
+            // CboQBP_MercProfileIds
+            // 
+            this.CboQBP_MercProfileIds.FormattingEnabled = true;
+            this.CboQBP_MercProfileIds.Location = new System.Drawing.Point(130, 61);
+            this.CboQBP_MercProfileIds.Name = "CboQBP_MercProfileIds";
+            this.CboQBP_MercProfileIds.Size = new System.Drawing.Size(135, 21);
+            this.CboQBP_MercProfileIds.TabIndex = 136;
+            // 
             // TxtClearBatchTransactionIds
             // 
             this.TxtClearBatchTransactionIds.Location = new System.Drawing.Point(387, 107);
@@ -626,9 +634,9 @@ namespace SampleCode
             // 
             // cmdQueryBatch
             // 
-            this.cmdQueryBatch.Location = new System.Drawing.Point(281, 35);
+            this.cmdQueryBatch.Location = new System.Drawing.Point(271, 35);
             this.cmdQueryBatch.Name = "cmdQueryBatch";
-            this.cmdQueryBatch.Size = new System.Drawing.Size(147, 23);
+            this.cmdQueryBatch.Size = new System.Drawing.Size(157, 23);
             this.cmdQueryBatch.TabIndex = 5;
             this.cmdQueryBatch.Text = "QueryBatch";
             this.cmdQueryBatch.UseVisualStyleBackColor = true;
@@ -751,14 +759,6 @@ namespace SampleCode
             this.label2.Size = new System.Drawing.Size(39, 13);
             this.label2.TabIndex = 39;
             this.label2.Text = "Details";
-            // 
-            // CboQBP_MercProfileIds
-            // 
-            this.CboQBP_MercProfileIds.FormattingEnabled = true;
-            this.CboQBP_MercProfileIds.Location = new System.Drawing.Point(130, 61);
-            this.CboQBP_MercProfileIds.Name = "CboQBP_MercProfileIds";
-            this.CboQBP_MercProfileIds.Size = new System.Drawing.Size(135, 21);
-            this.CboQBP_MercProfileIds.TabIndex = 136;
             // 
             // TransactionManagementServices
             // 

@@ -1557,9 +1557,6 @@ namespace SampleCode
             BankcardCaptureResponse _BCResponse = new BankcardCaptureResponse();
             _BCResponse = (BankcardCaptureResponse)_Response.Response;
 
-            //Set the amount reference
-            _Response.TxnAmount = _BCResponse.TransactionSummaryData.NetTotals.NetAmount;
-
             string strResponseMessage = "";
 
             if (!_Response.Verbose)
@@ -1602,7 +1599,12 @@ namespace SampleCode
                 if (_BCResponse.TransactionSummaryData != null)
                 {
                     if (_BCResponse.TransactionSummaryData.CashBackTotals != null) strResponseMessage = strResponseMessage + "\r\nCash Back Totals \r\n  Count : " + _BCResponse.TransactionSummaryData.CashBackTotals.Count + "\r\n  Net Amount : " + _BCResponse.TransactionSummaryData.CashBackTotals.NetAmount;
-                    if (_BCResponse.TransactionSummaryData.NetTotals != null) strResponseMessage = strResponseMessage + "\r\nNet Totals \r\n  Count : " + _BCResponse.TransactionSummaryData.NetTotals.Count + "\r\n  Net Amount : " + _BCResponse.TransactionSummaryData.NetTotals.NetAmount;
+                    if (_BCResponse.TransactionSummaryData.NetTotals != null)
+                    {
+                        strResponseMessage = strResponseMessage + "\r\nNet Totals \r\n  Count : " + _BCResponse.TransactionSummaryData.NetTotals.Count + "\r\n  Net Amount : " + _BCResponse.TransactionSummaryData.NetTotals.NetAmount;
+                        //Set the amount reference
+                        _Response.TxnAmount = _BCResponse.TransactionSummaryData.NetTotals.NetAmount;
+                    }
                     if (_BCResponse.TransactionSummaryData.PINDebitReturnTotals != null) strResponseMessage = strResponseMessage + "\r\nPINDebit Return Totals \r\n  Count : " + _BCResponse.TransactionSummaryData.PINDebitReturnTotals.Count + "\r\n  Net Amount : " + _BCResponse.TransactionSummaryData.PINDebitReturnTotals.NetAmount;
                     if (_BCResponse.TransactionSummaryData.PINDebitSaleTotals != null) strResponseMessage = strResponseMessage + "\r\nPINDebit Sale Totals \r\n  Count : " + _BCResponse.TransactionSummaryData.PINDebitSaleTotals.Count + "\r\n  Net Amount : " + _BCResponse.TransactionSummaryData.PINDebitSaleTotals.NetAmount;
                     if (_BCResponse.TransactionSummaryData.ReturnTotals != null) strResponseMessage = strResponseMessage + "\r\nReturn Totals \r\n  Count : " + _BCResponse.TransactionSummaryData.ReturnTotals.Count + "\r\n  Net Amount : " + _BCResponse.TransactionSummaryData.ReturnTotals.NetAmount;

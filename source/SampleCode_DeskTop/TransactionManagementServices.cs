@@ -73,6 +73,13 @@ namespace SampleCode
             }
         }
 
+        private void cmdQueryBatch_Click(object sender, EventArgs e)
+        {
+            ResetPreviousNext();
+            if (_lastSearch != LastSearchType.QueryBatch) { ResetPreviousNext(); _lastSearch = LastSearchType.QueryBatch; }
+            QueryBatch();
+        }
+
         private void cmdQueryTransactionsSummary_Click(object sender, EventArgs e)
         {
             ResetPreviousNext();
@@ -96,13 +103,62 @@ namespace SampleCode
             QueryTransactionsDetail();
         }
 
-        private void cmdQueryBatch_Click(object sender, EventArgs e)
+        private void QueryBatch()
         {
-            ResetPreviousNext();
-            if (_lastSearch != LastSearchType.QueryBatch) { ResetPreviousNext(); _lastSearch = LastSearchType.QueryBatch; }
-            QueryBatch();
-        }
+            //https://my.ipcommerce.com/Docs/DataServices/TMS_Developer_Guide/2.0.17/Implementation/SOAP/QueryBatch.aspx
 
+            try
+            {
+                ((SampleCode_DeskTop)(Owner)).Helper.CheckTokenExpire();//Make sure the current token is valid
+                txtTMSResults.Text = "";
+
+                Cursor = Cursors.WaitCursor;
+                ProcessQueryBatchResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryBatch(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QBP(), PP()));
+
+                if (txtTMSResults.Text.Length < 1)
+                    txtTMSResults.Text = "No Query Batch Results : " + DateTime.Now;
+                Cursor = Cursors.Default;
+            }
+            catch (EndpointNotFoundException)
+            {
+                //In this case the SvcEndpoint was not available. Try the same logic again with the alternate Endpoint
+                try
+                {
+                    ((SampleCode_DeskTop)(Owner)).Helper.SetTMSEndpoint();//Change the endpoint to use the backup.
+
+                    ProcessQueryBatchResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryBatch(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QBP(), PP()));
+                }
+                catch (EndpointNotFoundException)
+                {
+                    MessageBox.Show(
+                        "Neither the primary or secondary TMS endpoints are available. Unable to process.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to QueryBatch\r\nError Message : " + ex.Message, "QueryBatch Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            catch (WebException eW)
+            {
+                MessageBox.Show(eW.Message);
+                //e.Status;
+                //((HttpWebResponse) e.Response).StatusCode;
+            }
+            catch (Exception ex)
+            {
+                string strErrorId;
+                string strErrorMessage;
+                if (_FaultHandler.handleTMSFault(ex, out strErrorId, out strErrorMessage))
+                    MessageBox.Show(strErrorId + " : " + strErrorMessage);
+                else
+                    MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+ 
         private void QueryTransactionsSummary()
         {//https://my.ipcommerce.com/Docs/DataServices/TMS_Developer_Guide/2.0.17/Implementation/SOAP/QueryTransactionsSummary.aspx
 
@@ -256,62 +312,6 @@ namespace SampleCode
             }
         }
 
-        private void QueryBatch()
-        {
-            //https://my.ipcommerce.com/Docs/DataServices/TMS_Developer_Guide/2.0.17/Implementation/SOAP/QueryBatch.aspx
-
-            try
-            {
-                ((SampleCode_DeskTop)(Owner)).Helper.CheckTokenExpire();//Make sure the current token is valid
-                txtTMSResults.Text = "";
-
-                Cursor = Cursors.WaitCursor;
-                ProcessQueryBatchResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryBatch(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QBP(), PP()));
-
-                if (txtTMSResults.Text.Length < 1)
-                    txtTMSResults.Text = "No Query Batch Results : " + DateTime.Now;
-                Cursor = Cursors.Default;
-            }
-            catch (EndpointNotFoundException)
-            {
-                //In this case the SvcEndpoint was not available. Try the same logic again with the alternate Endpoint
-                try
-                {
-                    ((SampleCode_DeskTop)(Owner)).Helper.SetTMSEndpoint();//Change the endpoint to use the backup.
-
-                   ProcessQueryBatchResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryBatch(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QBP(), PP()));
-                }
-                catch (EndpointNotFoundException)
-                {
-                    MessageBox.Show(
-                        "Neither the primary or secondary TMS endpoints are available. Unable to process.");
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Unable to QueryBatch\r\nError Message : " + ex.Message, "QueryBatch Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-            catch (WebException eW)
-            {
-                MessageBox.Show(eW.Message);
-                //e.Status;
-                //((HttpWebResponse) e.Response).StatusCode;
-            }
-            catch (Exception ex)
-            {
-                string strErrorId;
-                string strErrorMessage;
-                if (_FaultHandler.handleTMSFault(ex, out strErrorId, out strErrorMessage))
-                    MessageBox.Show(strErrorId + " : " + strErrorMessage);
-                else
-                    MessageBox.Show(ex.Message);
-            }
-            finally
-            {
-                Cursor = Cursors.Default;
-            }
-        }
-  
         private void ResetPreviousNext()
         {
             LnkPrevious.Visible = false;
@@ -610,35 +610,6 @@ namespace SampleCode
             }
         }
 
-        private void ProcessQueryTransactionFamiliesResponse(List<FamilyDetail> _FD)
-        {
-            chklstTMSResults.Items.Clear();
-
-            //Check for the need of paging
-            if (_FD.Count > _intResultsPerPage - 1)
-            {
-                lblPageNumber.Text = @"Page : " + (_intCurrentPage + 1);
-                lblPageNumber.Visible = true;
-                LnkNext.Visible = true;
-                LnkPrevious.Visible = (_intCurrentPage > 0 ? true : false);//Enable previous on page 2
-            }
-            else
-            {
-                lblPageNumber.Text = @"Page : " + (_intCurrentPage + 1);
-                LnkNext.Visible = false;//End of the list so disable the Next link
-                LnkPrevious.Visible = (_intCurrentPage > 0 ? true : false);//Enable previous on page 2
-            }
-
-            if (_FD.Count > 0)
-            {
-                foreach (FamilyDetail f in _FD)
-                {
-                    FamilyDetailVal SDV = new FamilyDetailVal(f);
-                    chklstTMSResults.Items.Add(SDV);
-                }
-            }
-        }
-
         private void ProcessQueryTransactionSummaryResponse(List<SummaryDetail> _SD)
         {
             chklstTMSResults.Items.Clear();
@@ -663,6 +634,35 @@ namespace SampleCode
                 foreach (SummaryDetail s in _SD)
                 {
                     SummaryDetailVal SDV = new SummaryDetailVal(s);
+                    chklstTMSResults.Items.Add(SDV);
+                }
+            }
+        }
+
+        private void ProcessQueryTransactionFamiliesResponse(List<FamilyDetail> _FD)
+        {
+            chklstTMSResults.Items.Clear();
+
+            //Check for the need of paging
+            if (_FD.Count > _intResultsPerPage - 1)
+            {
+                lblPageNumber.Text = @"Page : " + (_intCurrentPage + 1);
+                lblPageNumber.Visible = true;
+                LnkNext.Visible = true;
+                LnkPrevious.Visible = (_intCurrentPage > 0 ? true : false);//Enable previous on page 2
+            }
+            else
+            {
+                lblPageNumber.Text = @"Page : " + (_intCurrentPage + 1);
+                LnkNext.Visible = false;//End of the list so disable the Next link
+                LnkPrevious.Visible = (_intCurrentPage > 0 ? true : false);//Enable previous on page 2
+            }
+
+            if (_FD.Count > 0)
+            {
+                foreach (FamilyDetail f in _FD)
+                {
+                    FamilyDetailVal SDV = new FamilyDetailVal(f);
                     chklstTMSResults.Items.Add(SDV);
                 }
             }
@@ -699,31 +699,25 @@ namespace SampleCode
 
         private string BatchDetailDataString(BatchDetailData b)
         {
-            //int intPreviousIndex = -1;
-            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            //{
-            //    intPreviousIndex = itemChecked;
-            //    chklstTMSResults.SetItemChecked(itemChecked, false);
-            //}
-
-            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
-
             string strSummary = "";
 
             //Batch Summary
             strSummary = strSummary + "BatchCaptureDate : " + b.BatchCaptureDate + " (UTC)\r\n";
             strSummary = strSummary + "BatchId : " + b.BatchId + "\r\n";
+            strSummary = strSummary + "Capture State : " + b.CaptureState + "\r\n";
             strSummary = strSummary + "Description : " + b.Description + "\r\n";
             //Batch Summary Data
-            strSummary = strSummary + "Batch Summary Data";
-            if (b.BatchSummaryData.CashBackTotals != null) strSummary = strSummary + "\r\nCash Back Totals \r\n  Count : " + b.BatchSummaryData.CashBackTotals.Count + "\r\n  Net Amount : " + b.BatchSummaryData.CashBackTotals.NetAmount;
-            if (b.BatchSummaryData.NetTotals != null) strSummary = strSummary + "\r\nNet Totals \r\n  Count : " + b.BatchSummaryData.NetTotals.Count + "\r\n  Net Amount : " + b.BatchSummaryData.NetTotals.NetAmount;
-            if (b.BatchSummaryData.PINDebitReturnTotals != null) strSummary = strSummary + "\r\nPINDebit Return Totals \r\n  Count : " + b.BatchSummaryData.PINDebitReturnTotals.Count + "\r\n  Net Amount : " + b.BatchSummaryData.PINDebitReturnTotals.NetAmount;
-            if (b.BatchSummaryData.PINDebitSaleTotals != null) strSummary = strSummary + "\r\nPINDebit Sale Totals \r\n  Count : " + b.BatchSummaryData.PINDebitSaleTotals.Count + "\r\n  Net Amount : " + b.BatchSummaryData.PINDebitSaleTotals.NetAmount;
-            if (b.BatchSummaryData.ReturnTotals != null) strSummary = strSummary + "\r\nReturn Totals \r\n  Count : " + b.BatchSummaryData.ReturnTotals.Count + "\r\n  Net Amount : " + b.BatchSummaryData.ReturnTotals.NetAmount;
-            if (b.BatchSummaryData.SaleTotals != null) strSummary = strSummary + "\r\nSale Totals \r\n  Count : " + b.BatchSummaryData.SaleTotals.Count + "\r\n  Net Amount : " + b.BatchSummaryData.SaleTotals.NetAmount;
-            if (b.BatchSummaryData.VoidTotals != null) strSummary = strSummary + "\r\nVoid Totals \r\n  Count : " + b.BatchSummaryData.VoidTotals.Count + "\r\n  Net Amount : " + b.BatchSummaryData.VoidTotals.NetAmount;
+            if (b.SummaryData != null)
+            {
+                strSummary = strSummary + "Batch Summary Data";
+                if (b.SummaryData.CashBackTotals != null) strSummary = strSummary + "\r\nCash Back Totals \r\n  Count : " + b.SummaryData.CashBackTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CashBackTotals.NetAmount;
+                if (b.SummaryData.CreditReturnTotals != null) strSummary = strSummary + "\r\nCredit Return Totals \r\n  Count : " + b.SummaryData.CreditReturnTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CreditReturnTotals.NetAmount;
+                if (b.SummaryData.CreditTotals != null) strSummary = strSummary + "\r\nCredit Totals \r\n  Count : " + b.SummaryData.CreditTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CreditTotals.NetAmount;
+                if (b.SummaryData.DebitReturnTotals != null) strSummary = strSummary + "\r\nDebit Return Totals \r\n  Count : " + b.SummaryData.DebitReturnTotals.Count + "\r\n  Net Amount : " + b.SummaryData.DebitReturnTotals.NetAmount;
+                if (b.SummaryData.DebitTotals != null) strSummary = strSummary + "\r\nDebit Totals \r\n  Count : " + b.SummaryData.DebitTotals.Count + "\r\n  Net Amount : " + b.SummaryData.DebitTotals.NetAmount;
+                if (b.SummaryData.NetTotals != null) strSummary = strSummary + "\r\nNet Totals \r\n  Count : " + b.SummaryData.NetTotals.Count + "\r\n  Net Amount : " + b.SummaryData.NetTotals.NetAmount;
+                if (b.SummaryData.VoidTotals != null) strSummary = strSummary + "\r\nVoid Totals \r\n  Count : " + b.SummaryData.VoidTotals.Count + "\r\n  Net Amount : " + b.SummaryData.VoidTotals.NetAmount;
+            }
             //TransactionId
             strSummary = strSummary + "\r\nList of TransactionIds\r\n";
             if (b.TransactionIds != null)
@@ -737,21 +731,97 @@ namespace SampleCode
             return strSummary;
         }
 
+        private string SummaryDetailString(SummaryDetail s)
+        {
+            string strSummary = "";
+            //FamilyInformation
+            strSummary = strSummary + "Family Information\r\n";
+            strSummary = strSummary + "FamilyId : " + s.FamilyInformation.FamilyId + "\r\n";
+            strSummary = strSummary + "FamilySequenceCount : " + s.FamilyInformation.FamilySequenceCount + "\r\n";
+            strSummary = strSummary + "FamilySequenceNumber : " + s.FamilyInformation.FamilySequenceNumber + "\r\n";
+            strSummary = strSummary + "FamilyState : " + s.FamilyInformation.FamilyState + "\r\n";
+            strSummary = strSummary + "NetAmount : " + s.FamilyInformation.NetAmount + "\r\n";
+            //TransactionInformation
+            strSummary = strSummary + "Transaction Information\r\n";
+            strSummary = strSummary + "Amount : " + s.TransactionInformation.Amount + "\r\n";
+            strSummary = strSummary + "ApprovalCode : " + s.TransactionInformation.ApprovalCode + "\r\n";
+            
+             //TransactionInformation.BankcardData
+            if (s.TransactionInformation.BankcardData != null)
+            {
+                if (s.TransactionInformation.BankcardData.AVSResult != null)
+                {
+                    //TransactionInformation.BankcardData.AVSResult
+                    strSummary = strSummary + "AVSResult Summary\r\n";
+                    strSummary = strSummary + " - ActualResult : " + s.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n";
+                    strSummary = strSummary + " - AddressResult : " + s.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n";
+                    strSummary = strSummary + " - CardholderNameResult : " + s.TransactionInformation.BankcardData.AVSResult.CardholderNameResult + "\r\n";
+                    strSummary = strSummary + " - CityResult : " + s.TransactionInformation.BankcardData.AVSResult.CityResult + "\r\n";
+                    strSummary = strSummary + " - CountryResult : " + s.TransactionInformation.BankcardData.AVSResult.CountryResult + "\r\n";
+                    strSummary = strSummary + " - PhoneResult : " + s.TransactionInformation.BankcardData.AVSResult.PhoneResult + "\r\n";
+                    strSummary = strSummary + " - PostalCodeResult : " + s.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n";
+                    strSummary = strSummary + " - StateResult : " + s.TransactionInformation.BankcardData.AVSResult.StateResult + "\r\n";
+                }
+                //TransactionInformation.BankcardData
+                strSummary = strSummary + "CardType : " + s.TransactionInformation.BankcardData.CardType + "\r\n";//The card type used on the transaction. Expected.
+                strSummary = strSummary + "CVResult : " + s.TransactionInformation.BankcardData.CVResult + "\r\n";//Response code returned by the card issuer indicating the result of Card Verification (CVV2/CVC2/CID) returned by the service provider. Optional.
+                strSummary = strSummary + "MaskedPAN : " + s.TransactionInformation.BankcardData.MaskedPAN + "\r\n";//The cardholder's PAN in masked format. Expected.
+                strSummary = strSummary + "OrderId : " + s.TransactionInformation.BankcardData.OrderId + "\r\n"; //The order id generated by CWS. This value is often used by service providers for transaction correlation. Expected.
+            }
+            //TransactionInformation
+            strSummary = strSummary + "BatchId : " + s.TransactionInformation.BatchId + "\r\n";
+            strSummary = strSummary + "CapturedAmount : " + s.TransactionInformation.CapturedAmount + "\r\n";
+            strSummary = strSummary + "CaptureDateTime : " + s.TransactionInformation.CaptureDateTime + "\r\n";
+            strSummary = strSummary + "CaptureState : " + s.TransactionInformation.CaptureState + "\r\n";
+            strSummary = strSummary + "CaptureStatusMessage : " + s.TransactionInformation.CaptureStatusMessage + "\r\n";
+            strSummary = strSummary + "CustomerId : " + s.TransactionInformation.CustomerId + "\r\n";
+            //TransactionInformation.ElectronicCheckData
+            if (s.TransactionInformation.ElectronicCheckData != null)
+            {
+                strSummary = strSummary + "Electronic Check Data (if applicable)\r\n";
+                strSummary = strSummary + "- CheckNumber : " + s.TransactionInformation.ElectronicCheckData.CheckNumber + "\r\n";
+                strSummary = strSummary + "- MaskedAccountNumber : " + s.TransactionInformation.ElectronicCheckData.MaskedAccountNumber + "\r\n";
+                strSummary = strSummary + "- TransactionType : " + s.TransactionInformation.ElectronicCheckData.TransactionType + "\r\n";
+            }
+            strSummary = strSummary + "IsAcknowledged : " + s.TransactionInformation.IsAcknowledged + "\r\n";
+            strSummary = strSummary + "MaskedPAN : " + s.TransactionInformation.MaskedPAN + "\r\n";
+            strSummary = strSummary + "MerchantProfileId : " + s.TransactionInformation.MerchantProfileId + "\r\n";
+            strSummary = strSummary + "OriginatorTransactionId : " + s.TransactionInformation.OriginatorTransactionId + "\r\n";
+            strSummary = strSummary + "Reference : " + s.TransactionInformation.Reference + "\r\n";
+            strSummary = strSummary + "ServiceId : " + s.TransactionInformation.ServiceId + "\r\n";
+            strSummary = strSummary + "ServiceKey : " + s.TransactionInformation.ServiceKey + "\r\n";
+            strSummary = strSummary + "ServiceTransactionId : " + s.TransactionInformation.ServiceTransactionId + "\r\n";
+            strSummary = strSummary + "Status : " + s.TransactionInformation.Status + "\r\n";
+            //TransactionInformation.StoredValueData
+            if (s.TransactionInformation.StoredValueData != null)
+            {
+                strSummary = strSummary + "Stored Value Data (if applicable)\r\n";
+                strSummary = strSummary + "- CVResult : " + s.TransactionInformation.StoredValueData.CVResult + "\r\n";
+                strSummary = strSummary + "- CardRestrictionValue : " + s.TransactionInformation.StoredValueData.CardRestrictionValue + "\r\n";
+                strSummary = strSummary + "- CardStatus : " + s.TransactionInformation.StoredValueData.CardStatus + "\r\n";
+                strSummary = strSummary + "- NewBalance : " + s.TransactionInformation.StoredValueData.NewBalance + "\r\n";
+                strSummary = strSummary + "- OrderId : " + s.TransactionInformation.StoredValueData.OrderId + "\r\n";
+                strSummary = strSummary + "- PreviousBalance : " + s.TransactionInformation.StoredValueData.PreviousBalance + "\r\n";
+            }
+            strSummary = strSummary + "TransactionClass : " + s.TransactionInformation.TransactionClassTypePair.TransactionClass + "    ";
+            strSummary = strSummary + "TransactionType : " + s.TransactionInformation.TransactionClassTypePair.TransactionType + "\r\n";
+            strSummary = strSummary + "TransactionId : " + s.TransactionInformation.TransactionId + "\r\n";
+            strSummary = strSummary + "TransactionState : " + s.TransactionInformation.TransactionState + "\r\n";
+            strSummary = strSummary + "TransactionStatusCode : " + s.TransactionInformation.TransactionStatusCode + "\r\n";
+            strSummary = strSummary + "TransactionTimestamp : " + s.TransactionInformation.TransactionTimestamp + "\r\n";
+            strSummary = strSummary + "\r\n";
+            return strSummary;
+        }
+
         private string FamilyDetailString(FamilyDetail f)
         {
-            //int intPreviousIndex = -1;
-            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            //{
-            //    intPreviousIndex = itemChecked;
-            //    chklstTMSResults.SetItemChecked(itemChecked, false);
-            //}
-
-            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
-
             string strSummary = "";
 
             //Family Summary
+            strSummary = strSummary + "BatchId : " + f.BatchId + "\r\n";
+            strSummary = strSummary + "CaptureDateTime : " + f.CaptureDateTime + "\r\n";
+            strSummary = strSummary + "CapturedAmount : " + f.CapturedAmount + "\r\n";
+            strSummary = strSummary + "CustomerId : " + f.CustomerId + "\r\n";
             strSummary = strSummary + "FamilyId : " + f.FamilyId + "\r\n";
             strSummary = strSummary + "FamilyState : " + f.FamilyState + "\r\n";
             strSummary = strSummary + "LastAuthorizedAmount : " + f.LastAuthorizedAmount + "\r\n";
@@ -765,81 +835,32 @@ namespace SampleCode
             {
                 strSummary = strSummary + txnid + "\r\n";
             }
-            strSummary = strSummary + "\r\n";
-            return strSummary;
-        }
+            strSummary = strSummary + "\r\nTransaction Meta Data\r\n";
+            foreach (TransactionMetaData TMD in f.TransactionMetaData)
+            {
+                strSummary = strSummary + "TransactionId : " + TMD.TransactionId + "\r\n";
+                strSummary = strSummary + "* Amount : " + TMD.Amount + "\r\n";
+                strSummary = strSummary + "* CardType : " + TMD.CardType + "\r\n";
+                strSummary = strSummary + "* MaskedPAN : " + TMD.MaskedPAN + "\r\n";
+                strSummary = strSummary + "* SequenceNumber : " + TMD.SequenceNumber + "\r\n";
+                strSummary = strSummary + "* ServiceId : " + TMD.ServiceId + "\r\n";
+                strSummary = strSummary + "* TransactionClass : " + TMD.TransactionClassTypePair.TransactionClass + "    ";
+                strSummary = strSummary + "* TransactionType : " + TMD.TransactionClassTypePair.TransactionType + "\r\n";
+                strSummary = strSummary + "* TransactionDateTime : " + TMD.TransactionDateTime + "\r\n";
+                strSummary = strSummary + "* TransactionState : " + TMD.TransactionState + "\r\n";
+                strSummary = strSummary + "* WorkflowId : " + TMD.WorkflowId + "\r\n";
+                strSummary = strSummary + "\r\n";
+            }
 
-        private string SummaryDetailString(SummaryDetail s)
-        {
-            s.TransactionInformation.BankcardData = new BankcardData();
-            s.TransactionInformation.BankcardData.AVSResult = new AVSResult();
-
-            //int intPreviousIndex = -1;
-            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            //{
-            //    intPreviousIndex = itemChecked;
-            //    chklstTMSResults.SetItemChecked(itemChecked, false);
-            //}
-
-            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
-
-            string strSummary = "";
-            //Family Information
-            strSummary = strSummary + "Family Information\r\n";
-            strSummary = strSummary + "FamilyId : " + s.FamilyInformation.FamilyId + "\r\n";
-            strSummary = strSummary + "FamilySequenceCount : " + s.FamilyInformation.FamilySequenceCount + "\r\n";
-            strSummary = strSummary + "FamilySequenceNumber : " + s.FamilyInformation.FamilySequenceNumber + "\r\n";
-            strSummary = strSummary + "FamilyState : " + s.FamilyInformation.FamilyState + "\r\n";
-            //Transaction Information
-            strSummary = strSummary + "Transaction Information\r\n";
-            strSummary = strSummary + "Amount : " + s.TransactionInformation.Amount + "\r\n";
-            strSummary = strSummary + "ApprovalCode : " + s.TransactionInformation.ApprovalCode + "\r\n";
-            strSummary = strSummary + "AVSResult Summary\r\n";
-            strSummary = strSummary + " - ActualResult : " + s.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n";
-            strSummary = strSummary + " - AddressResult : " + s.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n";
-            strSummary = strSummary + " - PostalCodeResult : " + s.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n";
-            strSummary = strSummary + "BatchId : " + s.TransactionInformation.BatchId + "\r\n";
-            strSummary = strSummary + "CaptureDateTime : " + s.TransactionInformation.CaptureDateTime + "\r\n";
-            strSummary = strSummary + "CaptureState : " + s.TransactionInformation.CaptureState + "\r\n";
-            strSummary = strSummary + "CardType : " + s.TransactionInformation.BankcardData.CardType + "\r\n";
-            strSummary = strSummary + "CustomerId : " + s.TransactionInformation.CustomerId + "\r\n";
-            strSummary = strSummary + "CVResult : " + s.TransactionInformation.BankcardData.CVResult + "\r\n";
-            strSummary = strSummary + "IsAcknowledged : " + s.TransactionInformation.IsAcknowledged + "\r\n";
-            strSummary = strSummary + "MaskedPAN : " + s.TransactionInformation.MaskedPAN + "\r\n";
-            strSummary = strSummary + "MerchantProfileId : " + s.TransactionInformation.MerchantProfileId + "\r\n";
-            strSummary = strSummary + "OriginatorTransactionId : " + s.TransactionInformation.OriginatorTransactionId + "\r\n";
-            strSummary = strSummary + "ServiceId : " + s.TransactionInformation.ServiceId + "\r\n";
-            strSummary = strSummary + "ServiceKey : " + s.TransactionInformation.ServiceKey + "\r\n";
-            strSummary = strSummary + "ServiceTransactionId : " + s.TransactionInformation.ServiceTransactionId + "\r\n";
-            strSummary = strSummary + "Status : " + s.TransactionInformation.Status + "\r\n";
-            strSummary = strSummary + "TransactionClass : " + s.TransactionInformation.TransactionClassTypePair.TransactionClass + "    ";
-            strSummary = strSummary + "TransactionType : " + s.TransactionInformation.TransactionClassTypePair.TransactionType + "\r\n";
-            strSummary = strSummary + "TransactionId : " + s.TransactionInformation.TransactionId + "\r\n";
-            strSummary = strSummary + "TransactionState : " + s.TransactionInformation.TransactionState + "\r\n";
-            strSummary = strSummary + "TransactionStatusCode : " + s.TransactionInformation.TransactionStatusCode + "\r\n";
-            strSummary = strSummary + "TransactionTimestamp : " + s.TransactionInformation.TransactionTimestamp + "\r\n";
             strSummary = strSummary + "\r\n";
             return strSummary;
         }
 
         private string TransactionDetailString(TransactionDetail t)
         {
-            //int intPreviousIndex = -1;
-            //foreach (int itemChecked in chklstTMSResults.CheckedIndices)
-            //{
-            //    intPreviousIndex = itemChecked;
-            //    chklstTMSResults.SetItemChecked(itemChecked, false);
-            //}
-
-            //if (chklstTMSResults.SelectedIndex != intPreviousIndex)
-            //    chklstTMSResults.SetItemChecked(chklstTMSResults.SelectedIndex, true);
-
             string strSummary = "";
 
-            t.TransactionInformation.BankcardData = new BankcardData();
-            t.TransactionInformation.BankcardData.AVSResult = new AVSResult();
-            //Batch Summary
+            //CompleteTransaction
             strSummary = strSummary + "CompleteTransaction CWS object : " + "OBJECT\r\n";
             strSummary = strSummary + (t.CompleteTransaction.SerializedTransaction == null ? "CompleteTransaction Serialized : NOT AVAILABLE\r\n" : "CompleteTransaction Serialized : " + t.CompleteTransaction.SerializedTransaction + "\r\n");
             //Family Information
@@ -853,18 +874,34 @@ namespace SampleCode
             strSummary = strSummary + "Transaction Information\r\n";
             strSummary = strSummary + "Amount : " + t.TransactionInformation.Amount + "\r\n";
             strSummary = strSummary + "ApprovalCode : " + t.TransactionInformation.ApprovalCode + "\r\n";
+
             //TransactionInformation.BankcardData
-            strSummary = strSummary + "AVSResult Summary";
-            strSummary = strSummary + " - ActualResult : " + t.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n";
-            strSummary = strSummary + " - AddressResult : " + t.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n";
-            strSummary = strSummary + " - PostalCodeResult : " + t.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n";
-            strSummary = strSummary + "CardType : " + t.TransactionInformation.BankcardData.CardType + "\r\n";
-            strSummary = strSummary + "CVResult : " + t.TransactionInformation.BankcardData.CVResult + "\r\n";
+            if (t.TransactionInformation.BankcardData != null)
+            {
+                //TransactionInformation.BankcardData.AVSResult
+                if (t.TransactionInformation.BankcardData.AVSResult != null)
+                {
+                    strSummary = strSummary + "AVSResult Summary";
+                    strSummary = strSummary + " - ActualResult : " + t.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n";
+                    strSummary = strSummary + " - AddressResult : " + t.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n";
+                    strSummary = strSummary + " - CardholderNameResult : " + t.TransactionInformation.BankcardData.AVSResult.CardholderNameResult + "\r\n";
+                    strSummary = strSummary + " - CityResult : " + t.TransactionInformation.BankcardData.AVSResult.CityResult + "\r\n";
+                    strSummary = strSummary + " - CountryResult : " + t.TransactionInformation.BankcardData.AVSResult.CountryResult + "\r\n";
+                    strSummary = strSummary + " - PhoneResult : " + t.TransactionInformation.BankcardData.AVSResult.PhoneResult + "\r\n";
+                    strSummary = strSummary + " - PostalCodeResult : " + t.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n";
+                    strSummary = strSummary + " - StateResult : " + t.TransactionInformation.BankcardData.AVSResult.StateResult + "\r\n";
+                }
+                //TransactionInformation.BankcardData
+                strSummary = strSummary + "CardType : " + t.TransactionInformation.BankcardData.CardType + "\r\n";
+                strSummary = strSummary + "CVResult : " + t.TransactionInformation.BankcardData.CVResult + "\r\n";
+                strSummary = strSummary + "MaskedPAN : " + t.TransactionInformation.BankcardData.MaskedPAN + "\r\n";
+                strSummary = strSummary + "OrderId : " + t.TransactionInformation.BankcardData.OrderId + "\r\n"; //The order id generated by CWS. This value is often used by service providers for transaction correlation. Expected.
+            }
             strSummary = strSummary + "BatchId : " + t.TransactionInformation.BatchId + "\r\n";
+            strSummary = strSummary + "CapturedAmount : " + t.TransactionInformation.CapturedAmount + "\r\n";
             strSummary = strSummary + "CaptureDateTime : " + t.TransactionInformation.CaptureDateTime + "\r\n";
             strSummary = strSummary + "CaptureState : " + t.TransactionInformation.CaptureState + "\r\n";
             strSummary = strSummary + "CaptureStatusMessage : " + t.TransactionInformation.CaptureStatusMessage + "\r\n";
-            strSummary = strSummary + "CapturedAmount : " + t.TransactionInformation.CapturedAmount + "\r\n";
             strSummary = strSummary + "CustomerId : " + t.TransactionInformation.CustomerId + "\r\n";
             if (t.TransactionInformation.ElectronicCheckData != null)
             {
@@ -878,10 +915,22 @@ namespace SampleCode
             strSummary = strSummary + "MaskedPAN : " + t.TransactionInformation.MaskedPAN + "\r\n";
             strSummary = strSummary + "MerchantProfileId : " + t.TransactionInformation.MerchantProfileId + "\r\n";
             strSummary = strSummary + "OriginatorTransactionId : " + t.TransactionInformation.OriginatorTransactionId + "\r\n";
+            strSummary = strSummary + "Reference : " + t.TransactionInformation.Reference + "\r\n";
             strSummary = strSummary + "ServiceId : " + t.TransactionInformation.ServiceId + "\r\n";
             strSummary = strSummary + "ServiceKey : " + t.TransactionInformation.ServiceKey + "\r\n";
             strSummary = strSummary + "ServiceTransactionId : " + t.TransactionInformation.ServiceTransactionId + "\r\n";
             strSummary = strSummary + "Status : " + t.TransactionInformation.Status + "\r\n";
+            if (t.TransactionInformation.StoredValueData != null)
+            {
+                //TransactionInformation.ElectronicCheckData
+                strSummary = strSummary + "Electronic Check Data";
+                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.CVResult + "\r\n";
+                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.CardRestrictionValue + "\r\n";
+                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.CardStatus + "\r\n";
+                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.NewBalance + "\r\n";
+                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.OrderId + "\r\n";
+                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.PreviousBalance + "\r\n";
+            }
             strSummary = strSummary + "TransactionClass : " + t.TransactionInformation.TransactionClassTypePair.TransactionClass + "    ";
             strSummary = strSummary + "TransactionType : " + t.TransactionInformation.TransactionClassTypePair.TransactionType + "\r\n";
             strSummary = strSummary + "TransactionId : " + t.TransactionInformation.TransactionId + "\r\n";

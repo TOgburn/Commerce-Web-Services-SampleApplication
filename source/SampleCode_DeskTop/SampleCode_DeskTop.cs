@@ -624,7 +624,7 @@ namespace SampleCode
                     if (chkCaptureAllAndSelectiveAsync.Checked)
                         processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureAllAsync, null, null, null, null, null, null, null, captures, ChkAcknowledge.Checked, false));
                     else
-                        processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureAll, null, null, null, null, null, null, null, null, ChkAcknowledge.Checked, false));
+                        processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureAll, null, null, null, null, null, null, null, captures, ChkAcknowledge.Checked, false));
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message); }
                 finally { Cursor = Cursors.Default; }
@@ -743,11 +743,14 @@ namespace SampleCode
                             }
                             txnsToProcess.Add(((ResponseDetails)(itemChecked)));
                         }
+
+                        DialogResult Result;
+                        Result = MessageBox.Show("Would you like to return the amount originally captured?", "Amount to Return", MessageBoxButtons.YesNo);
                         //Now process each message selected
                         foreach (ResponseDetails _RD in txnsToProcess)
                         {
                             BCRDifferenceData.TransactionId = _RD.Response.TransactionId;
-                            BCRDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
+                            BCRDifferenceData.Amount = (Result == DialogResult.Yes ? 0.00M : Convert.ToDecimal(TxtAmount.Text) );
                             processResponse(Helper.ProcessBCPTransaction(TransactionType.ReturnById, null, null, null, BCRDifferenceData, null, null, null, null, ChkAcknowledge.Checked, false));
                         }
                     }
@@ -766,12 +769,15 @@ namespace SampleCode
                             }
                             txnsToProcess.Add(((ResponseDetails)(itemChecked)));
                         }
+
+                        DialogResult Result;
+                        Result = MessageBox.Show("Would you like to return the amount originally captured?", "Amount to Return", MessageBoxButtons.YesNo);
                         //Now process each  message selected
                         foreach (ResponseDetails _RD in txnsToProcess)
                         {
                             //Let's return the transaction
                             BCRDifferenceData.TransactionId = _RD.Response.TransactionId;
-                            BCRDifferenceData.Amount = Convert.ToDecimal(TxtAmount.Text);
+                            BCRDifferenceData.Amount = (Result == DialogResult.Yes ? 0.00M : Convert.ToDecimal(TxtAmount.Text));
                             processResponse(Helper.ProcessBCPTransaction(TransactionType.ReturnById, null, null, null, BCRDifferenceData, null, null, null, null, ChkAcknowledge.Checked, false));
                         }
                     }
