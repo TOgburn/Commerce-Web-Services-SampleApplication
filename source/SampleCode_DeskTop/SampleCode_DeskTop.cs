@@ -204,12 +204,10 @@ namespace SampleCode
 
             try
             {
-                //Helper.SessionToken = Helper.Cwssic.SignOnWithToken(txtIdentityToken.Text);
-
-                Helper.ServiceKey = txtDelegatedServiceKey.Text;
 
                 if (ckBoxDelegatedSignOn.Checked)
                 {
+                    Helper.ServiceKey = txtDelegatedServiceKey.Text;
                     Helper.DelegatedSessionToken = Helper.Cwssic.DelegatedSignOn(txtIdentityToken.Text, Helper.ServiceKey, null);
                     Helper.SessionToken = Helper.DelegatedSessionToken;
                 }
@@ -589,8 +587,42 @@ namespace SampleCode
             {
                 try
                 {
-                    if (chkCaptureAllAsync.Checked)
-                        processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureAllAsync, null, null, null, null, null, null, null, null, ChkAcknowledge.Checked, false));
+                    //First verify if all transactions selected are "Authorize" transactions
+                    List<ResponseDetails> txnsToProcess = new List<ResponseDetails>();
+                    foreach (object itemChecked in ChkLstTransactionsProcessed.CheckedItems)
+                    {
+                        if (((ResponseDetails)(itemChecked)).TransactionType != TransactionType.Authorize.ToString()
+                            && ((ResponseDetails)(itemChecked)).TransactionType != TransactionType.ReturnById.ToString()
+                            && ((ResponseDetails)(itemChecked)).TransactionType != TransactionType.Return.ToString()
+                            && ((ResponseDetails)(itemChecked)).TransactionType != TransactionType.Adjust.ToString())
+                        {
+                            MessageBox.Show("All selected messages must be of type Authorize, ReturnById, Return or Adjust");
+                            Cursor = Cursors.Default;
+                            return;
+                        }
+                        txnsToProcess.Add(((ResponseDetails)(itemChecked)));
+                    }
+
+                    List<Capture> captures = new List<Capture>();
+                    //Now process each message selected
+                    foreach (ResponseDetails _RD in txnsToProcess)
+                    {
+                        //The following would only be set if a different amount than what was originally authorized needs to be captured. So for example a tip.
+                        if (ChkCapSelectiveDiffData.Checked)
+                        {
+                            BankcardCapture bc = new BankcardCapture();
+                            bc.Amount = Convert.ToDecimal(TxtAmount.Text);
+                                //Amount represents the dollar amount charged to the card holder.
+                            if (TxtTip.Text.Length > 0)
+                                if (Convert.ToDecimal(TxtTip.Text) > 0)
+                                    bc.TipAmount = Convert.ToDecimal(TxtTip.Text);
+                                        //Tip is generally only a reporting field.
+                            bc.TransactionId = _RD.Response.TransactionId;
+                            captures.Add(bc);
+                        }
+                    }
+                    if (chkCaptureAllAndSelectiveAsync.Checked)
+                        processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureAllAsync, null, null, null, null, null, null, null, captures, ChkAcknowledge.Checked, false));
                     else
                         processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureAll, null, null, null, null, null, null, null, null, ChkAcknowledge.Checked, false));
                 }
@@ -601,7 +633,7 @@ namespace SampleCode
             {
                 try
                 {
-                    if (chkCaptureAllAsync.Checked)
+                    if (chkCaptureAllAndSelectiveAsync.Checked)
                         processResponse(Helper.ProcessECKTransaction(TransactionType.CaptureAllAsync, null, null, null, null, ChkAcknowledge.Checked));
                     else
                         processResponse(Helper.ProcessECKTransaction(TransactionType.CaptureAll, null, null, null, null, ChkAcknowledge.Checked));
@@ -636,7 +668,7 @@ namespace SampleCode
                             && ((ResponseDetails)(itemChecked)).TransactionType != TransactionType.Return.ToString()
                             && ((ResponseDetails)(itemChecked)).TransactionType != TransactionType.Adjust.ToString())
                         {
-                            MessageBox.Show("All selected messages must be of type Authorize");
+                            MessageBox.Show(@"All selected messages must be of type Authorize, ReturnById, Return or Adjust");
                             Cursor = Cursors.Default;
                             return;
                         }
@@ -646,13 +678,23 @@ namespace SampleCode
                     //Now process each message selected
                     foreach (ResponseDetails _RD in txnsToProcess)
                     {
-                        BankcardCapture bc = new BankcardCapture();
-                        //bc.Amount = _RD.TxnAmount - 1.00;
+                        //First Set the list of transactionID's to pass
                         transactionIDs.Add(_RD.Response.TransactionId);
-                        captures.Add(bc);
+
+                        //The following would only be set if a different amount than what was originally authorized needs to be captured. So for example a tip.
+                        if (ChkCapSelectiveDiffData.Checked)
+                        {
+                            BankcardCapture bc = new BankcardCapture();
+                            bc.Amount = Convert.ToDecimal(TxtAmount.Text); //Amount represents the dollar amount charged to the card holder.
+                            if (TxtTip.Text.Length > 0)
+                                if (Convert.ToDecimal(TxtTip.Text) > 0)
+                                    bc.TipAmount = Convert.ToDecimal(TxtTip.Text);//Tip is generally only a reporting field.
+                            bc.TransactionId = _RD.Response.TransactionId;
+                            captures.Add(bc);
+                        }
                     }
 
-                    if (chkCaptureSelectiveAsync.Checked)
+                    if (chkCaptureAllAndSelectiveAsync.Checked)
                         processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureSelectiveAsync, null, null, null, null, null, null, transactionIDs, captures, ChkAcknowledge.Checked, false));
                     else
                         processResponse(Helper.ProcessBCPTransaction(TransactionType.CaptureSelective, null, null, null, null, null, null, transactionIDs, captures, ChkAcknowledge.Checked, false));
@@ -1502,8 +1544,7 @@ namespace SampleCode
            
             chkL2AuthAndCapture.Enabled = false;
             chkL3AuthAndCapture.Enabled = false;
-            chkCaptureAllAsync.Enabled = false;
-            chkCaptureSelectiveAsync.Enabled = false;
+            chkCaptureAllAndSelectiveAsync.Enabled = false;
             chkProcessAsPINDebitTxn.Enabled = false;
             ChkProcessAsPINLessDebit.Enabled = false;
             ChkMagensaAuthorizeAndCapture.Enabled = false;
@@ -1531,12 +1572,12 @@ namespace SampleCode
             if (supportedTxnTypes.CaptureAll)
             {
                 cmdCaptureAll.Enabled = true;
-                chkCaptureAllAsync.Enabled = true;
+                chkCaptureAllAndSelectiveAsync.Enabled = true;
             }
             if (supportedTxnTypes.CaptureSelective)
             {
                 cmdCaptureSelective.Enabled = true;
-                chkCaptureSelectiveAsync.Enabled = true;
+                chkCaptureAllAndSelectiveAsync.Enabled = true;
             }
             if (supportedTxnTypes.QueryAccount) cmdQueryAccount.Enabled = true;
             if (supportedTxnTypes.ReturnById) cmdReturnById.Enabled = true;
@@ -1610,7 +1651,7 @@ namespace SampleCode
                     cboAvailableServices.Items.Add(new Item(SVAS.ServiceId + "-SVAS-" + Helper.TranslateServiceIdToFriendlyName(SVAS), SVAS.ServiceId, ""));
                 }
             }
-            txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
+            txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nWorkflowId : " + Helper.WorkflowID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
         }
 
         private void GetMerchantProfileIds()
@@ -1642,7 +1683,7 @@ namespace SampleCode
                     }
                 }
             }
-            txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
+            txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nWorkflowId : " + Helper.WorkflowID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
         }
 
         public bool LoadPersistedConfig()
@@ -1669,19 +1710,23 @@ namespace SampleCode
 
                         XPathNavigator xnav = doc.CreateNavigator();
                         XPathNavigator node = xnav.SelectSingleNode(@"//TransactionProcessing/Configuration/ApplicationProfielId");
-                        if(node.Value != null)
+                        if (node != null && node.Value != null)
                             Helper.ApplicationProfileId = node.Value;
 
                         node = xnav.SelectSingleNode(@"//TransactionProcessing/Configuration/ServiceId");
-                        if (node.Value != null)
+                        if (node != null && node.Value != null)
                             Helper.ServiceID = node.Value;
 
+                        node = xnav.SelectSingleNode(@"//TransactionProcessing/Configuration/WorkflowId");
+                        if (node != null && node.Value != null)
+                            Helper.WorkflowID = node.Value;
+
                         node = xnav.SelectSingleNode(@"//TransactionProcessing/Configuration/MerchantProfielId");
-                        if (node.Value != null)
+                        if (node != null && node.Value != null)
                             Helper.MerchantProfileId = node.Value;
 
                         node = xnav.SelectSingleNode(@"//TransactionProcessing/Configuration/IdentityToken");
-                        if (node.Value != null) 
+                        if (node != null && node.Value != null) 
                             Helper.IdentityToken = node.Value;
                         _blnEncryptedIdentityToken = Convert.ToBoolean(node.GetAttribute("Encrypted", ""));
 
@@ -1694,14 +1739,14 @@ namespace SampleCode
                         }
 
                         if (Helper.ApplicationProfileId.Length > 0) chkStep2.Checked = true;
-                        txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId + strEncryptedIdentityToken;
+                        txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nWorkflowId : " + Helper.WorkflowID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId + strEncryptedIdentityToken;
                     }                   
                     return true;
                 }
                 catch (Exception Ex)
                 {
                     MessageBox.Show(Ex.Message);
-                    txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
+                    txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nWorkflowId : " + Helper.WorkflowID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
                     return false;
                 }               
             }
@@ -1709,7 +1754,7 @@ namespace SampleCode
             {
                 //MessageBox.Show(Ex.Message);
                 MessageBox.Show("No persisted values found in '[SK]_TransactionProcessing.config'. Initializing application for the first time");
-                txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
+                txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nWorkflowId : " + Helper.WorkflowID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
                 return false;
             }
         }
@@ -1744,6 +1789,13 @@ namespace SampleCode
                 multipleServiceId.Value = (_si.BankcardServices.Count > 1 ? "True" : "False");
                 serviceId.Attributes.Append(multipleServiceId);
                 configuration.AppendChild(serviceId);
+
+                XmlNode workflowId = doc.CreateElement("WorkflowId");
+                workflowId.InnerText = pacs.WorkflowId;
+                XmlAttribute multipleWorkflowId = doc.CreateAttribute("MultipleWorkflowId");
+                multipleWorkflowId.Value = (_si.BankcardServices.Count > 1 ? "True" : "False");
+                workflowId.Attributes.Append(multipleWorkflowId);
+                configuration.AppendChild(workflowId);
 
                 XmlNode merchantProfielId = doc.CreateElement("MerchantProfielId");
                 merchantProfielId.InnerText = pacs.MerchantProfileId;
@@ -2498,7 +2550,7 @@ namespace SampleCode
                 Helper.SessionToken = Helper.Cwssic.SignOnWithToken(Helper.IdentityToken.Trim());
                 chkStep1.Checked = true;
 
-                //Check to see if a previously saved ApplicationProfileId exists. 
+                //Check to see if a previously saved ServiceID exists. 
                 if (Helper.ServiceID.Length > 1)
                 {
                     //Perform Step 3 as a previous configuration was already saved
@@ -2519,6 +2571,22 @@ namespace SampleCode
                     }
                     catch{}
 
+                }
+                //Check to see if a previously saved WorkflowId exists. 
+                if (Helper.WorkflowID.Length > 1)
+                {
+                    try
+                    {
+                        foreach (Item i in CboWorkFlowIdsByServiceId.Items)
+                        {
+                            if (i.Value1 == Helper.WorkflowID)
+                            {
+                                CboWorkFlowIdsByServiceId.SelectedItem = i;
+                                break;
+                            }
+                        }
+                    }
+                    catch { }
                 }
                 if (Helper.MerchantProfileId.Length > 1 | Helper.MerchantProfileId == "")
                 {
@@ -2547,7 +2615,7 @@ namespace SampleCode
                     strEncryptedIdentityToken = "\r\nIdentity Token [ENCRYPTED]";
                     _blnEncryptedIdentityToken = true;
                 }
-                txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId + strEncryptedIdentityToken;
+                txtPersistedAndCached.Text = "ApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nWorkflowId : " + Helper.WorkflowID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId + strEncryptedIdentityToken;
                 _blnPersistedConfigExists = false;// set back to false so the form behaves as normal. 
             }
             else
@@ -3024,13 +3092,13 @@ namespace SampleCode
                 //We now have something to persiste
                 cmdPersistConfig.Enabled = true;
                 cmdDeletePersistCached.Enabled = true;
-                txtPersistedAndCached.Text = "*** Updated Value Ready for Persistence ***\r\nApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
+                txtPersistedAndCached.Text = "*** Updated Value Ready for Persistence ***\r\nApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nWorkflowId : " + Helper.WorkflowID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
             }
             else
             { 
                 lblIsProfileInitialized.Text = "IsMerchantProfileInitialized : False";
                 lblIsProfileInitialized.ForeColor = System.Drawing.Color.Red;
-                txtPersistedAndCached.Text = "*** Updated Value Ready for Persistence ***\r\nApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
+                txtPersistedAndCached.Text = "*** Updated Value Ready for Persistence ***\r\nApplicationProfileId : " + Helper.ApplicationProfileId + "\r\nServiceId : " + "\r\nWorkflowId : " + Helper.WorkflowID + Helper.ServiceID + "\r\nMerchantProfileId : " + Helper.MerchantProfileId;
             }
 
             //let's get the specific profile
@@ -3117,8 +3185,8 @@ namespace SampleCode
                 strIdentityTokenMessage = "\r\n\tIdentity Token [ENCRYPTED]";
                 _blnEncryptedIdentityToken = true;
             }
-            MessageBox.Show("The following values will be persisted\r\n\r\n\tApplicationProfielId : " + Helper.ApplicationProfileId + "\r\n\tServiceId : " + Helper.ServiceID + "\r\n\tProfileId : " + Helper.MerchantProfileId + strIdentityTokenMessage);
-            PersistAndCacheSettings PACS = new PersistAndCacheSettings(Helper.ApplicationProfileId, Helper.ServiceID, Helper.MerchantProfileId, blnEncryptedIdentityToken, strIdentityToken);
+            MessageBox.Show("The following values will be persisted\r\n\r\n\tApplicationProfielId : " + Helper.ApplicationProfileId + "\r\n\tServiceId : " + Helper.ServiceID + "\r\n\tWorkflowId : " + Helper.WorkflowID + "\r\n\tProfileId : " + Helper.MerchantProfileId + strIdentityTokenMessage);
+            PersistAndCacheSettings PACS = new PersistAndCacheSettings(Helper.ApplicationProfileId, Helper.ServiceID, Helper.WorkflowID, Helper.MerchantProfileId, blnEncryptedIdentityToken, strIdentityToken);
             SavePersistedConfig(PACS);
             LoadPersistedConfig();
 
@@ -3204,14 +3272,14 @@ namespace SampleCode
 
         private void chkCaptureAllAsync_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkCaptureAllAsync.Checked)
+            if (chkCaptureAllAndSelectiveAsync.Checked)
                 MessageBox.Show(
                     "By selecting CaptureAll Async, your application will need to use TMS to query for the results of the CaptureAll.");
         }
 
         private void chkCaptureSelectiveAsync_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkCaptureAllAsync.Checked)
+            if (chkCaptureAllAndSelectiveAsync.Checked)
                 MessageBox.Show(
                     "By selecting CaptureSelective Async, your application will need to use TMS to query for the results of the CaptureSelective.");
         }
@@ -3290,13 +3358,15 @@ namespace SampleCode
         {
             public string ApplicationProfileId;
             public string ServiceId;
+            public string WorkflowId;
             public string MerchantProfileId;
             public bool EncryptedIdentityToken;
             public string IdentityToken;
-            public PersistAndCacheSettings(string applicationProfileId, string serviceId, string merchantProfileId, bool encryptedIdentityToken, string identityToken)
+            public PersistAndCacheSettings(string applicationProfileId, string serviceId, string workflowId, string merchantProfileId, bool encryptedIdentityToken, string identityToken)
             {
                 ApplicationProfileId = applicationProfileId;
                 ServiceId = serviceId;
+                WorkflowId = workflowId;
                 MerchantProfileId = merchantProfileId;
                 EncryptedIdentityToken = encryptedIdentityToken;
                 IdentityToken = identityToken;

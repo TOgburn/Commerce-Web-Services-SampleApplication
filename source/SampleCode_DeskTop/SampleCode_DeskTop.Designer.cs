@@ -112,6 +112,8 @@ namespace SampleCode
             this.merchantProfileIdToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.identityTokenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.TxtTip = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
             this.lnkTxnProcessing = new System.Windows.Forms.LinkLabel();
             this.ChkOnClickDisplayTxnMessage = new System.Windows.Forms.CheckBox();
             this.CmdClearTransactions = new System.Windows.Forms.Button();
@@ -158,8 +160,7 @@ namespace SampleCode
             this.cmdReturnUnlinked = new System.Windows.Forms.Button();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
             this.ChkMultiplePartialCapture = new System.Windows.Forms.CheckBox();
-            this.chkCaptureSelectiveAsync = new System.Windows.Forms.CheckBox();
-            this.chkCaptureAllAsync = new System.Windows.Forms.CheckBox();
+            this.chkCaptureAllAndSelectiveAsync = new System.Windows.Forms.CheckBox();
             this.lnkCaptureSelective = new System.Windows.Forms.LinkLabel();
             this.lnkCaptureAll = new System.Windows.Forms.LinkLabel();
             this.lnkCapture = new System.Windows.Forms.LinkLabel();
@@ -167,11 +168,13 @@ namespace SampleCode
             this.cmdCaptureAll = new System.Windows.Forms.Button();
             this.cmdCaptureSelective = new System.Windows.Forms.Button();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.ChkForceVoid = new System.Windows.Forms.CheckBox();
             this.lnkUndo = new System.Windows.Forms.LinkLabel();
             this.lnkAdjust = new System.Windows.Forms.LinkLabel();
             this.cmdAdjust = new System.Windows.Forms.Button();
             this.cmdUndo = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.ChkAllowPartialApprovals = new System.Windows.Forms.CheckBox();
             this.ChkUserWorkflowId = new System.Windows.Forms.CheckBox();
             this.ChkProcessAsPINLessDebit = new System.Windows.Forms.CheckBox();
             this.chkProcessAsPINDebitTxn = new System.Windows.Forms.CheckBox();
@@ -182,10 +185,8 @@ namespace SampleCode
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.lnkOnlineDocumentation = new System.Windows.Forms.LinkLabel();
             this.tmrServiceArrow = new System.Windows.Forms.Timer(this.components);
-            this.TxtTip = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.ChkForceVoid = new System.Windows.Forms.CheckBox();
-            this.ChkAllowPartialApprovals = new System.Windows.Forms.CheckBox();
+            this.ChkCapSelectiveDiffData = new System.Windows.Forms.CheckBox();
+            this.groupBox14 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picArrow)).BeginInit();
             this.groupBox10.SuspendLayout();
@@ -207,6 +208,7 @@ namespace SampleCode
             this.groupBox6.SuspendLayout();
             this.groupBox5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            this.groupBox14.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdRetrieveServiceInformation
@@ -872,7 +874,7 @@ namespace SampleCode
             this.tbIntroduction.Location = new System.Drawing.Point(4, 22);
             this.tbIntroduction.Name = "tbIntroduction";
             this.tbIntroduction.Padding = new System.Windows.Forms.Padding(3);
-            this.tbIntroduction.Size = new System.Drawing.Size(845, 712);
+            this.tbIntroduction.Size = new System.Drawing.Size(845, 762);
             this.tbIntroduction.TabIndex = 0;
             this.tbIntroduction.Text = "Introduction";
             this.tbIntroduction.UseVisualStyleBackColor = true;
@@ -1139,6 +1141,23 @@ namespace SampleCode
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Transaction Processing";
             // 
+            // TxtTip
+            // 
+            this.TxtTip.Location = new System.Drawing.Point(143, 500);
+            this.TxtTip.Name = "TxtTip";
+            this.TxtTip.Size = new System.Drawing.Size(52, 20);
+            this.TxtTip.TabIndex = 133;
+            this.TxtTip.Text = "0.00";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(123, 505);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(22, 13);
+            this.label20.TabIndex = 132;
+            this.label20.Text = "Tip";
+            // 
             // lnkTxnProcessing
             // 
             this.lnkTxnProcessing.AutoSize = true;
@@ -1223,9 +1242,9 @@ namespace SampleCode
             this.groupBox11.Controls.Add(this.cmdManageAccountById);
             this.groupBox11.Controls.Add(this.cmdManageAccount);
             this.groupBox11.Controls.Add(this.lnkManageAccount);
-            this.groupBox11.Location = new System.Drawing.Point(202, 371);
+            this.groupBox11.Location = new System.Drawing.Point(202, 428);
             this.groupBox11.Name = "groupBox11";
-            this.groupBox11.Size = new System.Drawing.Size(275, 105);
+            this.groupBox11.Size = new System.Drawing.Size(315, 90);
             this.groupBox11.TabIndex = 29;
             this.groupBox11.TabStop = false;
             this.groupBox11.Text = "Manage Stored Value Account";
@@ -1602,9 +1621,9 @@ namespace SampleCode
             this.groupBox8.Controls.Add(this.lnkReturnById);
             this.groupBox8.Controls.Add(this.cmdReturnById);
             this.groupBox8.Controls.Add(this.cmdReturnUnlinked);
-            this.groupBox8.Location = new System.Drawing.Point(202, 289);
+            this.groupBox8.Location = new System.Drawing.Point(202, 342);
             this.groupBox8.Name = "groupBox8";
-            this.groupBox8.Size = new System.Drawing.Size(275, 81);
+            this.groupBox8.Size = new System.Drawing.Size(315, 81);
             this.groupBox8.TabIndex = 14;
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "Refunding Step 8";
@@ -1663,18 +1682,13 @@ namespace SampleCode
             // 
             // groupBox7
             // 
+            this.groupBox7.Controls.Add(this.groupBox14);
             this.groupBox7.Controls.Add(this.ChkMultiplePartialCapture);
-            this.groupBox7.Controls.Add(this.chkCaptureSelectiveAsync);
-            this.groupBox7.Controls.Add(this.chkCaptureAllAsync);
-            this.groupBox7.Controls.Add(this.lnkCaptureSelective);
-            this.groupBox7.Controls.Add(this.lnkCaptureAll);
             this.groupBox7.Controls.Add(this.lnkCapture);
             this.groupBox7.Controls.Add(this.cmdCapture);
-            this.groupBox7.Controls.Add(this.cmdCaptureAll);
-            this.groupBox7.Controls.Add(this.cmdCaptureSelective);
             this.groupBox7.Location = new System.Drawing.Point(202, 175);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(315, 108);
+            this.groupBox7.Size = new System.Drawing.Size(315, 156);
             this.groupBox7.TabIndex = 13;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "Capturing for Settlement Step 7";
@@ -1689,29 +1703,17 @@ namespace SampleCode
             this.ChkMultiplePartialCapture.Text = "MultiplePartialCapture";
             this.ChkMultiplePartialCapture.UseVisualStyleBackColor = true;
             // 
-            // chkCaptureSelectiveAsync
+            // chkCaptureAllAndSelectiveAsync
             // 
-            this.chkCaptureSelectiveAsync.AutoSize = true;
-            this.chkCaptureSelectiveAsync.Enabled = false;
-            this.chkCaptureSelectiveAsync.Location = new System.Drawing.Point(188, 81);
-            this.chkCaptureSelectiveAsync.Name = "chkCaptureSelectiveAsync";
-            this.chkCaptureSelectiveAsync.Size = new System.Drawing.Size(55, 17);
-            this.chkCaptureSelectiveAsync.TabIndex = 130;
-            this.chkCaptureSelectiveAsync.Text = "Async";
-            this.chkCaptureSelectiveAsync.UseVisualStyleBackColor = true;
-            this.chkCaptureSelectiveAsync.CheckedChanged += new System.EventHandler(this.chkCaptureSelectiveAsync_CheckedChanged);
-            // 
-            // chkCaptureAllAsync
-            // 
-            this.chkCaptureAllAsync.AutoSize = true;
-            this.chkCaptureAllAsync.Enabled = false;
-            this.chkCaptureAllAsync.Location = new System.Drawing.Point(188, 52);
-            this.chkCaptureAllAsync.Name = "chkCaptureAllAsync";
-            this.chkCaptureAllAsync.Size = new System.Drawing.Size(55, 17);
-            this.chkCaptureAllAsync.TabIndex = 129;
-            this.chkCaptureAllAsync.Text = "Async";
-            this.chkCaptureAllAsync.UseVisualStyleBackColor = true;
-            this.chkCaptureAllAsync.CheckedChanged += new System.EventHandler(this.chkCaptureAllAsync_CheckedChanged);
+            this.chkCaptureAllAndSelectiveAsync.AutoSize = true;
+            this.chkCaptureAllAndSelectiveAsync.Enabled = false;
+            this.chkCaptureAllAndSelectiveAsync.Location = new System.Drawing.Point(182, 71);
+            this.chkCaptureAllAndSelectiveAsync.Name = "chkCaptureAllAndSelectiveAsync";
+            this.chkCaptureAllAndSelectiveAsync.Size = new System.Drawing.Size(55, 17);
+            this.chkCaptureAllAndSelectiveAsync.TabIndex = 129;
+            this.chkCaptureAllAndSelectiveAsync.Text = "Async";
+            this.chkCaptureAllAndSelectiveAsync.UseVisualStyleBackColor = true;
+            this.chkCaptureAllAndSelectiveAsync.CheckedChanged += new System.EventHandler(this.chkCaptureAllAsync_CheckedChanged);
             // 
             // lnkCaptureSelective
             // 
@@ -1719,7 +1721,7 @@ namespace SampleCode
             this.lnkCaptureSelective.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkCaptureSelective.Image = ((System.Drawing.Image)(resources.GetObject("lnkCaptureSelective.Image")));
             this.lnkCaptureSelective.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkCaptureSelective.Location = new System.Drawing.Point(165, 77);
+            this.lnkCaptureSelective.Location = new System.Drawing.Point(159, 48);
             this.lnkCaptureSelective.Margin = new System.Windows.Forms.Padding(0);
             this.lnkCaptureSelective.MinimumSize = new System.Drawing.Size(20, 20);
             this.lnkCaptureSelective.Name = "lnkCaptureSelective";
@@ -1734,7 +1736,7 @@ namespace SampleCode
             this.lnkCaptureAll.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lnkCaptureAll.Image = ((System.Drawing.Image)(resources.GetObject("lnkCaptureAll.Image")));
             this.lnkCaptureAll.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkCaptureAll.Location = new System.Drawing.Point(165, 49);
+            this.lnkCaptureAll.Location = new System.Drawing.Point(159, 20);
             this.lnkCaptureAll.Margin = new System.Windows.Forms.Padding(0);
             this.lnkCaptureAll.MinimumSize = new System.Drawing.Size(20, 20);
             this.lnkCaptureAll.Name = "lnkCaptureAll";
@@ -1772,7 +1774,7 @@ namespace SampleCode
             // cmdCaptureAll
             // 
             this.cmdCaptureAll.Enabled = false;
-            this.cmdCaptureAll.Location = new System.Drawing.Point(13, 48);
+            this.cmdCaptureAll.Location = new System.Drawing.Point(7, 19);
             this.cmdCaptureAll.Name = "cmdCaptureAll";
             this.cmdCaptureAll.Size = new System.Drawing.Size(149, 23);
             this.cmdCaptureAll.TabIndex = 3;
@@ -1783,7 +1785,7 @@ namespace SampleCode
             // cmdCaptureSelective
             // 
             this.cmdCaptureSelective.Enabled = false;
-            this.cmdCaptureSelective.Location = new System.Drawing.Point(13, 77);
+            this.cmdCaptureSelective.Location = new System.Drawing.Point(7, 48);
             this.cmdCaptureSelective.Name = "cmdCaptureSelective";
             this.cmdCaptureSelective.Size = new System.Drawing.Size(149, 23);
             this.cmdCaptureSelective.TabIndex = 4;
@@ -1804,6 +1806,19 @@ namespace SampleCode
             this.groupBox6.TabIndex = 12;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Adjusting and Voiding Step 6";
+            // 
+            // ChkForceVoid
+            // 
+            this.ChkForceVoid.AutoSize = true;
+            this.ChkForceVoid.Checked = true;
+            this.ChkForceVoid.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.ChkForceVoid.Enabled = false;
+            this.ChkForceVoid.Location = new System.Drawing.Point(6, 77);
+            this.ChkForceVoid.Name = "ChkForceVoid";
+            this.ChkForceVoid.Size = new System.Drawing.Size(93, 17);
+            this.ChkForceVoid.TabIndex = 133;
+            this.ChkForceVoid.Text = "ChkForceVoid";
+            this.ChkForceVoid.UseVisualStyleBackColor = true;
             // 
             // lnkUndo
             // 
@@ -1873,6 +1888,17 @@ namespace SampleCode
             this.groupBox5.TabIndex = 11;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Authorizing Step 5";
+            // 
+            // ChkAllowPartialApprovals
+            // 
+            this.ChkAllowPartialApprovals.AutoSize = true;
+            this.ChkAllowPartialApprovals.Enabled = false;
+            this.ChkAllowPartialApprovals.Location = new System.Drawing.Point(6, 119);
+            this.ChkAllowPartialApprovals.Name = "ChkAllowPartialApprovals";
+            this.ChkAllowPartialApprovals.Size = new System.Drawing.Size(133, 17);
+            this.ChkAllowPartialApprovals.TabIndex = 133;
+            this.ChkAllowPartialApprovals.Text = "Allow Partial Approvals";
+            this.ChkAllowPartialApprovals.UseVisualStyleBackColor = true;
             // 
             // ChkUserWorkflowId
             // 
@@ -1987,46 +2013,30 @@ namespace SampleCode
             // 
             this.tmrServiceArrow.Interval = 5000;
             // 
-            // TxtTip
+            // ChkCapSelectiveDiffData
             // 
-            this.TxtTip.Location = new System.Drawing.Point(143, 500);
-            this.TxtTip.Name = "TxtTip";
-            this.TxtTip.Size = new System.Drawing.Size(52, 20);
-            this.TxtTip.TabIndex = 133;
-            this.TxtTip.Text = "0.00";
+            this.ChkCapSelectiveDiffData.AutoSize = true;
+            this.ChkCapSelectiveDiffData.Location = new System.Drawing.Point(237, 71);
+            this.ChkCapSelectiveDiffData.Name = "ChkCapSelectiveDiffData";
+            this.ChkCapSelectiveDiffData.Size = new System.Drawing.Size(68, 17);
+            this.ChkCapSelectiveDiffData.TabIndex = 132;
+            this.ChkCapSelectiveDiffData.Text = "Diff Data";
+            this.ChkCapSelectiveDiffData.UseVisualStyleBackColor = true;
             // 
-            // label20
+            // groupBox14
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(123, 505);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(22, 13);
-            this.label20.TabIndex = 132;
-            this.label20.Text = "Tip";
-            // 
-            // ChkForceVoid
-            // 
-            this.ChkForceVoid.AutoSize = true;
-            this.ChkForceVoid.Checked = true;
-            this.ChkForceVoid.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.ChkForceVoid.Enabled = false;
-            this.ChkForceVoid.Location = new System.Drawing.Point(6, 77);
-            this.ChkForceVoid.Name = "ChkForceVoid";
-            this.ChkForceVoid.Size = new System.Drawing.Size(93, 17);
-            this.ChkForceVoid.TabIndex = 133;
-            this.ChkForceVoid.Text = "ChkForceVoid";
-            this.ChkForceVoid.UseVisualStyleBackColor = true;
-            // 
-            // ChkAllowPartialApprovals
-            // 
-            this.ChkAllowPartialApprovals.AutoSize = true;
-            this.ChkAllowPartialApprovals.Enabled = false;
-            this.ChkAllowPartialApprovals.Location = new System.Drawing.Point(6, 119);
-            this.ChkAllowPartialApprovals.Name = "ChkAllowPartialApprovals";
-            this.ChkAllowPartialApprovals.Size = new System.Drawing.Size(133, 17);
-            this.ChkAllowPartialApprovals.TabIndex = 133;
-            this.ChkAllowPartialApprovals.Text = "Allow Partial Approvals";
-            this.ChkAllowPartialApprovals.UseVisualStyleBackColor = true;
+            this.groupBox14.Controls.Add(this.cmdCaptureAll);
+            this.groupBox14.Controls.Add(this.ChkCapSelectiveDiffData);
+            this.groupBox14.Controls.Add(this.cmdCaptureSelective);
+            this.groupBox14.Controls.Add(this.lnkCaptureAll);
+            this.groupBox14.Controls.Add(this.lnkCaptureSelective);
+            this.groupBox14.Controls.Add(this.chkCaptureAllAndSelectiveAsync);
+            this.groupBox14.Location = new System.Drawing.Point(6, 52);
+            this.groupBox14.Name = "groupBox14";
+            this.groupBox14.Size = new System.Drawing.Size(303, 94);
+            this.groupBox14.TabIndex = 133;
+            this.groupBox14.TabStop = false;
+            this.groupBox14.Text = "Settlement";
             // 
             // SampleCode_DeskTop
             // 
@@ -2075,6 +2085,8 @@ namespace SampleCode
             this.groupBox5.ResumeLayout(false);
             this.groupBox5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            this.groupBox14.ResumeLayout(false);
+            this.groupBox14.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -2194,8 +2206,7 @@ namespace SampleCode
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem viewTransactionsToolStripMenuItem;
-        private System.Windows.Forms.CheckBox chkCaptureSelectiveAsync;
-        private System.Windows.Forms.CheckBox chkCaptureAllAsync;
+        private System.Windows.Forms.CheckBox chkCaptureAllAndSelectiveAsync;
         private System.Windows.Forms.Label lblCurrentService;
         private System.Windows.Forms.ToolStripMenuItem configurationValuesToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem applicationProfileIdToolStripMenuItem;
@@ -2238,6 +2249,8 @@ namespace SampleCode
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.CheckBox ChkForceVoid;
         private System.Windows.Forms.CheckBox ChkAllowPartialApprovals;
+        private System.Windows.Forms.GroupBox groupBox14;
+        private System.Windows.Forms.CheckBox ChkCapSelectiveDiffData;
         //internal static System.Windows.Forms.CheckBox ckBoxDelegatedSignOn;
         //internal static System.Windows.Forms.TextBox txtDelegatedServiceKey;
     }
