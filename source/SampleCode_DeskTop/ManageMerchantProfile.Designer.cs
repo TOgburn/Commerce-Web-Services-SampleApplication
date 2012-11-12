@@ -28,15 +28,11 @@ namespace SampleCode
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtStoreId = new System.Windows.Forms.TextBox();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageMerchantProfile));
             this.lblStoreId = new System.Windows.Forms.Label();
             this.cmdPopulateTestValues = new System.Windows.Forms.Button();
-            this.txtProfileId = new System.Windows.Forms.TextBox();
-            this.cmdAddUpdate = new System.Windows.Forms.Button();
             this.cmdClose = new System.Windows.Forms.Button();
             this.lblLastUpdated = new System.Windows.Forms.Label();
-            this.cmdDelete = new System.Windows.Forms.Button();
             this.tbMerchantInformation = new System.Windows.Forms.TabControl();
             this.tbMerchantContactData = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
@@ -78,6 +74,7 @@ namespace SampleCode
             this.label30 = new System.Windows.Forms.Label();
             this.txtReimbursementAttribute = new System.Windows.Forms.TextBox();
             this.txtTimeZoneDifferential = new System.Windows.Forms.TextBox();
+            this.txtStoreId = new System.Windows.Forms.TextBox();
             this.txtSecondaryTerminalId = new System.Windows.Forms.TextBox();
             this.txtLocation = new System.Windows.Forms.TextBox();
             this.txtAgentChain = new System.Windows.Forms.TextBox();
@@ -105,29 +102,18 @@ namespace SampleCode
             this.cboLanguage = new System.Windows.Forms.ComboBox();
             this.label33 = new System.Windows.Forms.Label();
             this.txtMerchantProfileServiceId = new System.Windows.Forms.TextBox();
-            this.ChkUseWorkFlowId = new System.Windows.Forms.CheckBox();
             this.ChkEnableAllMerchantFields = new System.Windows.Forms.CheckBox();
+            this.cboMerchantDataAction = new System.Windows.Forms.ComboBox();
+            this.CmdPerformWebRequest = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.cboAvailableProfiles = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.lnkManageMerchantData = new System.Windows.Forms.LinkLabel();
             this.tbMerchantInformation.SuspendLayout();
             this.tbMerchantContactData.SuspendLayout();
             this.tbMerchantAccountData.SuspendLayout();
             this.tbMerchantDataTxnDefaults.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 9);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(90, 13);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "MerchantProfileId";
-            // 
-            // txtStoreId
-            // 
-            this.txtStoreId.Location = new System.Drawing.Point(143, 63);
-            this.txtStoreId.Name = "txtStoreId";
-            this.txtStoreId.Size = new System.Drawing.Size(269, 20);
-            this.txtStoreId.TabIndex = 3;
             // 
             // lblStoreId
             // 
@@ -140,7 +126,7 @@ namespace SampleCode
             // 
             // cmdPopulateTestValues
             // 
-            this.cmdPopulateTestValues.Location = new System.Drawing.Point(308, 33);
+            this.cmdPopulateTestValues.Location = new System.Drawing.Point(305, 106);
             this.cmdPopulateTestValues.Name = "cmdPopulateTestValues";
             this.cmdPopulateTestValues.Size = new System.Drawing.Size(142, 23);
             this.cmdPopulateTestValues.TabIndex = 44;
@@ -148,26 +134,9 @@ namespace SampleCode
             this.cmdPopulateTestValues.UseVisualStyleBackColor = true;
             this.cmdPopulateTestValues.Click += new System.EventHandler(this.cmdPopulateTestValues_Click);
             // 
-            // txtProfileId
-            // 
-            this.txtProfileId.Location = new System.Drawing.Point(108, 6);
-            this.txtProfileId.Name = "txtProfileId";
-            this.txtProfileId.Size = new System.Drawing.Size(177, 20);
-            this.txtProfileId.TabIndex = 0;
-            // 
-            // cmdAddUpdate
-            // 
-            this.cmdAddUpdate.Location = new System.Drawing.Point(221, 641);
-            this.cmdAddUpdate.Name = "cmdAddUpdate";
-            this.cmdAddUpdate.Size = new System.Drawing.Size(87, 23);
-            this.cmdAddUpdate.TabIndex = 2;
-            this.cmdAddUpdate.Text = "Add/Update";
-            this.cmdAddUpdate.UseVisualStyleBackColor = true;
-            this.cmdAddUpdate.Click += new System.EventHandler(this.cmdAddUpdate_Click);
-            // 
             // cmdClose
             // 
-            this.cmdClose.Location = new System.Drawing.Point(394, 640);
+            this.cmdClose.Location = new System.Drawing.Point(391, 601);
             this.cmdClose.Name = "cmdClose";
             this.cmdClose.Size = new System.Drawing.Size(56, 23);
             this.cmdClose.TabIndex = 19;
@@ -178,31 +147,21 @@ namespace SampleCode
             // lblLastUpdated
             // 
             this.lblLastUpdated.AutoSize = true;
-            this.lblLastUpdated.Location = new System.Drawing.Point(12, 651);
+            this.lblLastUpdated.Location = new System.Drawing.Point(13, 611);
             this.lblLastUpdated.Name = "lblLastUpdated";
             this.lblLastUpdated.Size = new System.Drawing.Size(0, 13);
             this.lblLastUpdated.TabIndex = 5;
-            // 
-            // cmdDelete
-            // 
-            this.cmdDelete.Location = new System.Drawing.Point(290, 4);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(160, 23);
-            this.cmdDelete.TabIndex = 20;
-            this.cmdDelete.Text = "Delete this MerchantProfileId";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // tbMerchantInformation
             // 
             this.tbMerchantInformation.Controls.Add(this.tbMerchantContactData);
             this.tbMerchantInformation.Controls.Add(this.tbMerchantAccountData);
             this.tbMerchantInformation.Controls.Add(this.tbMerchantDataTxnDefaults);
-            this.tbMerchantInformation.Location = new System.Drawing.Point(15, 84);
+            this.tbMerchantInformation.Location = new System.Drawing.Point(12, 135);
             this.tbMerchantInformation.Name = "tbMerchantInformation";
             this.tbMerchantInformation.SelectedIndex = 0;
             this.tbMerchantInformation.ShowToolTips = true;
-            this.tbMerchantInformation.Size = new System.Drawing.Size(435, 544);
+            this.tbMerchantInformation.Size = new System.Drawing.Size(435, 461);
             this.tbMerchantInformation.TabIndex = 3;
             // 
             // tbMerchantContactData
@@ -230,7 +189,7 @@ namespace SampleCode
             this.tbMerchantContactData.Location = new System.Drawing.Point(4, 22);
             this.tbMerchantContactData.Name = "tbMerchantContactData";
             this.tbMerchantContactData.Padding = new System.Windows.Forms.Padding(3);
-            this.tbMerchantContactData.Size = new System.Drawing.Size(427, 518);
+            this.tbMerchantContactData.Size = new System.Drawing.Size(427, 435);
             this.tbMerchantContactData.TabIndex = 0;
             this.tbMerchantContactData.Text = "Merchant Contact Data";
             this.tbMerchantContactData.UseVisualStyleBackColor = true;
@@ -434,7 +393,7 @@ namespace SampleCode
             this.tbMerchantAccountData.Location = new System.Drawing.Point(4, 22);
             this.tbMerchantAccountData.Name = "tbMerchantAccountData";
             this.tbMerchantAccountData.Padding = new System.Windows.Forms.Padding(3);
-            this.tbMerchantAccountData.Size = new System.Drawing.Size(427, 541);
+            this.tbMerchantAccountData.Size = new System.Drawing.Size(427, 435);
             this.tbMerchantAccountData.TabIndex = 1;
             this.tbMerchantAccountData.Text = "Merchant Account Data";
             this.tbMerchantAccountData.UseVisualStyleBackColor = true;
@@ -581,6 +540,13 @@ namespace SampleCode
             this.txtTimeZoneDifferential.Size = new System.Drawing.Size(269, 20);
             this.txtTimeZoneDifferential.TabIndex = 14;
             // 
+            // txtStoreId
+            // 
+            this.txtStoreId.Location = new System.Drawing.Point(143, 63);
+            this.txtStoreId.Name = "txtStoreId";
+            this.txtStoreId.Size = new System.Drawing.Size(269, 20);
+            this.txtStoreId.TabIndex = 3;
+            // 
             // txtSecondaryTerminalId
             // 
             this.txtSecondaryTerminalId.Location = new System.Drawing.Point(143, 299);
@@ -698,7 +664,7 @@ namespace SampleCode
             this.tbMerchantDataTxnDefaults.Location = new System.Drawing.Point(4, 22);
             this.tbMerchantDataTxnDefaults.Name = "tbMerchantDataTxnDefaults";
             this.tbMerchantDataTxnDefaults.Padding = new System.Windows.Forms.Padding(3);
-            this.tbMerchantDataTxnDefaults.Size = new System.Drawing.Size(427, 541);
+            this.tbMerchantDataTxnDefaults.Size = new System.Drawing.Size(427, 435);
             this.tbMerchantDataTxnDefaults.TabIndex = 2;
             this.tbMerchantDataTxnDefaults.Text = "Merchant TxnData Defaults";
             this.tbMerchantDataTxnDefaults.UseVisualStyleBackColor = true;
@@ -814,7 +780,7 @@ namespace SampleCode
             // label33
             // 
             this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(12, 39);
+            this.label33.Location = new System.Drawing.Point(19, 42);
             this.label33.Name = "label33";
             this.label33.Size = new System.Drawing.Size(52, 13);
             this.label33.TabIndex = 45;
@@ -822,26 +788,16 @@ namespace SampleCode
             // 
             // txtMerchantProfileServiceId
             // 
-            this.txtMerchantProfileServiceId.Location = new System.Drawing.Point(108, 32);
+            this.txtMerchantProfileServiceId.Location = new System.Drawing.Point(114, 39);
             this.txtMerchantProfileServiceId.Name = "txtMerchantProfileServiceId";
             this.txtMerchantProfileServiceId.ReadOnly = true;
-            this.txtMerchantProfileServiceId.Size = new System.Drawing.Size(177, 20);
+            this.txtMerchantProfileServiceId.Size = new System.Drawing.Size(187, 20);
             this.txtMerchantProfileServiceId.TabIndex = 46;
-            // 
-            // ChkUseWorkFlowId
-            // 
-            this.ChkUseWorkFlowId.AutoSize = true;
-            this.ChkUseWorkFlowId.Location = new System.Drawing.Point(108, 644);
-            this.ChkUseWorkFlowId.Name = "ChkUseWorkFlowId";
-            this.ChkUseWorkFlowId.Size = new System.Drawing.Size(102, 17);
-            this.ChkUseWorkFlowId.TabIndex = 47;
-            this.ChkUseWorkFlowId.Text = "Use WorkflowId";
-            this.ChkUseWorkFlowId.UseVisualStyleBackColor = true;
             // 
             // ChkEnableAllMerchantFields
             // 
             this.ChkEnableAllMerchantFields.AutoSize = true;
-            this.ChkEnableAllMerchantFields.Location = new System.Drawing.Point(348, 62);
+            this.ChkEnableAllMerchantFields.Location = new System.Drawing.Point(150, 112);
             this.ChkEnableAllMerchantFields.Name = "ChkEnableAllMerchantFields";
             this.ChkEnableAllMerchantFields.Size = new System.Drawing.Size(102, 17);
             this.ChkEnableAllMerchantFields.TabIndex = 48;
@@ -849,25 +805,88 @@ namespace SampleCode
             this.ChkEnableAllMerchantFields.UseVisualStyleBackColor = true;
             this.ChkEnableAllMerchantFields.CheckedChanged += new System.EventHandler(this.ChkEnableAllMerchantFields_CheckedChanged);
             // 
+            // cboMerchantDataAction
+            // 
+            this.cboMerchantDataAction.FormattingEnabled = true;
+            this.cboMerchantDataAction.Location = new System.Drawing.Point(15, 12);
+            this.cboMerchantDataAction.Name = "cboMerchantDataAction";
+            this.cboMerchantDataAction.Size = new System.Drawing.Size(286, 21);
+            this.cboMerchantDataAction.TabIndex = 149;
+            // 
+            // CmdPerformWebRequest
+            // 
+            this.CmdPerformWebRequest.Location = new System.Drawing.Point(307, 10);
+            this.CmdPerformWebRequest.Name = "CmdPerformWebRequest";
+            this.CmdPerformWebRequest.Size = new System.Drawing.Size(142, 23);
+            this.CmdPerformWebRequest.TabIndex = 148;
+            this.CmdPerformWebRequest.Text = "Perform Web Request";
+            this.CmdPerformWebRequest.UseVisualStyleBackColor = true;
+            this.CmdPerformWebRequest.Click += new System.EventHandler(this.CmdPerformWebRequest_Click);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(14, 82);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(93, 13);
+            this.label10.TabIndex = 151;
+            this.label10.Text = "Available Profile(s)";
+            // 
+            // cboAvailableProfiles
+            // 
+            this.cboAvailableProfiles.FormattingEnabled = true;
+            this.cboAvailableProfiles.Location = new System.Drawing.Point(112, 79);
+            this.cboAvailableProfiles.Name = "cboAvailableProfiles";
+            this.cboAvailableProfiles.Size = new System.Drawing.Size(189, 21);
+            this.cboAvailableProfiles.TabIndex = 150;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.HotTrack;
+            this.label1.Location = new System.Drawing.Point(14, 63);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(379, 13);
+            this.label1.TabIndex = 152;
+            this.label1.Text = "Note : To add a new profile, type the Merchant ProfileId in the dropdown below";
+            // 
+            // lnkManageMerchantData
+            // 
+            this.lnkManageMerchantData.AutoSize = true;
+            this.lnkManageMerchantData.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lnkManageMerchantData.Image = ((System.Drawing.Image)(resources.GetObject("lnkManageMerchantData.Image")));
+            this.lnkManageMerchantData.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.lnkManageMerchantData.Location = new System.Drawing.Point(429, 42);
+            this.lnkManageMerchantData.Margin = new System.Windows.Forms.Padding(0);
+            this.lnkManageMerchantData.MinimumSize = new System.Drawing.Size(20, 20);
+            this.lnkManageMerchantData.Name = "lnkManageMerchantData";
+            this.lnkManageMerchantData.Size = new System.Drawing.Size(20, 20);
+            this.lnkManageMerchantData.TabIndex = 153;
+            this.lnkManageMerchantData.Tag = "Learn more about \"Sign On\"";
+            this.lnkManageMerchantData.Click += new System.EventHandler(this.lnkManageMerchantData_Click);
+            // 
             // ManageMerchantProfile
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 676);
-            this.Controls.Add(this.ChkEnableAllMerchantFields);
-            this.Controls.Add(this.ChkUseWorkFlowId);
+            this.ClientSize = new System.Drawing.Size(461, 634);
+            this.Controls.Add(this.lnkManageMerchantData);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.cboAvailableProfiles);
+            this.Controls.Add(this.cboMerchantDataAction);
+            this.Controls.Add(this.CmdPerformWebRequest);
             this.Controls.Add(this.txtMerchantProfileServiceId);
             this.Controls.Add(this.label33);
             this.Controls.Add(this.cmdPopulateTestValues);
             this.Controls.Add(this.tbMerchantInformation);
-            this.Controls.Add(this.cmdDelete);
             this.Controls.Add(this.lblLastUpdated);
             this.Controls.Add(this.cmdClose);
-            this.Controls.Add(this.cmdAddUpdate);
-            this.Controls.Add(this.txtProfileId);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.ChkEnableAllMerchantFields);
             this.Name = "ManageMerchantProfile";
-            this.Text = "Manage Merchant Profiles - CWS 1.17.17";
+            this.Text = "Manage Merchant Profiles - CWS 1.17.18";
+            this.Load += new System.EventHandler(this.ManageMerchantProfile_Load);
             this.tbMerchantInformation.ResumeLayout(false);
             this.tbMerchantContactData.ResumeLayout(false);
             this.tbMerchantContactData.PerformLayout();
@@ -882,14 +901,9 @@ namespace SampleCode
 
         #endregion
 
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtProfileId;
-        private System.Windows.Forms.Button cmdAddUpdate;
         private System.Windows.Forms.Button cmdClose;
         private System.Windows.Forms.Label lblLastUpdated;
-        private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.Button cmdPopulateTestValues;
-        private System.Windows.Forms.TextBox txtStoreId;
         private System.Windows.Forms.Label lblStoreId;
         private System.Windows.Forms.TabControl tbMerchantInformation;
         private System.Windows.Forms.TabPage tbMerchantAccountData;
@@ -915,7 +929,6 @@ namespace SampleCode
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.TextBox txtMerchantProfileServiceId;
-        private System.Windows.Forms.CheckBox ChkUseWorkFlowId;
         private System.Windows.Forms.TabPage tbMerchantDataTxnDefaults;
         private System.Windows.Forms.Label label34;
         private System.Windows.Forms.ComboBox cboRequestACI;
@@ -961,5 +974,12 @@ namespace SampleCode
         private System.Windows.Forms.TextBox txtMerchantId;
         private System.Windows.Forms.TextBox txtTaxId;
         private System.Windows.Forms.CheckBox ChkEnableAllMerchantFields;
+        private System.Windows.Forms.TextBox txtStoreId;
+        private System.Windows.Forms.ComboBox cboMerchantDataAction;
+        private System.Windows.Forms.Button CmdPerformWebRequest;
+        private System.Windows.Forms.Label label10;
+        public System.Windows.Forms.ComboBox cboAvailableProfiles;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.LinkLabel lnkManageMerchantData;
     }
 }

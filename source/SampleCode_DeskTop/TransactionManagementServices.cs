@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Net;
 using System.ServiceModel;
 using System.Windows.Forms;
@@ -50,6 +51,10 @@ namespace SampleCode
             dtpEndTimeTMS.Format = DateTimePickerFormat.Custom;
             dtpEndTimeTMS.CustomFormat = "dddd MM'/'dd'/'yyyy hh':'mm tt";
             dtpEndTimeTMS.Value = DateTime.Now;
+
+            CboTransactionDetailFormat.Sorted = true;
+            CboTransactionDetailFormat.DataSource = Enum.GetValues(typeof(TransactionDetailFormat));
+            
         }
 
         private void TransactionManagementServices_Load(object sender, EventArgs e)
@@ -59,7 +64,7 @@ namespace SampleCode
             {
                 foreach (var item in ((SampleCode_DeskTop)(Owner)).cboAvailableServices.Items)
                 {
-                    CboQTP_ServiceIds.Items.Add(((SampleCode.SampleCode_DeskTop.Item)(item)).Value1);
+                    CboQTP_ServiceIds.Items.Add(((SampleCode.Item)(item)).Value1);
                 }
                 
             }
@@ -110,13 +115,16 @@ namespace SampleCode
             try
             {
                 ((SampleCode_DeskTop)(Owner)).Helper.CheckTokenExpire();//Make sure the current token is valid
-                txtTMSResults.Text = "";
+                RtxtTMSResults.Clear();
 
                 Cursor = Cursors.WaitCursor;
                 ProcessQueryBatchResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryBatch(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QBP(), PP()));
 
-                if (txtTMSResults.Text.Length < 1)
-                    txtTMSResults.Text = "No Query Batch Results : " + DateTime.Now;
+                if (RtxtTMSResults.TextLength < 1)
+                {
+                    RtxtTMSResults.SelectionColor = Color.Blue;
+                    RtxtTMSResults.AppendText("No Query Batch Results : " + DateTime.Now);
+                }
                 Cursor = Cursors.Default;
             }
             catch (EndpointNotFoundException)
@@ -167,12 +175,13 @@ namespace SampleCode
             try
             {
                 ((SampleCode_DeskTop)(Owner)).Helper.CheckTokenExpire();//Make sure the current token is valid
-                txtTMSResults.Text = "";
+                RtxtTMSResults.Clear();
 
                 Cursor = Cursors.WaitCursor;
                 ProcessQueryTransactionSummaryResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryTransactionsSummary(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QTP(), BlnIncludeRelated, PP())); ;
-                
-                txtTMSResults.Text = "Last Transaction Summary Search : " + DateTime.Now;
+
+                RtxtTMSResults.SelectionColor = Color.Blue;
+                RtxtTMSResults.AppendText("Last Transaction Summary Search : " + DateTime.Now);
 
                 Cursor = Cursors.Default;
             }
@@ -217,7 +226,7 @@ namespace SampleCode
             try
             {
                 ((SampleCode_DeskTop)(Owner)).Helper.CheckTokenExpire();//Make sure the current token is valid
-                txtTMSResults.Text = "";
+                RtxtTMSResults.Clear();
 
                 Cursor = Cursors.WaitCursor;
                 ProcessQueryTransactionFamiliesResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryTransactionFamilies(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QTP(), PP()));
@@ -266,15 +275,19 @@ namespace SampleCode
             try
             {
                 ((SampleCode_DeskTop)(Owner)).Helper.CheckTokenExpire();//Make sure the current token is valid
-                txtTMSResults.Text = "";
+                RtxtTMSResults.Clear();
 
                 Cursor = Cursors.WaitCursor;
 
-                TransactionDetailFormat TDF = new TransactionDetailFormat();
+                TransactionDetailFormat TDF = (TransactionDetailFormat)CboTransactionDetailFormat.SelectedItem;
+                
                 ProcessQueryTransactionsDetailResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryTransactionsDetail(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QTP(), TDF, BlnIncludeRelated, PP())); ;
 
-                if (txtTMSResults.Text.Length < 1)
-                    txtTMSResults.Text = "No Query Transaction Detail Results : " + DateTime.Now;
+                if (RtxtTMSResults.Text.Length < 1)
+                {
+                    RtxtTMSResults.SelectionColor = Color.Blue;
+                    RtxtTMSResults.AppendText("No Query Transaction Detail Results : " + DateTime.Now);
+                }
                 Cursor = Cursors.Default;
             }
             catch (EndpointNotFoundException)
@@ -284,7 +297,8 @@ namespace SampleCode
                 {
                     ((SampleCode_DeskTop)(Owner)).Helper.SetTMSEndpoint();//Change the endpoint to use the backup.
 
-                    TransactionDetailFormat TDF = new TransactionDetailFormat();
+                    TransactionDetailFormat TDF = (TransactionDetailFormat)CboTransactionDetailFormat.SelectedItem;
+
                     ProcessQueryTransactionsDetailResponse(((SampleCode_DeskTop)(Owner)).Helper.Tmsoc.QueryTransactionsDetail(((SampleCode_DeskTop)(Owner)).Helper.SessionToken, QTP(), TDF, BlnIncludeRelated, PP()));
                 }
                 catch (EndpointNotFoundException)
@@ -537,45 +551,37 @@ namespace SampleCode
             return PP;
         }
 
-        private void txtTMSResults_KeyDown(object sender, KeyEventArgs e)
-        {
-            // See if Ctrl-A is pressed... 
-            if (e.Control && (e.KeyCode == Keys.A))
-            {
-                txtTMSResults.SelectAll();
-                e.Handled = true;
-            }
-        }
-
         private void chklstTMSResults_SelectedIndexChanged(object sender, EventArgs e)
         {
+            RtxtTMSResults.Clear();
+
             //Process SummaryDetail response
             if (_lastSearch == LastSearchType.QueryTransactionsSummary)
             {
                 if (chklstTMSResults.SelectedItem == null) return;
                 SummaryDetail s = ((SummaryDetailVal)(chklstTMSResults.SelectedItem)).SD;
-                txtTMSResults.Text = SummaryDetailString(s);
+                SummaryDetailString(s);
             }
             //Process FamilyDetail response
             if (_lastSearch == LastSearchType.QueryTransactionFamilies)
             {
                 if (chklstTMSResults.SelectedItem == null) return;
                 FamilyDetail f = ((FamilyDetailVal)(chklstTMSResults.SelectedItem)).FD;
-                txtTMSResults.Text = FamilyDetailString(f);
+                FamilyDetailString(f);
             }
             //Process BatchDetailData response
             if (_lastSearch == LastSearchType.QueryBatch)
             {
                 if (chklstTMSResults.SelectedItem == null) return;
                 BatchDetailData b = ((BatchDetailDataVal)(chklstTMSResults.SelectedItem)).BDD;
-                txtTMSResults.Text = BatchDetailDataString(b);
+                BatchDetailDataString(b);
             }
             //Process TransactionDetail response
             if (_lastSearch == LastSearchType.QueryTransactionsDetail)
             {
                 if (chklstTMSResults.SelectedItem == null) return;
                 TransactionDetail t = ((TransactionDetailVal)(chklstTMSResults.SelectedItem)).TD;
-                txtTMSResults.Text = TransactionDetailString(t);
+                TransactionDetailString(t);
             }
         }
 
@@ -697,54 +703,56 @@ namespace SampleCode
             }
         }
 
-        private string BatchDetailDataString(BatchDetailData b)
+        private void BatchDetailDataString(BatchDetailData b)
         {
-            string strSummary = "";
-
+            RtxtTMSResults.SelectionColor = Color.Black;
             //Batch Summary
-            strSummary = strSummary + "BatchCaptureDate : " + b.BatchCaptureDate + " (UTC)\r\n";
-            strSummary = strSummary + "BatchId : " + b.BatchId + "\r\n";
-            strSummary = strSummary + "Capture State : " + b.CaptureState + "\r\n";
-            strSummary = strSummary + "Description : " + b.Description + "\r\n";
+            RtxtTMSResults.AppendText("BatchCaptureDate : " + b.BatchCaptureDate + " (UTC)\r\n");
+            RtxtTMSResults.AppendText("BatchId : " + b.BatchId + "\r\n");
+            RtxtTMSResults.AppendText("Capture State : " + b.CaptureState + "\r\n");
+            RtxtTMSResults.AppendText("Description : " + b.Description + "\r\n");
             //Batch Summary Data
             if (b.SummaryData != null)
             {
-                strSummary = strSummary + "Batch Summary Data";
-                if (b.SummaryData.CashBackTotals != null) strSummary = strSummary + "\r\nCash Back Totals \r\n  Count : " + b.SummaryData.CashBackTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CashBackTotals.NetAmount;
-                if (b.SummaryData.CreditReturnTotals != null) strSummary = strSummary + "\r\nCredit Return Totals \r\n  Count : " + b.SummaryData.CreditReturnTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CreditReturnTotals.NetAmount;
-                if (b.SummaryData.CreditTotals != null) strSummary = strSummary + "\r\nCredit Totals \r\n  Count : " + b.SummaryData.CreditTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CreditTotals.NetAmount;
-                if (b.SummaryData.DebitReturnTotals != null) strSummary = strSummary + "\r\nDebit Return Totals \r\n  Count : " + b.SummaryData.DebitReturnTotals.Count + "\r\n  Net Amount : " + b.SummaryData.DebitReturnTotals.NetAmount;
-                if (b.SummaryData.DebitTotals != null) strSummary = strSummary + "\r\nDebit Totals \r\n  Count : " + b.SummaryData.DebitTotals.Count + "\r\n  Net Amount : " + b.SummaryData.DebitTotals.NetAmount;
-                if (b.SummaryData.NetTotals != null) strSummary = strSummary + "\r\nNet Totals \r\n  Count : " + b.SummaryData.NetTotals.Count + "\r\n  Net Amount : " + b.SummaryData.NetTotals.NetAmount;
-                if (b.SummaryData.VoidTotals != null) strSummary = strSummary + "\r\nVoid Totals \r\n  Count : " + b.SummaryData.VoidTotals.Count + "\r\n  Net Amount : " + b.SummaryData.VoidTotals.NetAmount;
+                RtxtTMSResults.AppendText("Batch Summary Data");
+                if (b.SummaryData.CashBackTotals != null) RtxtTMSResults.AppendText("\r\nCash Back Totals \r\n  Count : " + b.SummaryData.CashBackTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CashBackTotals.NetAmount);
+                if (b.SummaryData.CreditReturnTotals != null) RtxtTMSResults.AppendText("\r\nCredit Return Totals \r\n  Count : " + b.SummaryData.CreditReturnTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CreditReturnTotals.NetAmount);
+                if (b.SummaryData.CreditTotals != null) RtxtTMSResults.AppendText("\r\nCredit Totals \r\n  Count : " + b.SummaryData.CreditTotals.Count + "\r\n  Net Amount : " + b.SummaryData.CreditTotals.NetAmount);
+                if (b.SummaryData.DebitReturnTotals != null) RtxtTMSResults.AppendText("\r\nDebit Return Totals \r\n  Count : " + b.SummaryData.DebitReturnTotals.Count + "\r\n  Net Amount : " + b.SummaryData.DebitReturnTotals.NetAmount);
+                if (b.SummaryData.DebitTotals != null) RtxtTMSResults.AppendText("\r\nDebit Totals \r\n  Count : " + b.SummaryData.DebitTotals.Count + "\r\n  Net Amount : " + b.SummaryData.DebitTotals.NetAmount);
+                if (b.SummaryData.NetTotals != null) RtxtTMSResults.AppendText("\r\nNet Totals \r\n  Count : " + b.SummaryData.NetTotals.Count + "\r\n  Net Amount : " + b.SummaryData.NetTotals.NetAmount);
+                if (b.SummaryData.VoidTotals != null) RtxtTMSResults.AppendText("\r\nVoid Totals \r\n  Count : " + b.SummaryData.VoidTotals.Count + "\r\n  Net Amount : " + b.SummaryData.VoidTotals.NetAmount);
             }
             //TransactionId
-            strSummary = strSummary + "\r\nList of TransactionIds\r\n";
+            RtxtTMSResults.AppendText("\r\nList of TransactionIds\r\n");
             if (b.TransactionIds != null)
             {
                 foreach (string txnid in b.TransactionIds)
                 {
-                    strSummary = strSummary + txnid + "\r\n";
+                    RtxtTMSResults.AppendText(txnid + "\r\n");
                 }
             }
-            strSummary = strSummary + "\r\n";
-            return strSummary;
+            RtxtTMSResults.AppendText("\r\n");
         }
 
-        private string SummaryDetailString(SummaryDetail s)
+        private void SummaryDetailString(SummaryDetail s)
         {
-            string strSummary = "";
+            RtxtTMSResults.SelectionColor = Color.Black;
+
+            ColorText("TransactionState : " + s.TransactionInformation.TransactionState + "\r\n", s.TransactionInformation.TransactionState);
+            ColorText("TransactionStatusCode : " + s.TransactionInformation.TransactionStatusCode + "\r\n", s.TransactionInformation.TransactionState);
+
             //FamilyInformation
-            strSummary = strSummary + "Family Information\r\n";
-            strSummary = strSummary + "FamilyId : " + s.FamilyInformation.FamilyId + "\r\n";
-            strSummary = strSummary + "FamilySequenceCount : " + s.FamilyInformation.FamilySequenceCount + "\r\n";
-            strSummary = strSummary + "FamilySequenceNumber : " + s.FamilyInformation.FamilySequenceNumber + "\r\n";
-            strSummary = strSummary + "FamilyState : " + s.FamilyInformation.FamilyState + "\r\n";
-            strSummary = strSummary + "NetAmount : " + s.FamilyInformation.NetAmount + "\r\n";
+            RtxtTMSResults.AppendText("Family Information\r\n");
+            RtxtTMSResults.AppendText("FamilyId : " + s.FamilyInformation.FamilyId + "\r\n");
+            RtxtTMSResults.AppendText("FamilySequenceCount : " + s.FamilyInformation.FamilySequenceCount + "\r\n");
+            RtxtTMSResults.AppendText("FamilySequenceNumber : " + s.FamilyInformation.FamilySequenceNumber + "\r\n");
+            RtxtTMSResults.AppendText("FamilyState : " + s.FamilyInformation.FamilyState + "\r\n");
+            RtxtTMSResults.AppendText("NetAmount : " + s.FamilyInformation.NetAmount + "\r\n");
             //TransactionInformation
-            strSummary = strSummary + "Transaction Information\r\n";
-            strSummary = strSummary + "Amount : " + s.TransactionInformation.Amount + "\r\n";
-            strSummary = strSummary + "ApprovalCode : " + s.TransactionInformation.ApprovalCode + "\r\n";
+            RtxtTMSResults.AppendText("Transaction Information\r\n");
+            RtxtTMSResults.AppendText("Amount : " + s.TransactionInformation.Amount + "\r\n");
+            RtxtTMSResults.AppendText("ApprovalCode : " + s.TransactionInformation.ApprovalCode + "\r\n");
             
              //TransactionInformation.BankcardData
             if (s.TransactionInformation.BankcardData != null)
@@ -752,128 +760,130 @@ namespace SampleCode
                 if (s.TransactionInformation.BankcardData.AVSResult != null)
                 {
                     //TransactionInformation.BankcardData.AVSResult
-                    strSummary = strSummary + "AVSResult Summary\r\n";
-                    strSummary = strSummary + " - ActualResult : " + s.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n";
-                    strSummary = strSummary + " - AddressResult : " + s.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n";
-                    strSummary = strSummary + " - CardholderNameResult : " + s.TransactionInformation.BankcardData.AVSResult.CardholderNameResult + "\r\n";
-                    strSummary = strSummary + " - CityResult : " + s.TransactionInformation.BankcardData.AVSResult.CityResult + "\r\n";
-                    strSummary = strSummary + " - CountryResult : " + s.TransactionInformation.BankcardData.AVSResult.CountryResult + "\r\n";
-                    strSummary = strSummary + " - PhoneResult : " + s.TransactionInformation.BankcardData.AVSResult.PhoneResult + "\r\n";
-                    strSummary = strSummary + " - PostalCodeResult : " + s.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n";
-                    strSummary = strSummary + " - StateResult : " + s.TransactionInformation.BankcardData.AVSResult.StateResult + "\r\n";
+                    RtxtTMSResults.AppendText("AVSResult Summary\r\n");
+                    RtxtTMSResults.AppendText(" - ActualResult : " + s.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - AddressResult : " + s.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - CardholderNameResult : " + s.TransactionInformation.BankcardData.AVSResult.CardholderNameResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - CityResult : " + s.TransactionInformation.BankcardData.AVSResult.CityResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - CountryResult : " + s.TransactionInformation.BankcardData.AVSResult.CountryResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - PhoneResult : " + s.TransactionInformation.BankcardData.AVSResult.PhoneResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - PostalCodeResult : " + s.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - StateResult : " + s.TransactionInformation.BankcardData.AVSResult.StateResult + "\r\n");
                 }
                 //TransactionInformation.BankcardData
-                strSummary = strSummary + "CardType : " + s.TransactionInformation.BankcardData.CardType + "\r\n";//The card type used on the transaction. Expected.
-                strSummary = strSummary + "CVResult : " + s.TransactionInformation.BankcardData.CVResult + "\r\n";//Response code returned by the card issuer indicating the result of Card Verification (CVV2/CVC2/CID) returned by the service provider. Optional.
-                strSummary = strSummary + "MaskedPAN : " + s.TransactionInformation.BankcardData.MaskedPAN + "\r\n";//The cardholder's PAN in masked format. Expected.
-                strSummary = strSummary + "OrderId : " + s.TransactionInformation.BankcardData.OrderId + "\r\n"; //The order id generated by CWS. This value is often used by service providers for transaction correlation. Expected.
+                RtxtTMSResults.AppendText("CardType : " + s.TransactionInformation.BankcardData.CardType + "\r\n");//The card type used on the transaction. Expected.
+                RtxtTMSResults.AppendText("CVResult : " + s.TransactionInformation.BankcardData.CVResult + "\r\n");//Response code returned by the card issuer indicating the result of Card Verification (CVV2/CVC2/CID) returned by the service provider. Optional.
+                RtxtTMSResults.AppendText("MaskedPAN : " + s.TransactionInformation.BankcardData.MaskedPAN + "\r\n");//The cardholder's PAN in masked format. Expected.
+                RtxtTMSResults.AppendText("OrderId : " + s.TransactionInformation.BankcardData.OrderId + "\r\n"); //The order id generated by CWS. This value is often used by service providers for transaction correlation. Expected.
             }
             //TransactionInformation
-            strSummary = strSummary + "BatchId : " + s.TransactionInformation.BatchId + "\r\n";
-            strSummary = strSummary + "CapturedAmount : " + s.TransactionInformation.CapturedAmount + "\r\n";
-            strSummary = strSummary + "CaptureDateTime : " + s.TransactionInformation.CaptureDateTime + "\r\n";
-            strSummary = strSummary + "CaptureState : " + s.TransactionInformation.CaptureState + "\r\n";
-            strSummary = strSummary + "CaptureStatusMessage : " + s.TransactionInformation.CaptureStatusMessage + "\r\n";
-            strSummary = strSummary + "CustomerId : " + s.TransactionInformation.CustomerId + "\r\n";
+            RtxtTMSResults.AppendText("BatchId : " + s.TransactionInformation.BatchId + "\r\n");
+            RtxtTMSResults.AppendText("CapturedAmount : " + s.TransactionInformation.CapturedAmount + "\r\n");
+            RtxtTMSResults.AppendText("CaptureDateTime : " + s.TransactionInformation.CaptureDateTime + "\r\n");
+            RtxtTMSResults.AppendText("CaptureState : " + s.TransactionInformation.CaptureState + "\r\n");
+            RtxtTMSResults.AppendText("CaptureStatusMessage : " + s.TransactionInformation.CaptureStatusMessage + "\r\n");
+            RtxtTMSResults.AppendText("CustomerId : " + s.TransactionInformation.CustomerId + "\r\n");
             //TransactionInformation.ElectronicCheckData
             if (s.TransactionInformation.ElectronicCheckData != null)
             {
-                strSummary = strSummary + "Electronic Check Data (if applicable)\r\n";
-                strSummary = strSummary + "- CheckNumber : " + s.TransactionInformation.ElectronicCheckData.CheckNumber + "\r\n";
-                strSummary = strSummary + "- MaskedAccountNumber : " + s.TransactionInformation.ElectronicCheckData.MaskedAccountNumber + "\r\n";
-                strSummary = strSummary + "- TransactionType : " + s.TransactionInformation.ElectronicCheckData.TransactionType + "\r\n";
+                RtxtTMSResults.AppendText("Electronic Check Data (if applicable)\r\n");
+                RtxtTMSResults.AppendText("- CheckNumber : " + s.TransactionInformation.ElectronicCheckData.CheckNumber + "\r\n");
+                RtxtTMSResults.AppendText("- MaskedAccountNumber : " + s.TransactionInformation.ElectronicCheckData.MaskedAccountNumber + "\r\n");
+                RtxtTMSResults.AppendText("- TransactionType : " + s.TransactionInformation.ElectronicCheckData.TransactionType + "\r\n");
             }
-            strSummary = strSummary + "IsAcknowledged : " + s.TransactionInformation.IsAcknowledged + "\r\n";
-            strSummary = strSummary + "MaskedPAN : " + s.TransactionInformation.MaskedPAN + "\r\n";
-            strSummary = strSummary + "MerchantProfileId : " + s.TransactionInformation.MerchantProfileId + "\r\n";
-            strSummary = strSummary + "OriginatorTransactionId : " + s.TransactionInformation.OriginatorTransactionId + "\r\n";
-            strSummary = strSummary + "Reference : " + s.TransactionInformation.Reference + "\r\n";
-            strSummary = strSummary + "ServiceId : " + s.TransactionInformation.ServiceId + "\r\n";
-            strSummary = strSummary + "ServiceKey : " + s.TransactionInformation.ServiceKey + "\r\n";
-            strSummary = strSummary + "ServiceTransactionId : " + s.TransactionInformation.ServiceTransactionId + "\r\n";
-            strSummary = strSummary + "Status : " + s.TransactionInformation.Status + "\r\n";
+            RtxtTMSResults.AppendText("IsAcknowledged : " + s.TransactionInformation.IsAcknowledged + "\r\n");
+            RtxtTMSResults.AppendText("MaskedPAN : " + s.TransactionInformation.MaskedPAN + "\r\n");
+            RtxtTMSResults.AppendText("MerchantProfileId : " + s.TransactionInformation.MerchantProfileId + "\r\n");
+            RtxtTMSResults.AppendText("OriginatorTransactionId : " + s.TransactionInformation.OriginatorTransactionId + "\r\n");
+            RtxtTMSResults.AppendText("Reference : " + s.TransactionInformation.Reference + "\r\n");
+            RtxtTMSResults.AppendText("ServiceId : " + s.TransactionInformation.ServiceId + "\r\n");
+            RtxtTMSResults.AppendText("ServiceKey : " + s.TransactionInformation.ServiceKey + "\r\n");
+            RtxtTMSResults.AppendText("ServiceTransactionId : " + s.TransactionInformation.ServiceTransactionId + "\r\n");
+            RtxtTMSResults.AppendText("Status : " + s.TransactionInformation.Status + "\r\n");
             //TransactionInformation.StoredValueData
             if (s.TransactionInformation.StoredValueData != null)
             {
-                strSummary = strSummary + "Stored Value Data (if applicable)\r\n";
-                strSummary = strSummary + "- CVResult : " + s.TransactionInformation.StoredValueData.CVResult + "\r\n";
-                strSummary = strSummary + "- CardRestrictionValue : " + s.TransactionInformation.StoredValueData.CardRestrictionValue + "\r\n";
-                strSummary = strSummary + "- CardStatus : " + s.TransactionInformation.StoredValueData.CardStatus + "\r\n";
-                strSummary = strSummary + "- NewBalance : " + s.TransactionInformation.StoredValueData.NewBalance + "\r\n";
-                strSummary = strSummary + "- OrderId : " + s.TransactionInformation.StoredValueData.OrderId + "\r\n";
-                strSummary = strSummary + "- PreviousBalance : " + s.TransactionInformation.StoredValueData.PreviousBalance + "\r\n";
+                RtxtTMSResults.AppendText("Stored Value Data (if applicable)\r\n");
+                RtxtTMSResults.AppendText("- CVResult : " + s.TransactionInformation.StoredValueData.CVResult + "\r\n");
+                RtxtTMSResults.AppendText("- CardRestrictionValue : " + s.TransactionInformation.StoredValueData.CardRestrictionValue + "\r\n");
+                RtxtTMSResults.AppendText("- CardStatus : " + s.TransactionInformation.StoredValueData.CardStatus + "\r\n");
+                RtxtTMSResults.AppendText("- NewBalance : " + s.TransactionInformation.StoredValueData.NewBalance + "\r\n");
+                RtxtTMSResults.AppendText("- OrderId : " + s.TransactionInformation.StoredValueData.OrderId + "\r\n");
+                RtxtTMSResults.AppendText("- PreviousBalance : " + s.TransactionInformation.StoredValueData.PreviousBalance + "\r\n");
             }
-            strSummary = strSummary + "TransactionClass : " + s.TransactionInformation.TransactionClassTypePair.TransactionClass + "    ";
-            strSummary = strSummary + "TransactionType : " + s.TransactionInformation.TransactionClassTypePair.TransactionType + "\r\n";
-            strSummary = strSummary + "TransactionId : " + s.TransactionInformation.TransactionId + "\r\n";
-            strSummary = strSummary + "TransactionState : " + s.TransactionInformation.TransactionState + "\r\n";
-            strSummary = strSummary + "TransactionStatusCode : " + s.TransactionInformation.TransactionStatusCode + "\r\n";
-            strSummary = strSummary + "TransactionTimestamp : " + s.TransactionInformation.TransactionTimestamp + "\r\n";
-            strSummary = strSummary + "\r\n";
-            return strSummary;
+            RtxtTMSResults.AppendText("TransactionClass : " + s.TransactionInformation.TransactionClassTypePair.TransactionClass + "    ");
+            RtxtTMSResults.AppendText("TransactionType : " + s.TransactionInformation.TransactionClassTypePair.TransactionType + "\r\n");
+            RtxtTMSResults.AppendText("TransactionId : " + s.TransactionInformation.TransactionId + "\r\n");
+            RtxtTMSResults.AppendText("TransactionTimestamp : " + s.TransactionInformation.TransactionTimestamp + "\r\n");
+            RtxtTMSResults.AppendText("\r\n");
         }
 
-        private string FamilyDetailString(FamilyDetail f)
+        private void FamilyDetailString(FamilyDetail f)
         {
-            string strSummary = "";
+            RtxtTMSResults.SelectionColor = Color.Black;
+
 
             //Family Summary
-            strSummary = strSummary + "BatchId : " + f.BatchId + "\r\n";
-            strSummary = strSummary + "CaptureDateTime : " + f.CaptureDateTime + "\r\n";
-            strSummary = strSummary + "CapturedAmount : " + f.CapturedAmount + "\r\n";
-            strSummary = strSummary + "CustomerId : " + f.CustomerId + "\r\n";
-            strSummary = strSummary + "FamilyId : " + f.FamilyId + "\r\n";
-            strSummary = strSummary + "FamilyState : " + f.FamilyState + "\r\n";
-            strSummary = strSummary + "LastAuthorizedAmount : " + f.LastAuthorizedAmount + "\r\n";
-            strSummary = strSummary + "MerchantProfileId : " + f.MerchantProfileId + "\r\n";
-            strSummary = strSummary + "NetAmount : " + f.NetAmount + "\r\n";
-            strSummary = strSummary + "ServiceKey : " + f.ServiceKey + "\r\n";
+            RtxtTMSResults.AppendText("BatchId : " + f.BatchId + "\r\n");
+            RtxtTMSResults.AppendText("CaptureDateTime : " + f.CaptureDateTime + "\r\n");
+            RtxtTMSResults.AppendText("CapturedAmount : " + f.CapturedAmount + "\r\n");
+            RtxtTMSResults.AppendText("CustomerId : " + f.CustomerId + "\r\n");
+            RtxtTMSResults.AppendText("FamilyId : " + f.FamilyId + "\r\n");
+            RtxtTMSResults.AppendText("FamilyState : " + f.FamilyState + "\r\n");
+            RtxtTMSResults.AppendText("LastAuthorizedAmount : " + f.LastAuthorizedAmount + "\r\n");
+            RtxtTMSResults.AppendText("MerchantProfileId : " + f.MerchantProfileId + "\r\n");
+            RtxtTMSResults.AppendText("NetAmount : " + f.NetAmount + "\r\n");
+            RtxtTMSResults.AppendText("ServiceKey : " + f.ServiceKey + "\r\n");
 
             //TransactionId
-            strSummary = strSummary + "List of TransactionIds\r\n";
+            RtxtTMSResults.AppendText("List of TransactionIds\r\n");
             foreach (string txnid in f.TransactionIds)
             {
-                strSummary = strSummary + txnid + "\r\n";
+                RtxtTMSResults.AppendText(txnid + "\r\n");
             }
-            strSummary = strSummary + "\r\nTransaction Meta Data\r\n";
+            RtxtTMSResults.AppendText("\r\nTransaction Meta Data\r\n");
             foreach (TransactionMetaData TMD in f.TransactionMetaData)
             {
-                strSummary = strSummary + "TransactionId : " + TMD.TransactionId + "\r\n";
-                strSummary = strSummary + "* Amount : " + TMD.Amount + "\r\n";
-                strSummary = strSummary + "* CardType : " + TMD.CardType + "\r\n";
-                strSummary = strSummary + "* MaskedPAN : " + TMD.MaskedPAN + "\r\n";
-                strSummary = strSummary + "* SequenceNumber : " + TMD.SequenceNumber + "\r\n";
-                strSummary = strSummary + "* ServiceId : " + TMD.ServiceId + "\r\n";
-                strSummary = strSummary + "* TransactionClass : " + TMD.TransactionClassTypePair.TransactionClass + "    ";
-                strSummary = strSummary + "* TransactionType : " + TMD.TransactionClassTypePair.TransactionType + "\r\n";
-                strSummary = strSummary + "* TransactionDateTime : " + TMD.TransactionDateTime + "\r\n";
-                strSummary = strSummary + "* TransactionState : " + TMD.TransactionState + "\r\n";
-                strSummary = strSummary + "* WorkflowId : " + TMD.WorkflowId + "\r\n";
-                strSummary = strSummary + "\r\n";
+                RtxtTMSResults.AppendText("TransactionId : " + TMD.TransactionId + "\r\n");
+                RtxtTMSResults.AppendText("* Amount : " + TMD.Amount + "\r\n");
+                RtxtTMSResults.AppendText("* CardType : " + TMD.CardType + "\r\n");
+                RtxtTMSResults.AppendText("* MaskedPAN : " + TMD.MaskedPAN + "\r\n");
+                RtxtTMSResults.AppendText("* SequenceNumber : " + TMD.SequenceNumber + "\r\n");
+                RtxtTMSResults.AppendText("* ServiceId : " + TMD.ServiceId + "\r\n");
+                RtxtTMSResults.AppendText("* TransactionClass : " + TMD.TransactionClassTypePair.TransactionClass + "    ");
+                RtxtTMSResults.AppendText("* TransactionType : " + TMD.TransactionClassTypePair.TransactionType + "\r\n");
+                RtxtTMSResults.AppendText("* TransactionDateTime : " + TMD.TransactionDateTime + "\r\n");
+                RtxtTMSResults.AppendText("* TransactionState : " + TMD.TransactionState + "\r\n");
+                RtxtTMSResults.AppendText("* WorkflowId : " + TMD.WorkflowId + "\r\n");
+                RtxtTMSResults.AppendText("\r\n");
             }
 
-            strSummary = strSummary + "\r\n";
-            return strSummary;
+            RtxtTMSResults.AppendText("\r\n");
         }
 
-        private string TransactionDetailString(TransactionDetail t)
+        private void TransactionDetailString(TransactionDetail t)
         {
-            string strSummary = "";
+            RtxtTMSResults.SelectionColor = Color.Black;
+
+            ColorText("TransactionState : " + t.TransactionInformation.TransactionState + "\r\n", t.TransactionInformation.TransactionState);
+            ColorText("TransactionStatusCode : " + t.TransactionInformation.TransactionStatusCode + "\r\n", t.TransactionInformation.TransactionState);
 
             //CompleteTransaction
-            strSummary = strSummary + "CompleteTransaction CWS object : " + "OBJECT\r\n";
-            strSummary = strSummary + (t.CompleteTransaction.SerializedTransaction == null ? "CompleteTransaction Serialized : NOT AVAILABLE\r\n" : "CompleteTransaction Serialized : " + t.CompleteTransaction.SerializedTransaction + "\r\n");
+            RtxtTMSResults.AppendText("CompleteTransaction CWS object : " + "OBJECT\r\n");
+            if ((TransactionDetailFormat)CboTransactionDetailFormat.SelectedItem == TransactionDetailFormat.SerializedCWS)
+                TxtTransactionDetailFormat.Text = t.CompleteTransaction.SerializedTransaction;
+                //RtxtTMSResults.AppendText((t.CompleteTransaction.SerializedTransaction == null ? "CompleteTransaction Serialized : NOT AVAILABLE\r\n" : "CompleteTransaction Serialized : " + t.CompleteTransaction.SerializedTransaction + "\r\n"));
             //Family Information
-            strSummary = strSummary + "Family Information \r\n";
-            strSummary = strSummary + "FamilyId : " + t.FamilyInformation.FamilyId + "\r\n";
-            strSummary = strSummary + "FamilySequenceCount : " + t.FamilyInformation.FamilySequenceCount + "\r\n";
-            strSummary = strSummary + "FamilySequenceNumber : " + t.FamilyInformation.FamilySequenceNumber + "\r\n";
-            strSummary = strSummary + "FamilyState : " + t.FamilyInformation.FamilyState + "\r\n";
-            strSummary = strSummary + "NetAmount : " + t.FamilyInformation.NetAmount + "\r\n";
+            RtxtTMSResults.AppendText("Family Information \r\n");
+            RtxtTMSResults.AppendText("FamilyId : " + t.FamilyInformation.FamilyId + "\r\n");
+            RtxtTMSResults.AppendText("FamilySequenceCount : " + t.FamilyInformation.FamilySequenceCount + "\r\n");
+            RtxtTMSResults.AppendText("FamilySequenceNumber : " + t.FamilyInformation.FamilySequenceNumber + "\r\n");
+            RtxtTMSResults.AppendText("FamilyState : " + t.FamilyInformation.FamilyState + "\r\n");
+            RtxtTMSResults.AppendText("NetAmount : " + t.FamilyInformation.NetAmount + "\r\n");
             //Transaction Information
-            strSummary = strSummary + "Transaction Information\r\n";
-            strSummary = strSummary + "Amount : " + t.TransactionInformation.Amount + "\r\n";
-            strSummary = strSummary + "ApprovalCode : " + t.TransactionInformation.ApprovalCode + "\r\n";
+            RtxtTMSResults.AppendText("Transaction Information\r\n");
+            RtxtTMSResults.AppendText("Amount : " + t.TransactionInformation.Amount + "\r\n");
+            RtxtTMSResults.AppendText("ApprovalCode : " + t.TransactionInformation.ApprovalCode + "\r\n");
 
             //TransactionInformation.BankcardData
             if (t.TransactionInformation.BankcardData != null)
@@ -881,66 +891,76 @@ namespace SampleCode
                 //TransactionInformation.BankcardData.AVSResult
                 if (t.TransactionInformation.BankcardData.AVSResult != null)
                 {
-                    strSummary = strSummary + "AVSResult Summary";
-                    strSummary = strSummary + " - ActualResult : " + t.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n";
-                    strSummary = strSummary + " - AddressResult : " + t.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n";
-                    strSummary = strSummary + " - CardholderNameResult : " + t.TransactionInformation.BankcardData.AVSResult.CardholderNameResult + "\r\n";
-                    strSummary = strSummary + " - CityResult : " + t.TransactionInformation.BankcardData.AVSResult.CityResult + "\r\n";
-                    strSummary = strSummary + " - CountryResult : " + t.TransactionInformation.BankcardData.AVSResult.CountryResult + "\r\n";
-                    strSummary = strSummary + " - PhoneResult : " + t.TransactionInformation.BankcardData.AVSResult.PhoneResult + "\r\n";
-                    strSummary = strSummary + " - PostalCodeResult : " + t.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n";
-                    strSummary = strSummary + " - StateResult : " + t.TransactionInformation.BankcardData.AVSResult.StateResult + "\r\n";
+                    RtxtTMSResults.AppendText("AVSResult Summary");
+                    RtxtTMSResults.AppendText(" - ActualResult : " + t.TransactionInformation.BankcardData.AVSResult.ActualResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - AddressResult : " + t.TransactionInformation.BankcardData.AVSResult.AddressResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - CardholderNameResult : " + t.TransactionInformation.BankcardData.AVSResult.CardholderNameResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - CityResult : " + t.TransactionInformation.BankcardData.AVSResult.CityResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - CountryResult : " + t.TransactionInformation.BankcardData.AVSResult.CountryResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - PhoneResult : " + t.TransactionInformation.BankcardData.AVSResult.PhoneResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - PostalCodeResult : " + t.TransactionInformation.BankcardData.AVSResult.PostalCodeResult + "\r\n");
+                    RtxtTMSResults.AppendText(" - StateResult : " + t.TransactionInformation.BankcardData.AVSResult.StateResult + "\r\n");
                 }
                 //TransactionInformation.BankcardData
-                strSummary = strSummary + "CardType : " + t.TransactionInformation.BankcardData.CardType + "\r\n";
-                strSummary = strSummary + "CVResult : " + t.TransactionInformation.BankcardData.CVResult + "\r\n";
-                strSummary = strSummary + "MaskedPAN : " + t.TransactionInformation.BankcardData.MaskedPAN + "\r\n";
-                strSummary = strSummary + "OrderId : " + t.TransactionInformation.BankcardData.OrderId + "\r\n"; //The order id generated by CWS. This value is often used by service providers for transaction correlation. Expected.
+                RtxtTMSResults.AppendText("CardType : " + t.TransactionInformation.BankcardData.CardType + "\r\n");
+                RtxtTMSResults.AppendText("CVResult : " + t.TransactionInformation.BankcardData.CVResult + "\r\n");
+                RtxtTMSResults.AppendText("MaskedPAN : " + t.TransactionInformation.BankcardData.MaskedPAN + "\r\n");
+                RtxtTMSResults.AppendText("OrderId : " + t.TransactionInformation.BankcardData.OrderId + "\r\n"); //The order id generated by CWS. This value is often used by service providers for transaction correlation. Expected.
             }
-            strSummary = strSummary + "BatchId : " + t.TransactionInformation.BatchId + "\r\n";
-            strSummary = strSummary + "CapturedAmount : " + t.TransactionInformation.CapturedAmount + "\r\n";
-            strSummary = strSummary + "CaptureDateTime : " + t.TransactionInformation.CaptureDateTime + "\r\n";
-            strSummary = strSummary + "CaptureState : " + t.TransactionInformation.CaptureState + "\r\n";
-            strSummary = strSummary + "CaptureStatusMessage : " + t.TransactionInformation.CaptureStatusMessage + "\r\n";
-            strSummary = strSummary + "CustomerId : " + t.TransactionInformation.CustomerId + "\r\n";
+            RtxtTMSResults.AppendText("BatchId : " + t.TransactionInformation.BatchId + "\r\n");
+            RtxtTMSResults.AppendText("CapturedAmount : " + t.TransactionInformation.CapturedAmount + "\r\n");
+            RtxtTMSResults.AppendText("CaptureDateTime : " + t.TransactionInformation.CaptureDateTime + "\r\n");
+            RtxtTMSResults.AppendText("CaptureState : " + t.TransactionInformation.CaptureState + "\r\n");
+            RtxtTMSResults.AppendText("CaptureStatusMessage : " + t.TransactionInformation.CaptureStatusMessage + "\r\n");
+            RtxtTMSResults.AppendText("CustomerId : " + t.TransactionInformation.CustomerId + "\r\n");
             if (t.TransactionInformation.ElectronicCheckData != null)
             {
 				//TransactionInformation.ElectronicCheckData
-				strSummary = strSummary + "Electronic Check Data";
-				strSummary = strSummary + " - CheckNumber : " + t.TransactionInformation.ElectronicCheckData.CheckNumber + "\r\n";
-				strSummary = strSummary + " - MaskedAccountNumber : " + t.TransactionInformation.ElectronicCheckData.MaskedAccountNumber + "\r\n";
-				strSummary = strSummary + " - TransactionType : " + t.TransactionInformation.ElectronicCheckData.TransactionType + "\r\n";
+				RtxtTMSResults.AppendText("Electronic Check Data");
+				RtxtTMSResults.AppendText(" - CheckNumber : " + t.TransactionInformation.ElectronicCheckData.CheckNumber + "\r\n");
+				RtxtTMSResults.AppendText(" - MaskedAccountNumber : " + t.TransactionInformation.ElectronicCheckData.MaskedAccountNumber + "\r\n");
+				RtxtTMSResults.AppendText(" - TransactionType : " + t.TransactionInformation.ElectronicCheckData.TransactionType + "\r\n");
 			}
-            strSummary = strSummary + "IsAcknowledged : " + t.TransactionInformation.IsAcknowledged + "\r\n";
-            strSummary = strSummary + "MaskedPAN : " + t.TransactionInformation.MaskedPAN + "\r\n";
-            strSummary = strSummary + "MerchantProfileId : " + t.TransactionInformation.MerchantProfileId + "\r\n";
-            strSummary = strSummary + "OriginatorTransactionId : " + t.TransactionInformation.OriginatorTransactionId + "\r\n";
-            strSummary = strSummary + "Reference : " + t.TransactionInformation.Reference + "\r\n";
-            strSummary = strSummary + "ServiceId : " + t.TransactionInformation.ServiceId + "\r\n";
-            strSummary = strSummary + "ServiceKey : " + t.TransactionInformation.ServiceKey + "\r\n";
-            strSummary = strSummary + "ServiceTransactionId : " + t.TransactionInformation.ServiceTransactionId + "\r\n";
-            strSummary = strSummary + "Status : " + t.TransactionInformation.Status + "\r\n";
+            RtxtTMSResults.AppendText("IsAcknowledged : " + t.TransactionInformation.IsAcknowledged + "\r\n");
+            RtxtTMSResults.AppendText("MaskedPAN : " + t.TransactionInformation.MaskedPAN + "\r\n");
+            RtxtTMSResults.AppendText("MerchantProfileId : " + t.TransactionInformation.MerchantProfileId + "\r\n");
+            RtxtTMSResults.AppendText("OriginatorTransactionId : " + t.TransactionInformation.OriginatorTransactionId + "\r\n");
+            RtxtTMSResults.AppendText("Reference : " + t.TransactionInformation.Reference + "\r\n");
+            RtxtTMSResults.AppendText("ServiceId : " + t.TransactionInformation.ServiceId + "\r\n");
+            RtxtTMSResults.AppendText("ServiceKey : " + t.TransactionInformation.ServiceKey + "\r\n");
+            RtxtTMSResults.AppendText("ServiceTransactionId : " + t.TransactionInformation.ServiceTransactionId + "\r\n");
+            RtxtTMSResults.AppendText("Status : " + t.TransactionInformation.Status + "\r\n");
             if (t.TransactionInformation.StoredValueData != null)
             {
                 //TransactionInformation.ElectronicCheckData
-                strSummary = strSummary + "Electronic Check Data";
-                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.CVResult + "\r\n";
-                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.CardRestrictionValue + "\r\n";
-                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.CardStatus + "\r\n";
-                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.NewBalance + "\r\n";
-                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.OrderId + "\r\n";
-                strSummary = strSummary + " - CVResult : " + t.TransactionInformation.StoredValueData.PreviousBalance + "\r\n";
+                RtxtTMSResults.AppendText("Electronic Check Data");
+                RtxtTMSResults.AppendText(" - CVResult : " + t.TransactionInformation.StoredValueData.CVResult + "\r\n");
+                RtxtTMSResults.AppendText(" - CVResult : " + t.TransactionInformation.StoredValueData.CardRestrictionValue + "\r\n");
+                RtxtTMSResults.AppendText(" - CVResult : " + t.TransactionInformation.StoredValueData.CardStatus + "\r\n");
+                RtxtTMSResults.AppendText(" - CVResult : " + t.TransactionInformation.StoredValueData.NewBalance + "\r\n");
+                RtxtTMSResults.AppendText(" - CVResult : " + t.TransactionInformation.StoredValueData.OrderId + "\r\n");
+                RtxtTMSResults.AppendText(" - CVResult : " + t.TransactionInformation.StoredValueData.PreviousBalance + "\r\n");
             }
-            strSummary = strSummary + "TransactionClass : " + t.TransactionInformation.TransactionClassTypePair.TransactionClass + "    ";
-            strSummary = strSummary + "TransactionType : " + t.TransactionInformation.TransactionClassTypePair.TransactionType + "\r\n";
-            strSummary = strSummary + "TransactionId : " + t.TransactionInformation.TransactionId + "\r\n";
-            strSummary = strSummary + "TransactionState : " + t.TransactionInformation.TransactionState + "\r\n";
-            strSummary = strSummary + "TransactionStatusCode : " + t.TransactionInformation.TransactionStatusCode + "\r\n";
-            strSummary = strSummary + "TransactionTimestamp : " + t.TransactionInformation.TransactionTimestamp + "\r\n";
-            strSummary = strSummary + "\r\n";
+            RtxtTMSResults.AppendText("TransactionClass : " + t.TransactionInformation.TransactionClassTypePair.TransactionClass + "    ");
+            RtxtTMSResults.AppendText("TransactionType : " + t.TransactionInformation.TransactionClassTypePair.TransactionType + "\r\n");
+            RtxtTMSResults.AppendText("TransactionId : " + t.TransactionInformation.TransactionId + "\r\n");
+            RtxtTMSResults.SelectionColor = Color.Black;
+            RtxtTMSResults.AppendText("TransactionTimestamp : " + t.TransactionInformation.TransactionTimestamp + "\r\n");
+            RtxtTMSResults.AppendText("\r\n");
 
-            strSummary = strSummary + "\r\n";
-            return strSummary;
+            RtxtTMSResults.AppendText("\r\n");
+        }
+
+        private void ColorText(string _string, TransactionState _ts)
+        {
+            if (_ts == TransactionState.ErrorConnecting | _ts == TransactionState.ErrorUnknown | _ts == TransactionState.ErrorValidation)
+                RtxtTMSResults.SelectionColor = Color.Red;
+            else if (_ts == TransactionState.Declined)
+                RtxtTMSResults.SelectionColor = Color.Purple;
+            else
+                RtxtTMSResults.SelectionColor = Color.DarkGreen;
+
+            RtxtTMSResults.AppendText(_string);
         }
 
         #endregion END process TMS response
@@ -972,6 +992,19 @@ namespace SampleCode
         private void TxtClearBatchTransactionIds_Click(object sender, EventArgs e)
         {
             txtQBP_TransactionIds.Text = "";
+        }
+
+        private void CboTransactionDetailFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if((TransactionDetailFormat)CboTransactionDetailFormat.SelectedItem == TransactionDetailFormat.SerializedCWS)
+            {
+                TxtTransactionDetailFormat.Enabled = true;
+            }
+            else
+            {
+                TxtTransactionDetailFormat.Text = "";
+                TxtTransactionDetailFormat.Enabled = false;
+            }
         }
 
     }

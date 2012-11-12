@@ -15,6 +15,29 @@ namespace SampleCode
         public BankcardTransaction _bct;
         public TestTriggers TT;
         public bool ProcessTransaction;
+        public string MaskedPAN
+        {
+            get
+            {
+                return TxtMaskedPAN.Text;
+            }
+            //set
+            //{
+            //    TxtMaskedPAN.Text = value;
+            //}
+        }
+        public TypeCardType CardType
+        {
+            get
+            {
+                return (TypeCardType)CboMagensaCardType.SelectedItem;
+            }
+            //set
+            //{
+            //    (TypeCardType)CboMagensaCardType.SelectedItem = value;
+            //}
+        }
+
         public Magensa()
         {
             InitializeComponent();
@@ -31,6 +54,10 @@ namespace SampleCode
             CboTriggerTests.Items.Add(new TestTriggers("10.45", "E860", "Magensa error number: Y099. Error Validating Credentials."));
             CboTriggerTests.Items.Add(new TestTriggers("10.50", "E898", "Magensa returned an invalid data error: <Insert Magensa StatusCode>. <Insert Magensa input validation error "));
             CboTriggerTests.Items.Add(new TestTriggers("10.55", "E899", "Magensa returned an unknown error.  <Insert Magensa StatusCode>. <StatusMsg>."));
+
+            CboMagensaCardType.Sorted = true;
+            CboMagensaCardType.DataSource = Enum.GetValues(typeof(TypeCardType));
+            CboMagensaCardType.SelectedIndex = -1;
         }
 
         public void CallingForm(ref BankcardTransaction bct)
@@ -51,6 +78,25 @@ namespace SampleCode
             string encryptedMagnePrintData = lines[12].Substring(lines[12].IndexOf("=") + 1).Replace(" ", "");
             string DUKPTserialNo = lines[2].Substring(lines[2].IndexOf("=") + 1).Replace(" ", "");
             string magenPrintStatus = lines[10].Substring(lines[10].IndexOf("=") + 1).Replace(" ", "");
+
+            //Get Masked Pan and CardType
+            TxtTrack2Masked.Text = lines[18].Substring(lines[18].IndexOf("=") + 1).Replace(" ", "").Trim();
+            HelperMethods h = new HelperMethods();
+            string pan = TxtTrack2Masked.Text.Substring(1, TxtTrack2Masked.Text.IndexOf("=") - 1);
+
+            int masklenght = pan.Length - 4;
+            int count = 0;
+            string maskingCount = "";
+            do
+            {
+                maskingCount += "X";
+                count++;
+            } while (count < masklenght);
+
+            TxtMaskedPAN.Text = maskingCount + pan.Substring(pan.Length - 4, 4);
+
+            try { CboMagensaCardType.SelectedItem = h.CardTypeLookup(pan); }
+            catch { }
 
             TxtMagnePrintData.Text = encryptedMagnePrintData;
             TxtDukptKeySerialNumber.Text = DUKPTserialNo;

@@ -33,6 +33,9 @@ namespace SampleCode
             System.Windows.Forms.LinkLabel lnkQueryTransactions;
             this.label44 = new System.Windows.Forms.Label();
             this.grpQueryTransactionsParameters = new System.Windows.Forms.GroupBox();
+            this.TxtTransactionDetailFormat = new System.Windows.Forms.TextBox();
+            this.CboTransactionDetailFormat = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.CboQTP_ServiceIds = new System.Windows.Forms.ComboBox();
             this.CboQTP_MerchantProfileIds = new System.Windows.Forms.ComboBox();
             this.TxtClearTransactionIds = new System.Windows.Forms.Button();
@@ -82,7 +85,6 @@ namespace SampleCode
             this.label26 = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.cmdQueryBatch = new System.Windows.Forms.Button();
-            this.txtTMSResults = new System.Windows.Forms.TextBox();
             this.label18 = new System.Windows.Forms.Label();
             this.label25 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -94,6 +96,7 @@ namespace SampleCode
             this.LnkPrevious = new System.Windows.Forms.LinkLabel();
             this.lblPageNumber = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.RtxtTMSResults = new System.Windows.Forms.RichTextBox();
             lnkQueryTransactionDetails = new System.Windows.Forms.LinkLabel();
             lnkQueryTransactions = new System.Windows.Forms.LinkLabel();
             this.grpQueryTransactionsParameters.SuspendLayout();
@@ -145,6 +148,9 @@ namespace SampleCode
             // 
             // grpQueryTransactionsParameters
             // 
+            this.grpQueryTransactionsParameters.Controls.Add(this.TxtTransactionDetailFormat);
+            this.grpQueryTransactionsParameters.Controls.Add(this.CboTransactionDetailFormat);
+            this.grpQueryTransactionsParameters.Controls.Add(this.label5);
             this.grpQueryTransactionsParameters.Controls.Add(this.CboQTP_ServiceIds);
             this.grpQueryTransactionsParameters.Controls.Add(this.CboQTP_MerchantProfileIds);
             this.grpQueryTransactionsParameters.Controls.Add(this.TxtClearTransactionIds);
@@ -184,10 +190,38 @@ namespace SampleCode
             this.grpQueryTransactionsParameters.Controls.Add(this.label30);
             this.grpQueryTransactionsParameters.Location = new System.Drawing.Point(8, 277);
             this.grpQueryTransactionsParameters.Name = "grpQueryTransactionsParameters";
-            this.grpQueryTransactionsParameters.Size = new System.Drawing.Size(453, 425);
+            this.grpQueryTransactionsParameters.Size = new System.Drawing.Size(453, 523);
             this.grpQueryTransactionsParameters.TabIndex = 28;
             this.grpQueryTransactionsParameters.TabStop = false;
             this.grpQueryTransactionsParameters.Text = "Query Transactions Parameters";
+            // 
+            // TxtTransactionDetailFormat
+            // 
+            this.TxtTransactionDetailFormat.Enabled = false;
+            this.TxtTransactionDetailFormat.Location = new System.Drawing.Point(26, 447);
+            this.TxtTransactionDetailFormat.MaxLength = 0;
+            this.TxtTransactionDetailFormat.Multiline = true;
+            this.TxtTransactionDetailFormat.Name = "TxtTransactionDetailFormat";
+            this.TxtTransactionDetailFormat.Size = new System.Drawing.Size(402, 70);
+            this.TxtTransactionDetailFormat.TabIndex = 139;
+            // 
+            // CboTransactionDetailFormat
+            // 
+            this.CboTransactionDetailFormat.FormattingEnabled = true;
+            this.CboTransactionDetailFormat.Location = new System.Drawing.Point(214, 420);
+            this.CboTransactionDetailFormat.Name = "CboTransactionDetailFormat";
+            this.CboTransactionDetailFormat.Size = new System.Drawing.Size(214, 21);
+            this.CboTransactionDetailFormat.TabIndex = 137;
+            this.CboTransactionDetailFormat.SelectedIndexChanged += new System.EventHandler(this.CboTransactionDetailFormat_SelectedIndexChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(23, 427);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(185, 13);
+            this.label5.TabIndex = 138;
+            this.label5.Text = "Transaction Detail Format (Txn Detail)";
             // 
             // CboQTP_ServiceIds
             // 
@@ -642,17 +676,6 @@ namespace SampleCode
             this.cmdQueryBatch.UseVisualStyleBackColor = true;
             this.cmdQueryBatch.Click += new System.EventHandler(this.cmdQueryBatch_Click);
             // 
-            // txtTMSResults
-            // 
-            this.txtTMSResults.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.txtTMSResults.Location = new System.Drawing.Point(477, 331);
-            this.txtTMSResults.Multiline = true;
-            this.txtTMSResults.Name = "txtTMSResults";
-            this.txtTMSResults.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtTMSResults.Size = new System.Drawing.Size(487, 371);
-            this.txtTMSResults.TabIndex = 26;
-            this.txtTMSResults.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtTMSResults_KeyDown);
-            // 
             // label18
             // 
             this.label18.AutoSize = true;
@@ -714,7 +737,7 @@ namespace SampleCode
             this.chklstTMSResults.HorizontalScrollbar = true;
             this.chklstTMSResults.Location = new System.Drawing.Point(477, 79);
             this.chklstTMSResults.Name = "chklstTMSResults";
-            this.chklstTMSResults.Size = new System.Drawing.Size(487, 229);
+            this.chklstTMSResults.Size = new System.Drawing.Size(487, 184);
             this.chklstTMSResults.TabIndex = 35;
             this.chklstTMSResults.SelectedIndexChanged += new System.EventHandler(this.chklstTMSResults_SelectedIndexChanged);
             // 
@@ -754,17 +777,26 @@ namespace SampleCode
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(474, 315);
+            this.label2.Location = new System.Drawing.Point(474, 266);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(39, 13);
             this.label2.TabIndex = 39;
             this.label2.Text = "Details";
             // 
+            // RtxtTMSResults
+            // 
+            this.RtxtTMSResults.Location = new System.Drawing.Point(477, 282);
+            this.RtxtTMSResults.Name = "RtxtTMSResults";
+            this.RtxtTMSResults.Size = new System.Drawing.Size(487, 528);
+            this.RtxtTMSResults.TabIndex = 40;
+            this.RtxtTMSResults.Text = "";
+            // 
             // TransactionManagementServices
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(976, 714);
+            this.ClientSize = new System.Drawing.Size(976, 812);
+            this.Controls.Add(this.RtxtTMSResults);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.lblPageNumber);
             this.Controls.Add(this.LnkPrevious);
@@ -775,14 +807,13 @@ namespace SampleCode
             this.Controls.Add(this.label44);
             this.Controls.Add(this.grpQueryTransactionsParameters);
             this.Controls.Add(this.grpQueryBatchParameters);
-            this.Controls.Add(this.txtTMSResults);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.label25);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dtpEndTimeTMS);
             this.Controls.Add(this.dtpStartTimeTMS);
             this.Name = "TransactionManagementServices";
-            this.Text = "TransactionManagementServices - CWS 1.17.17";
+            this.Text = "TransactionManagementServices - CWS 1.17.18";
             this.Load += new System.EventHandler(this.TransactionManagementServices_Load);
             this.grpQueryTransactionsParameters.ResumeLayout(false);
             this.grpQueryTransactionsParameters.PerformLayout();
@@ -837,7 +868,6 @@ namespace SampleCode
         private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Button cmdQueryBatch;
-        private System.Windows.Forms.TextBox txtTMSResults;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label25;
         private System.Windows.Forms.Label label3;
@@ -858,5 +888,9 @@ namespace SampleCode
         private System.Windows.Forms.ComboBox CboQTP_ServiceIds;
         private System.Windows.Forms.ComboBox CboQTP_MerchantProfileIds;
         private System.Windows.Forms.ComboBox CboQBP_MercProfileIds;
+        private System.Windows.Forms.RichTextBox RtxtTMSResults;
+        private System.Windows.Forms.ComboBox CboTransactionDetailFormat;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.TextBox TxtTransactionDetailFormat;
     }
 }

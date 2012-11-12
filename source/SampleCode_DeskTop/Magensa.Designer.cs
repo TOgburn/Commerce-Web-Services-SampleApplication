@@ -49,6 +49,12 @@ namespace SampleCode
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.CmdClose = new System.Windows.Forms.Button();
             this.lnkManageAccountById = new System.Windows.Forms.LinkLabel();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.TxtMaskedPAN = new System.Windows.Forms.TextBox();
+            this.CboMagensaCardType = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.TxtTrack2Masked = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -148,7 +154,7 @@ namespace SampleCode
             // 
             // CmdProcessMagensaTxn
             // 
-            this.CmdProcessMagensaTxn.Location = new System.Drawing.Point(164, 466);
+            this.CmdProcessMagensaTxn.Location = new System.Drawing.Point(164, 541);
             this.CmdProcessMagensaTxn.Name = "CmdProcessMagensaTxn";
             this.CmdProcessMagensaTxn.Size = new System.Drawing.Size(160, 23);
             this.CmdProcessMagensaTxn.TabIndex = 11;
@@ -159,7 +165,7 @@ namespace SampleCode
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(22, 440);
+            this.label6.Location = new System.Drawing.Point(22, 515);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(43, 13);
             this.label6.TabIndex = 12;
@@ -167,7 +173,7 @@ namespace SampleCode
             // 
             // TxtAmount
             // 
-            this.TxtAmount.Location = new System.Drawing.Point(164, 437);
+            this.TxtAmount.Location = new System.Drawing.Point(164, 512);
             this.TxtAmount.Name = "TxtAmount";
             this.TxtAmount.Size = new System.Drawing.Size(60, 20);
             this.TxtAmount.TabIndex = 13;
@@ -175,7 +181,7 @@ namespace SampleCode
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(22, 413);
+            this.label7.Location = new System.Drawing.Point(22, 488);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(65, 13);
             this.label7.TabIndex = 14;
@@ -184,7 +190,7 @@ namespace SampleCode
             // CboTriggerTests
             // 
             this.CboTriggerTests.FormattingEnabled = true;
-            this.CboTriggerTests.Location = new System.Drawing.Point(164, 410);
+            this.CboTriggerTests.Location = new System.Drawing.Point(164, 485);
             this.CboTriggerTests.Name = "CboTriggerTests";
             this.CboTriggerTests.Size = new System.Drawing.Size(439, 21);
             this.CboTriggerTests.TabIndex = 15;
@@ -202,6 +208,12 @@ namespace SampleCode
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.label10);
+            this.groupBox1.Controls.Add(this.TxtMaskedPAN);
+            this.groupBox1.Controls.Add(this.CboMagensaCardType);
+            this.groupBox1.Controls.Add(this.label8);
+            this.groupBox1.Controls.Add(this.TxtTrack2Masked);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label4);
@@ -213,14 +225,14 @@ namespace SampleCode
             this.groupBox1.Controls.Add(this.TxtMagnePrintStatus);
             this.groupBox1.Location = new System.Drawing.Point(12, 249);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(597, 151);
+            this.groupBox1.Size = new System.Drawing.Size(597, 230);
             this.groupBox1.TabIndex = 17;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Obtain values from swipe above";
             // 
             // CmdClose
             // 
-            this.CmdClose.Location = new System.Drawing.Point(534, 466);
+            this.CmdClose.Location = new System.Drawing.Point(534, 578);
             this.CmdClose.Name = "CmdClose";
             this.CmdClose.Size = new System.Drawing.Size(75, 23);
             this.CmdClose.TabIndex = 18;
@@ -243,11 +255,60 @@ namespace SampleCode
             this.lnkManageAccountById.Tag = "Learn more about \"Sign On\"";
             this.lnkManageAccountById.Click += new System.EventHandler(this.lnkManageAccountById_Click);
             // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(10, 174);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(53, 13);
+            this.label9.TabIndex = 142;
+            this.label9.Text = "CardType";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(10, 201);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(70, 13);
+            this.label10.TabIndex = 144;
+            this.label10.Text = "Masked PAN";
+            // 
+            // TxtMaskedPAN
+            // 
+            this.TxtMaskedPAN.Location = new System.Drawing.Point(152, 198);
+            this.TxtMaskedPAN.Name = "TxtMaskedPAN";
+            this.TxtMaskedPAN.Size = new System.Drawing.Size(133, 20);
+            this.TxtMaskedPAN.TabIndex = 145;
+            // 
+            // CboMagensaCardType
+            // 
+            this.CboMagensaCardType.FormattingEnabled = true;
+            this.CboMagensaCardType.Location = new System.Drawing.Point(152, 171);
+            this.CboMagensaCardType.Name = "CboMagensaCardType";
+            this.CboMagensaCardType.Size = new System.Drawing.Size(133, 21);
+            this.CboMagensaCardType.TabIndex = 143;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(10, 148);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(85, 13);
+            this.label8.TabIndex = 140;
+            this.label8.Text = "Track 2 Masked";
+            // 
+            // TxtTrack2Masked
+            // 
+            this.TxtTrack2Masked.Location = new System.Drawing.Point(152, 145);
+            this.TxtTrack2Masked.Name = "TxtTrack2Masked";
+            this.TxtTrack2Masked.Size = new System.Drawing.Size(261, 20);
+            this.TxtTrack2Masked.TabIndex = 141;
+            // 
             // Magensa
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(621, 503);
+            this.ClientSize = new System.Drawing.Size(624, 612);
             this.Controls.Add(this.CboTriggerTests);
             this.Controls.Add(this.lnkManageAccountById);
             this.Controls.Add(this.CmdClose);
@@ -290,5 +351,11 @@ namespace SampleCode
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Button CmdClose;
         private System.Windows.Forms.LinkLabel lnkManageAccountById;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.TextBox TxtMaskedPAN;
+        private System.Windows.Forms.ComboBox CboMagensaCardType;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox TxtTrack2Masked;
     }
 }

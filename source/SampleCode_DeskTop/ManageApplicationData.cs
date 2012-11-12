@@ -27,7 +27,6 @@
 #endregion DISCLAIMER
 
 using System;
-using System.Configuration;
 using System.Windows.Forms;
 using schemas.ipcommerce.com.Ipc.General.WCF.Contracts.Common.External.SvcInfo;
 
@@ -71,6 +70,15 @@ namespace SampleCode
             cboReadCapability.Sorted = true;
             cboReadCapability.DataSource = Enum.GetValues(typeof(ReadCapability));
             cboReadCapability.SelectedItem = ReadCapability.NotSet;
+
+            //Actions for Application Data - Typically only performed upon initial installation of software
+            //Note : Resultant variable to be stored : ApplicationProfileId
+            cboApplicationDataAction.Items.Add(new Item("[Select Action]", "0", ""));
+            cboApplicationDataAction.Items.Add(new Item("Get Application Data", "1", ""));
+            cboApplicationDataAction.Items.Add(new Item("Save Application Data", "2", ""));
+            cboApplicationDataAction.Items.Add(new Item("Delete Application Data", "3", ""));
+            cboApplicationDataAction.SelectedIndex = 0;
+
         }
 
         public void CallingForm(HelperMethods helper)
@@ -80,7 +88,57 @@ namespace SampleCode
 
         private void ManageApplicationData_Load(object sender, EventArgs e)
         {
-            GetApplicationData();
+            //Set Values from the calling form
+            txtApplicationProfileId.Text = _Helper.ApplicationProfileId.Trim();
+            //GetApplicationData();
+        }
+
+        private void CmdPerformWebRequest_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+
+                ((SampleCode_DeskTop)(Owner)).Helper.CheckTokenExpire();
+
+                Item item = (Item)cboApplicationDataAction.SelectedItem;
+                if (item.Value1 == "0")
+                {
+                    MessageBox.Show("Please select an action");
+                    return;
+                }
+                if (item.Value1 == "1")
+                {
+                    if (txtApplicationProfileId.Text.Length > 0)
+                    {
+                        _Helper.ApplicationProfileId = txtApplicationProfileId.Text;
+                        GetApplicationData();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please enter a valid Application Profile id");
+                    }
+                    return;
+                }
+                if (item.Value1 == "2")
+                {
+                    SaveApplicationData();
+                    return;
+                }
+                if (item.Value1 == "3")
+                {
+                    DeleteApplicationData();
+                    return;
+                }
+            }
+            catch
+            {
+                
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
         }
 
         private void GetApplicationData()
@@ -90,7 +148,7 @@ namespace SampleCode
 
             if (_Helper.ApplicationProfileId.Length < 1) return;
             txtApplicationProfileId.Text = _Helper.ApplicationProfileId.Trim();
-            
+
             //Call GetApplicationData if a previous applicationProfileId exists
             ApplicationData AD = new ApplicationData();
             //From the calling form
@@ -106,7 +164,7 @@ namespace SampleCode
                 txtApplicationProfileId.Text = "";
                 return;
             }
-            
+
             //If an ApplicationData was returned set all of the values.
             cboApplicationAttended.SelectedItem = AD.ApplicationAttended;
             //Select the index that matches
@@ -149,20 +207,7 @@ namespace SampleCode
             txtVendorId.Text = AD.VendorId;
         }
 
-        private void CmdGetApplicationData_Click(object sender, EventArgs e)
-        {
-            if(txtApplicationProfileId.Text.Length > 0)
-            {
-                _Helper.ApplicationProfileId = txtApplicationProfileId.Text;
-                GetApplicationData();
-            }
-            else
-            {
-                MessageBox.Show("Please enter a valid Application Profile id");
-            }
-        }
-
-        private void cmdSave_Click(object sender, EventArgs e)
+        private void SaveApplicationData()
         {
             if (txtApplicationProfileId.Text.Length > 0)
             {
@@ -204,7 +249,8 @@ namespace SampleCode
                 ((SampleCode_DeskTop)(Owner)).Helper.ApplicationProfileId = strApplicationProfileId.Trim();
                 MessageBox.Show(
                         "ApplicationData successfully saved. Your application should persist and cache the ApplicationProfileId returned. "
-                        + "This ApplicationProfileID will be used for all subsequent transaction processing. \r\n\r\nFor now, the values have been saved in a text file, which is located"
+                        + "This ApplicationProfileID will be used for all subsequent transaction processing and does not require a re-saving of application data in the future. " 
+                        + "\r\n\r\nFor now, the values have been saved in a text file, which is located"
                         + " in the same folder as the executing application '[SK]_applicationProfileId.config'");
                 SaveSuccess = true;
                 this.Close();    
@@ -219,7 +265,7 @@ namespace SampleCode
             }
         }
 
-        private void cmdDelete_Click(object sender, EventArgs e)
+        private void DeleteApplicationData()
         {
             if (txtApplicationProfileId.Text.Length < 1) { MessageBox.Show("Please enter a valid ApplicationProfileId in order to delete the ApplicationData"); return; }
 
@@ -231,6 +277,7 @@ namespace SampleCode
                 ((SampleCode_DeskTop)(Owner)).Helper.Cwssic.DeleteApplicationData(_strSessionToken,
                                                                                        txtApplicationProfileId.Text);
                 MessageBox.Show("Successfully deleted " + txtApplicationProfileId.Text);
+                ((SampleCode_DeskTop) (Owner)).chkStep2.Checked = false;
                 Close();
             }
             catch (Exception ex)
@@ -311,34 +358,44 @@ namespace SampleCode
         {
 			//https://my.ipcommerce.com/Docs/TransactionProcessing/CWS/API_Reference/2.0.17/ServiceInfoDataElements/ApplicationData.aspx
             MessageBox.Show(
-                "Please note that the following values are generic. Depending on the scope of your integration the following values may change. Please contact your solution consultant with any questions.");
-            txtPTLSSocketId.Text = ((SampleCode_DeskTop)(Owner)).PtlsSocketId;
-            try { cboApplicationAttended.SelectedItem = Convert.ToBoolean(ConfigurationSettings.AppSettings["ApplicationAttended"]); }
-            catch { }
-            try { cboApplicationLocation.SelectedItem = (ApplicationLocation)Enum.Parse(typeof(ApplicationLocation), ConfigurationSettings.AppSettings["ApplicationLocation"]); }
-            catch { }
-            txtApplicationName.Text = "MyTestApp";//
-            txtDeveloperId.Text = "TPP123"; //Only used for First Data
-            TxtDeviceSerialNumber.Text = "";
-            cboHardwareType.SelectedItem = HardwareType.PC;
-            try { CboEncryptionType.SelectedItem = (EncryptionType)Enum.Parse(typeof(EncryptionType), ConfigurationSettings.AppSettings["EncryptionType"]); }
-            catch { }
-            cboHardwareType.SelectedItem = HardwareType.PC;
-            try { cboPINCapability.SelectedItem = (PINCapability)Enum.Parse(typeof(PINCapability), ConfigurationSettings.AppSettings["PINCapability"]); }
-            catch { }
-            try { cboReadCapability.SelectedItem = (ReadCapability)Enum.Parse(typeof(ReadCapability), ConfigurationSettings.AppSettings["ReadCapability"]); }
-            catch { }
-            txtSerialNumber.Text = "208093707";
-            txtSoftwareVersion.Text = "1.0";
-            txtSoftwareVersionDate.Text = "2010/05/10";
+                "Please note that the following values are generic. Depending on the scope of your integration the following values may " +
+                "change. Please contact your solution consultant with any questions.");
+            
+            try
+            {
+                //Use the DataGenerator to populate default values based on IndustryType
+                ApplicationData AD = DataGenerator.CreateApplicationData();
+
+                cboApplicationAttended.SelectedItem = AD.ApplicationAttended; 
+                cboApplicationLocation.SelectedItem = AD.ApplicationLocation; 
+                txtApplicationName.Text = AD.ApplicationName;//
+                txtDeveloperId.Text = AD.DeveloperId; //Only used for First Data
+                TxtDeviceSerialNumber.Text = AD.DeviceSerialNumber;
+                CboEncryptionType.SelectedItem = AD.EncryptionType;
+                cboHardwareType.SelectedItem = AD.HardwareType;
+                cboPINCapability.SelectedItem = AD.PINCapability;
+                txtPTLSSocketId.Text = ((SampleCode_DeskTop)(Owner)).PtlsSocketId;
+                cboReadCapability.SelectedItem = AD.ReadCapability;
+                txtSerialNumber.Text = AD.SerialNumber;
+                txtSoftwareVersion.Text = AD.SoftwareVersion;
+                txtSoftwareVersionDate.Text = AD.SoftwareVersionDate.ToShortDateString();
+                txtVendorId.Text = AD.VendorId;
+            }
+            catch (Exception Ex)
+            {
+                MessageBox.Show(Ex.Message);
+            }
+ 
         }
 
-        private void lnkServiceKey_Click(object sender, EventArgs e)
+        private void cboApplicationDataAction_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lnkManageApplicationData_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://mylab.ipcommerce.com/Docs/TransactionProcessing/CWS/Developer_Guide/2.0.18/Implementation/PreparingTheAppToTransact/ManagingAppConfigData/index.aspx");
         }
-
-
-
     }
 }

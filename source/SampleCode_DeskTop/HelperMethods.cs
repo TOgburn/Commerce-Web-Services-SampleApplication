@@ -133,8 +133,8 @@ namespace SampleCode
                     else
                     {
                         _sessionToken = Cwssic.SignOnWithToken(_identityToken);
-                        DtSessionToken = DateTime.UtcNow;
                     }
+                    DtSessionToken = DateTime.UtcNow;
                 }
                 catch (Exception ex)
                 {
@@ -314,9 +314,45 @@ namespace SampleCode
                 }
                 return true;
             }
-            catch (Exception ee)
+            catch (EndpointNotFoundException)
             {
-                MessageBox.Show(ee.Message);
+                #region EndpointNotFoundException
+                //In this case the SvcEndpoint was not available. Try the same logic again with the alternate Endpoint
+                try
+                {
+                    if (_blnSvcInfoPrimary)
+                    {
+                        _blnSvcInfoPrimary = false; //Flip the boolean so that next time the secondary Endpoint is used.
+                        //Try the primary URI for CWSServiceInformationClient
+                        Cwssic = GetServiceInfoChannel(ServiceKey, BaseSvcEndpointPrimary);
+                    }
+                    else
+                    {
+                        _blnSvcInfoPrimary = true; //Flip the boolean so that next time the primary Endpoint is used.
+                        //Try the secondary URI for CWSServiceInformationClient
+                        Cwssic = GetServiceInfoChannel(ServiceKey, BaseSvcEndpointSecondary);
+                    }
+                    return true;
+                }
+                catch (EndpointNotFoundException)
+                {
+                    MessageBox.Show("Neither the primary or secondary endpoints are available. Unable to process.");
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to SigOn\r\nError Message : " + ex.Message, "SignOn Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                string strErrorId;
+                string strErrorMessage;
+                if (_FaultHandler.handleSvcInfoFault(ex, out strErrorId, out strErrorMessage))
+                { MessageBox.Show(strErrorId + " : " + strErrorMessage); }
+                else { MessageBox.Show(ex.Message); }
                 return false;
             }
         }
@@ -344,8 +380,45 @@ namespace SampleCode
                 }
                 return true;
             }
-            catch
+            catch (EndpointNotFoundException)
             {
+                #region EndpointNotFoundException
+                //In this case the SvcEndpoint was not available. Try the same logic again with the alternate Endpoint
+                try
+                {
+                    if (_blnTxnPrimary)
+                    {
+                        _blnTxnPrimary = false; //Flip the boolean so that next time the secondary Endpoint is used.
+                        //Try the primary URI for CWSServiceInformationClient
+                        Cwsbc = GetTxnChannel(ServiceKey, BaseTxnEndpointPrimary);
+                    }
+                    else
+                    {
+                        _blnTxnPrimary = true; //Flip the boolean so that next time the primary Endpoint is used.
+                        //Try the secondary URI for CWSServiceInformationClient
+                        Cwsbc = GetTxnChannel(ServiceKey, BaseTxnEndpointSecondary);
+                    }
+                    return true;
+                }
+                catch (EndpointNotFoundException)
+                {
+                    MessageBox.Show("Neither the primary or secondary endpoints are available. Unable to process.");
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to SigOn\r\nError Message : " + ex.Message, "SignOn Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                string strErrorId;
+                string strErrorMessage;
+                if (_FaultHandler.handleSvcInfoFault(ex, out strErrorId, out strErrorMessage))
+                { MessageBox.Show(strErrorId + " : " + strErrorMessage); }
+                else { MessageBox.Show(ex.Message); }
                 return false;
             }
         }
@@ -373,8 +446,45 @@ namespace SampleCode
                 }
                 return true;
             }
-            catch
+            catch (EndpointNotFoundException)
             {
+                #region EndpointNotFoundException
+                //In this case the SvcEndpoint was not available. Try the same logic again with the alternate Endpoint
+                try
+                {
+                    if (_blnTMSPrimary)
+                    {
+                        _blnTMSPrimary = false; //Flip the boolean so that next time the secondary Endpoint is used.
+                        //Try the primary URI for CWSServiceInformationClient
+                        Tmsoc = GetTMSChannel(ServiceKey, BaseTMSEndpointPrimary);
+                    }
+                    else
+                    {
+                        _blnTMSPrimary = true; //Flip the boolean so that next time the primary Endpoint is used.
+                        //Try the secondary URI for CWSServiceInformationClient
+                        Tmsoc = GetTMSChannel(ServiceKey, BaseTMSEndpointSecondary);
+                    }
+                    return true;
+                }
+                catch (EndpointNotFoundException)
+                {
+                    MessageBox.Show("Neither the primary or secondary endpoints are available. Unable to process.");
+                    return false;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Unable to SigOn\r\nError Message : " + ex.Message, "SignOn Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return false;
+                }
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                string strErrorId;
+                string strErrorMessage;
+                if (_FaultHandler.handleSvcInfoFault(ex, out strErrorId, out strErrorMessage))
+                { MessageBox.Show(strErrorId + " : " + strErrorMessage); }
+                else { MessageBox.Show(ex.Message); }
                 return false;
             }
         }
@@ -676,7 +786,7 @@ namespace SampleCode
                         if (_SendAcknowledge && r.TransactionId.Length > 0)
                             Cwsbc.Acknowledge(_sessionToken, r.TransactionId, _applicationProfileId, _serviceId);
 
-                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceIdOrWorkflowId, _merchantProfileId, true);
+                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceIdOrWorkflowId, _merchantProfileId, true, TypeCardType.NotSet, "");
                         MessageBox.Show(ProcessResponse(ref RDN));//Pass as reference so we can extract more values from the response
                         RD.Add(RDN);
                     }
@@ -858,7 +968,7 @@ namespace SampleCode
                         if (_SendAcknowledge && r.TransactionId.Length > 0)
                             Cwsbc.Acknowledge(_sessionToken, r.TransactionId, _applicationProfileId, _serviceId);
 
-                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceIdOrWorkflowId, _merchantProfileId, true);
+                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceIdOrWorkflowId, _merchantProfileId, true, TypeCardType.NotSet, "");
                         MessageBox.Show(ProcessResponse(ref RDN));//Pass as reference so we can extract more values from the response
                         RD.Add(RDN);
                     }
@@ -1227,7 +1337,7 @@ namespace SampleCode
                         if (_SendAcknowledge && r.TransactionId.Length > 0)
                             Cwsbc.Acknowledge(_sessionToken, r.TransactionId, _applicationProfileId, _serviceId);
 
-                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceId, _merchantProfileId, true);
+                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceId, _merchantProfileId, true, TypeCardType.NotSet, "");
                         MessageBox.Show(ProcessResponse(ref RDN));//Pass as reference so we can extract more values from the response
                         RD.Add(RDN);
                     }
@@ -1349,7 +1459,7 @@ namespace SampleCode
                         if (_SendAcknowledge && r.TransactionId.Length > 0)
                             Cwsbc.Acknowledge(_sessionToken, r.TransactionId, _applicationProfileId, _serviceId);
 
-                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceId, _merchantProfileId, true);
+                        ResponseDetails RDN = new ResponseDetails(0.00M, r, _TT.ToString(), _serviceId, _merchantProfileId, true, TypeCardType.NotSet, "");
                         MessageBox.Show(ProcessResponse(ref RDN));//Pass as reference so we can extract more values from the response
                         RD.Add(RDN);
                     }
@@ -1421,7 +1531,7 @@ namespace SampleCode
             {
                 foreach (Response r in _Response)
                 {
-                    ResponseDetails RDN = new ResponseDetails(0.00M, r, "", "", _merchantProfileId, true);
+                    ResponseDetails RDN = new ResponseDetails(0.00M, r, "", "", _merchantProfileId, true, TypeCardType.NotSet, "");
                     MessageBox.Show(ProcessResponse(ref RDN));//Pass as reference so we can extract more values from the response
                 }
             }
@@ -1968,8 +2078,11 @@ namespace SampleCode
         public string WorkflowId;
         public string MerchantProfileId;
         public bool Verbose;
+        public TypeCardType CardType;
+        public string MaskedPan;
 
-        public ResponseDetails(decimal txnAmount, Response response, string transactionType, string workflowId, string merchantProfileId, bool verbose)
+        public ResponseDetails(decimal txnAmount, Response response, string transactionType,
+            string workflowId, string merchantProfileId, bool verbose, TypeCardType cardType, string maskedPan)
         {
             TxnAmount = txnAmount;
             Response = response;
@@ -1977,6 +2090,8 @@ namespace SampleCode
             WorkflowId = workflowId;
             MerchantProfileId = merchantProfileId;
             Verbose = verbose;
+            CardType = TypeCardType.NotSet;
+            MaskedPan = "";
         }
         public override string ToString()
         {// Generates the text shown in the List Checkbox
@@ -2027,6 +2142,26 @@ namespace SampleCode
         ManageAccountById = 14,
         [System.Runtime.Serialization.EnumMemberAttribute()]
         RequestTransaction = 15,
+    }
+
+    [Serializable]
+    public class PersistAndCacheSettings
+    {
+        public string ApplicationProfileId;
+        public string ServiceId;
+        public string WorkflowId;
+        public string MerchantProfileId;
+        public bool EncryptedIdentityToken;
+        public string IdentityToken;
+        public PersistAndCacheSettings(string applicationProfileId, string serviceId, string workflowId, string merchantProfileId, bool encryptedIdentityToken, string identityToken)
+        {
+            ApplicationProfileId = applicationProfileId;
+            ServiceId = serviceId;
+            WorkflowId = workflowId;
+            MerchantProfileId = merchantProfileId;
+            EncryptedIdentityToken = encryptedIdentityToken;
+            IdentityToken = identityToken;
+        }
     }
 
 #endregion Extra Classes

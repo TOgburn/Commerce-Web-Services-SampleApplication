@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataGenerator.cs" />
     <Compile Include="FaultHandler.cs" />
     <Compile Include="HelperMethods.cs">
     </Compile>

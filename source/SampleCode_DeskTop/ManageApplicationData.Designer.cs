@@ -29,8 +29,6 @@ namespace SampleCode
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ManageApplicationData));
-            this.cmdDelete = new System.Windows.Forms.Button();
-            this.cmdSave = new System.Windows.Forms.Button();
             this.cmdClose = new System.Windows.Forms.Button();
             this.txtPTLSSocketId = new System.Windows.Forms.TextBox();
             this.txtApplicationProfileId = new System.Windows.Forms.TextBox();
@@ -64,36 +62,17 @@ namespace SampleCode
             this.label1 = new System.Windows.Forms.Label();
             this.TxtDeviceSerialNumber = new System.Windows.Forms.TextBox();
             this.GrpGetApplicationData = new System.Windows.Forms.GroupBox();
-            this.lnkServiceKey = new System.Windows.Forms.LinkLabel();
+            this.cboApplicationDataAction = new System.Windows.Forms.ComboBox();
+            this.lnkManageApplicationData = new System.Windows.Forms.LinkLabel();
             this.label15 = new System.Windows.Forms.Label();
-            this.CmdGetApplicationData = new System.Windows.Forms.Button();
+            this.CmdPerformWebRequest = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.GrpGetApplicationData.SuspendLayout();
             this.SuspendLayout();
             // 
-            // cmdDelete
-            // 
-            this.cmdDelete.Location = new System.Drawing.Point(278, 73);
-            this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(162, 23);
-            this.cmdDelete.TabIndex = 1;
-            this.cmdDelete.Text = "Delete ApplicaitonProfileId";
-            this.cmdDelete.UseVisualStyleBackColor = true;
-            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
-            // 
-            // cmdSave
-            // 
-            this.cmdSave.Location = new System.Drawing.Point(278, 44);
-            this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(162, 23);
-            this.cmdSave.TabIndex = 2;
-            this.cmdSave.Text = "Save Application Data";
-            this.cmdSave.UseVisualStyleBackColor = true;
-            this.cmdSave.Click += new System.EventHandler(this.cmdSave_Click);
-            // 
             // cmdClose
             // 
-            this.cmdClose.Location = new System.Drawing.Point(377, 560);
+            this.cmdClose.Location = new System.Drawing.Point(377, 533);
             this.cmdClose.Name = "cmdClose";
             this.cmdClose.Size = new System.Drawing.Size(75, 23);
             this.cmdClose.TabIndex = 3;
@@ -107,13 +86,13 @@ namespace SampleCode
             this.txtPTLSSocketId.Multiline = true;
             this.txtPTLSSocketId.Name = "txtPTLSSocketId";
             this.txtPTLSSocketId.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtPTLSSocketId.Size = new System.Drawing.Size(259, 51);
+            this.txtPTLSSocketId.Size = new System.Drawing.Size(256, 51);
             this.txtPTLSSocketId.TabIndex = 39;
             // 
             // txtApplicationProfileId
             // 
             this.txtApplicationProfileId.BackColor = System.Drawing.SystemColors.Window;
-            this.txtApplicationProfileId.Location = new System.Drawing.Point(124, 17);
+            this.txtApplicationProfileId.Location = new System.Drawing.Point(115, 46);
             this.txtApplicationProfileId.Name = "txtApplicationProfileId";
             this.txtApplicationProfileId.Size = new System.Drawing.Size(88, 20);
             this.txtApplicationProfileId.TabIndex = 7;
@@ -353,7 +332,7 @@ namespace SampleCode
             this.groupBox1.Controls.Add(this.label11);
             this.groupBox1.Controls.Add(this.label13);
             this.groupBox1.Controls.Add(this.label12);
-            this.groupBox1.Location = new System.Drawing.Point(12, 122);
+            this.groupBox1.Location = new System.Drawing.Point(12, 95);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(446, 432);
             this.groupBox1.TabIndex = 46;
@@ -397,63 +376,71 @@ namespace SampleCode
             // 
             // GrpGetApplicationData
             // 
-            this.GrpGetApplicationData.Controls.Add(this.lnkServiceKey);
+            this.GrpGetApplicationData.Controls.Add(this.cboApplicationDataAction);
+            this.GrpGetApplicationData.Controls.Add(this.lnkManageApplicationData);
             this.GrpGetApplicationData.Controls.Add(this.label15);
-            this.GrpGetApplicationData.Controls.Add(this.CmdGetApplicationData);
+            this.GrpGetApplicationData.Controls.Add(this.CmdPerformWebRequest);
             this.GrpGetApplicationData.Controls.Add(this.txtApplicationProfileId);
-            this.GrpGetApplicationData.Controls.Add(this.cmdDelete);
-            this.GrpGetApplicationData.Controls.Add(this.cmdSave);
             this.GrpGetApplicationData.Location = new System.Drawing.Point(12, 12);
             this.GrpGetApplicationData.Name = "GrpGetApplicationData";
-            this.GrpGetApplicationData.Size = new System.Drawing.Size(446, 104);
+            this.GrpGetApplicationData.Size = new System.Drawing.Size(446, 77);
             this.GrpGetApplicationData.TabIndex = 47;
             this.GrpGetApplicationData.TabStop = false;
             this.GrpGetApplicationData.Text = "Managing Application Configuration Data";
             // 
-            // lnkServiceKey
+            // cboApplicationDataAction
             // 
-            this.lnkServiceKey.AutoSize = true;
-            this.lnkServiceKey.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lnkServiceKey.Image = ((System.Drawing.Image)(resources.GetObject("lnkServiceKey.Image")));
-            this.lnkServiceKey.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.lnkServiceKey.Location = new System.Drawing.Point(215, 17);
-            this.lnkServiceKey.Margin = new System.Windows.Forms.Padding(0);
-            this.lnkServiceKey.MinimumSize = new System.Drawing.Size(20, 20);
-            this.lnkServiceKey.Name = "lnkServiceKey";
-            this.lnkServiceKey.Size = new System.Drawing.Size(20, 20);
-            this.lnkServiceKey.TabIndex = 124;
-            this.lnkServiceKey.Tag = "Learn more about \"Sign On\"";
-            this.lnkServiceKey.Click += new System.EventHandler(this.lnkServiceKey_Click);
+            this.cboApplicationDataAction.FormattingEnabled = true;
+            this.cboApplicationDataAction.Location = new System.Drawing.Point(6, 19);
+            this.cboApplicationDataAction.Name = "cboApplicationDataAction";
+            this.cboApplicationDataAction.Size = new System.Drawing.Size(197, 21);
+            this.cboApplicationDataAction.TabIndex = 147;
+            this.cboApplicationDataAction.SelectedIndexChanged += new System.EventHandler(this.cboApplicationDataAction_SelectedIndexChanged);
+            // 
+            // lnkManageApplicationData
+            // 
+            this.lnkManageApplicationData.AutoSize = true;
+            this.lnkManageApplicationData.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lnkManageApplicationData.Image = ((System.Drawing.Image)(resources.GetObject("lnkManageApplicationData.Image")));
+            this.lnkManageApplicationData.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.lnkManageApplicationData.Location = new System.Drawing.Point(420, 41);
+            this.lnkManageApplicationData.Margin = new System.Windows.Forms.Padding(0);
+            this.lnkManageApplicationData.MinimumSize = new System.Drawing.Size(20, 20);
+            this.lnkManageApplicationData.Name = "lnkManageApplicationData";
+            this.lnkManageApplicationData.Size = new System.Drawing.Size(20, 20);
+            this.lnkManageApplicationData.TabIndex = 124;
+            this.lnkManageApplicationData.Tag = "Learn more about \"Sign On\"";
+            this.lnkManageApplicationData.Click += new System.EventHandler(this.lnkManageApplicationData_Click);
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(15, 20);
+            this.label15.Location = new System.Drawing.Point(6, 49);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(103, 13);
             this.label15.TabIndex = 8;
             this.label15.Text = "Application Profile Id";
             // 
-            // CmdGetApplicationData
+            // CmdPerformWebRequest
             // 
-            this.CmdGetApplicationData.Location = new System.Drawing.Point(278, 15);
-            this.CmdGetApplicationData.Name = "CmdGetApplicationData";
-            this.CmdGetApplicationData.Size = new System.Drawing.Size(162, 23);
-            this.CmdGetApplicationData.TabIndex = 0;
-            this.CmdGetApplicationData.Text = "Get Application Data";
-            this.CmdGetApplicationData.UseVisualStyleBackColor = true;
-            this.CmdGetApplicationData.Click += new System.EventHandler(this.CmdGetApplicationData_Click);
+            this.CmdPerformWebRequest.Location = new System.Drawing.Point(293, 15);
+            this.CmdPerformWebRequest.Name = "CmdPerformWebRequest";
+            this.CmdPerformWebRequest.Size = new System.Drawing.Size(147, 23);
+            this.CmdPerformWebRequest.TabIndex = 0;
+            this.CmdPerformWebRequest.Text = "Perform Web Request";
+            this.CmdPerformWebRequest.UseVisualStyleBackColor = true;
+            this.CmdPerformWebRequest.Click += new System.EventHandler(this.CmdPerformWebRequest_Click);
             // 
             // ManageApplicationData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(470, 595);
+            this.ClientSize = new System.Drawing.Size(470, 563);
             this.Controls.Add(this.GrpGetApplicationData);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.cmdClose);
             this.Name = "ManageApplicationData";
-            this.Text = "Manage Application Configuration Data - CWS 1.17.17";
+            this.Text = "Manage Application Configuration Data - CWS 1.17.18";
             this.Load += new System.EventHandler(this.ManageApplicationData_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
@@ -465,8 +452,6 @@ namespace SampleCode
 
         #endregion
 
-        private System.Windows.Forms.Button cmdDelete;
-        private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdClose;
         private System.Windows.Forms.TextBox txtPTLSSocketId;
         private System.Windows.Forms.TextBox txtApplicationProfileId;
@@ -500,8 +485,9 @@ namespace SampleCode
         private System.Windows.Forms.TextBox TxtDeviceSerialNumber;
         private System.Windows.Forms.ComboBox CboEncryptionType;
         private System.Windows.Forms.GroupBox GrpGetApplicationData;
-        private System.Windows.Forms.Button CmdGetApplicationData;
+        private System.Windows.Forms.Button CmdPerformWebRequest;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.LinkLabel lnkServiceKey;
+        private System.Windows.Forms.LinkLabel lnkManageApplicationData;
+        private System.Windows.Forms.ComboBox cboApplicationDataAction;
     }
 }
