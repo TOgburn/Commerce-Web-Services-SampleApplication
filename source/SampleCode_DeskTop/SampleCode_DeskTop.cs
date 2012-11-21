@@ -416,23 +416,58 @@ namespace SampleCode
             }
             else if (_ecks != null) //Process as a Check transaction
             {
+                //First verify if all transactions selected are "Authorize" transactions
+                List<ResponseDetails> txnsToProcess = new List<ResponseDetails>();
+                foreach (object itemChecked in ChkLstTransactionsProcessed.CheckedItems)
+                {
+                    if (((ResponseDetails)(itemChecked)).TransactionType != TransactionType.QueryAccount.ToString())
+                    {
+                        MessageBox.Show("All selected messages must be of type QueryAccount");
+                        Cursor = Cursors.Default;
+                        return;
+                    }
+                    txnsToProcess.Add(((ResponseDetails)(itemChecked)));
+                }
                 try
                 {
-                    if (_queryAccountTxn == null) { MessageBox.Show("You must first perform a QuearyAccount() to verify that the account accepts ACH transactions"); return; }
-                    if (!_queryAccountTxn.ACHCapable) { MessageBox.Show("Your previous QueryAccount() returned a response where the transaction is not ACHCapable"); return; }
+                    if (txnsToProcess.Count == 0)
+                    {
+                        MessageBox.Show("You must select a QueryAccount transaction to use for the Authorize");
+                        return;
+                    }
+                    //Now process each message selected
+                    foreach (ResponseDetails _RD in txnsToProcess)
+                    {
+                        ElectronicCheckingTransaction ECKTransaction = DataGenerator.SetElectronicCheckTxnData();
 
-                    ElectronicCheckingTransaction ECKTransaction = DataGenerator.SetElectronicCheckTxnData();
+                        _queryAccountTxn = (ElectronicCheckingTransactionResponse)_RD.Response;
+                        
+                        if (_queryAccountTxn == null)
+                        {
+                            MessageBox.Show("You must first perform a QueryAccount() to verify that the account accepts ACH transactions");
+                            return;
+                        }
+                        if (!_queryAccountTxn.ACHCapable)
+                        {
+                            MessageBox.Show("Your previous QueryAccount() returned a response where the transaction is not ACHCapable");
+                            return;
+                        }
 
-                    //If a modified account or routing number is returned, those numbers should be used for the check transaction.  
-                    //Good for verifying the info before running the charge ñ like when you initially set-up a recurring payment.
-                    if (ECKTransaction.TenderData.CheckData.AccountNumber != _queryAccountTxn.ModifiedAccountNumber)
-                        ECKTransaction.TenderData.CheckData.AccountNumber = _queryAccountTxn.ModifiedAccountNumber;
-                    if (ECKTransaction.TenderData.CheckData.RoutingNumber != _queryAccountTxn.ModifiedRoutingNumber)
-                        ECKTransaction.TenderData.CheckData.RoutingNumber = _queryAccountTxn.ModifiedRoutingNumber;
+                        //Let's Authorize the transaction
+                        //If a modified account or routing number is returned, those numbers should be used for the check transaction.  
+                        //Good for verifying the info before running the charge ‚Äì like when you initially set-up a recurring payment.
+                        if (ECKTransaction.TenderData.CheckData.AccountNumber != _queryAccountTxn.ModifiedAccountNumber)
+                            ECKTransaction.TenderData.CheckData.AccountNumber = _queryAccountTxn.ModifiedAccountNumber;
+                        if (ECKTransaction.TenderData.CheckData.RoutingNumber != _queryAccountTxn.ModifiedRoutingNumber)
+                            ECKTransaction.TenderData.CheckData.RoutingNumber = _queryAccountTxn.ModifiedRoutingNumber;
 
-                    _queryAccountTxn = null; //Clear out the value as we're going to process a Check
-                    //Let's Query a transaction
-                    processResponse(Helper.ProcessECKTransaction(TransactionType.Authorize, ECKTransaction, null, null, null, ChkAcknowledge.Checked));
+                        _queryAccountTxn = null; //Clear out the value as we're going to process a Check
+                        //Let's Query a transaction
+                        processResponse(Helper.ProcessECKTransaction(TransactionType.Authorize, ECKTransaction, null,
+                                                                     null, null, ChkAcknowledge.Checked));
+
+                    }
+
                 }
                 catch (Exception ex) { MessageBox.Show(ex.Message); }
                 finally { Cursor = Cursors.Default; }
@@ -2534,13 +2569,13 @@ namespace SampleCode
         
         private void ChkAcknowledge_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("The Acknowledge() operation is used to mark a transaction as ìacknowledgedî after receiving "
+            MessageBox.Show("The Acknowledge() operation is used to mark a transaction as ‚Äúacknowledged‚Äù after receiving "
                 + "a successful transaction response. This acknowledgement is useful when performing transaction management "
                 + "functions, such as those provided by the Transaction Management Service (TMS) API.\r\n\r\n"
                 + "Once a successful transaction processing response has been received, the Acknowledge() operation can be "
-                + "called to set an IsAcknowledged flag to ìtrueî in the transaction database for a specific transactionId. "
+                + "called to set an IsAcknowledged flag to ‚Äútrue‚Äù in the transaction database for a specific transactionId. "
                 + "In the event that a transaction response is not received, specific Transaction Management operations can be "
-                + "called to query the transaction database for transactions that have the IsAcknowledged flag set to ìfalseî. "
+                + "called to query the transaction database for transactions that have the IsAcknowledged flag set to ‚Äúfalse‚Äù. "
                 + "This is helpful when troubleshooting the reason for a failed transaction.");
         }
 
