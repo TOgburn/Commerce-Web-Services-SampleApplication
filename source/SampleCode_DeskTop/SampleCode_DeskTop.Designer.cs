@@ -1248,9 +1248,9 @@ namespace SampleCode
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(6, 532);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(193, 13);
+            this.label18.Size = new System.Drawing.Size(124, 13);
             this.label18.TabIndex = 30;
-            this.label18.Text = "Transactions Processed (Coming Soon)";
+            this.label18.Text = "Transactions Processed ";
             // 
             // groupBox11
             // 
