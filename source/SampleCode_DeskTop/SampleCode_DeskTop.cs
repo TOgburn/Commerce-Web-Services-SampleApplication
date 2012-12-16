@@ -2787,7 +2787,8 @@ namespace SampleCode
        
         #endregion Setup Help Links
 
-    #endregion Helper Methods
 
-    }
+		#endregion Helper Methods
+
+	}
 }
